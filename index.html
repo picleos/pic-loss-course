@@ -1,0 +1,2351 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PIC Loss Evaluation Course</title>
+<meta name="description" content="Online course on measuring the insertion loss of photonic integrated circuits and extracting coupling, propagation and S-bend losses with least squares. English and Korean.">
+<meta property="og:title" content="PIC Loss Evaluation Course">
+<meta property="og:description" content="Online course on measuring the insertion loss of photonic integrated circuits and extracting coupling, propagation and S-bend losses with least squares. English and Korean.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23172430'/%3E%3Cpath d='M5 21h7c4 0 4-10 8-10h7' stroke='%23f0895c' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+  /* base reset (the course stylesheet below sets fonts, colors and layout) */
+  :root { color-scheme: light; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  body { margin: 0; }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;700&display=swap">
+<style>
+/* Layout: lab-notebook course — sticky part index on the left, one lesson column (~46rem) on the right; figures sit on light "plates".
+   Course shell v1. Do not edit per course: put course content in the content folder and run build.py. */
+:root {
+  --paper: #f5f7f8; --surface: #ffffff; --ink: #172430; --muted: #5a6872; --line: #d9e1e6;
+  --laser: #c2410c; --laser-soft: #fbe8de; --guide: #0f766e; --guide-soft: #dcefec; --amber: #c27006;
+  --ok: #157f3c; --ok-soft: #ddf5e5; --bad: #b42318; --bad-soft: #fde4e1; --code: #edf1f4; --plate: #ffffff; --plot-grid: #e3e9ed;
+  --ink-inv: #ffffff;
+  --f-display: "Source Serif 4", "Noto Serif KR", Cambria, Georgia, serif;
+  --f-body: "Source Sans 3", "Noto Sans KR", "Segoe UI", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", Consolas, "Cascadia Mono", "Noto Sans KR", "Malgun Gothic", monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e161d; --surface: #151f28; --ink: #e4ebf0; --muted: #98a6b1; --line: #283845;
+    --laser: #f0895c; --laser-soft: #3a2218; --guide: #36b6a8; --guide-soft: #12302c; --amber: #f0a83a;
+    --ok: #4ade80; --ok-soft: #12301f; --bad: #f87171; --bad-soft: #3a1717; --code: #1c2a36; --plate: #eef2f4; --plot-grid: #263542;
+    --ink-inv: #0e161d; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e161d; --surface: #151f28; --ink: #e4ebf0; --muted: #98a6b1; --line: #283845;
+  --laser: #f0895c; --laser-soft: #3a2218; --guide: #36b6a8; --guide-soft: #12302c; --amber: #f0a83a;
+  --ok: #4ade80; --ok-soft: #12301f; --bad: #f87171; --bad-soft: #3a1717; --code: #1c2a36; --plate: #eef2f4; --plot-grid: #263542;
+  --ink-inv: #0e161d; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+/* language switch: elements marked data-l="en" / data-l="ko" show only in their language */
+:root:not([data-lang="ko"]) [data-l="ko"], :root[data-lang="ko"] [data-l="en"] { display: none !important; }
+:root[data-lang="ko"] body { word-break: keep-all; }
+.slot-holder, .lang-seg[hidden] { display: none; }
+.lang-seg { flex: 0 0 auto; }
+.lang-seg button { font-weight: 500; }
+.lang-seg button.on { font-weight: 600; }
+body { background: var(--paper); color: var(--ink); font: 17px/1.62 var(--f-body); }
+a { color: var(--guide); }
+:focus-visible { outline: 2px solid var(--laser); outline-offset: 2px; }
+
+.shell { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 2.5rem; max-width: 76rem; margin: 0 auto; padding-inline: 16px; padding-block: 0 4rem; }
+@media (max-width: 900px) { .shell { grid-template-columns: minmax(0, 1fr); gap: 0; } }
+
+/* index */
+.index { position: sticky; top: env(safe-area-inset-top, 0px); align-self: start; max-height: 100vh; overflow-y: auto; padding-block: 1.6rem; }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 1.25rem; line-height: 1.2; margin: 0 0 .25rem; }
+.brand-sub { font-family: var(--f-mono); font-size: .72rem; color: var(--muted); letter-spacing: .04em; margin: 0 0 1.2rem; }
+.progress { display: grid; gap: .35rem; margin: 0 0 1.2rem; }
+.progress .bar { height: 6px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.progress .bar i { display: block; height: 100%; background: var(--guide); width: 0; transition: width .3s; }
+.progress small { color: var(--muted); font-size: .8rem; }
+.index ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.index button.part-link { all: unset; box-sizing: border-box; display: grid; grid-template-columns: 2.6rem 1fr auto; align-items: baseline; width: 100%; padding: .45rem .6rem; border-radius: 8px; cursor: pointer; font-size: .95rem; color: var(--ink); }
+.index button.part-link:hover { background: var(--code); }
+.index button.part-link[aria-current="true"] { background: var(--ink); color: var(--paper); }
+.index button.part-link .num { font-family: var(--f-mono); font-size: .75rem; color: var(--muted); }
+.index button.part-link[aria-current="true"] .num { color: inherit; opacity: .75; }
+.index .tick { font-size: .8rem; color: var(--ok); font-weight: 700; }
+.index .group { font-family: var(--f-mono); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: .9rem .6rem .3rem; }
+.index-tools { display: flex; gap: .5rem; margin-top: 1.2rem; flex-wrap: wrap; }
+.mobile-index { display: none; }
+@media (max-width: 900px) {
+  .index { display: none; }
+  .mobile-index { display: flex; gap: .5rem; align-items: center; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); padding-block: .6rem; border-bottom: 1px solid var(--line); }
+  .mobile-index select { flex: 1; min-width: 0; padding: .5rem; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: .95rem; }
+}
+
+/* lesson column */
+main { min-width: 0; padding-block: 1.6rem; }
+.part { max-width: 46rem; }
+.part-head { margin-bottom: 1.6rem; }
+.eyebrow { font-family: var(--f-mono); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; color: var(--laser); margin: 0 0 .4rem; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; line-height: 1.2; }
+h1 { font-size: clamp(2rem, 4.5vw, 2.8rem); margin: 0 0 .6rem; font-weight: 700; }
+h2 { font-size: 1.55rem; margin: 2.4rem 0 .7rem; font-weight: 600; }
+h3 { font-size: 1.15rem; margin: 1.6rem 0 .5rem; font-weight: 600; }
+.part-head .lede { font-size: 1.12rem; color: var(--muted); margin: 0; }
+p { margin: 0 0 1rem; }
+ul.tight, ol.tight { margin: 0 0 1rem; padding-left: 1.3rem; }
+ul.tight li, ol.tight li { margin-bottom: .35rem; }
+.mono { font-family: var(--f-mono); }
+code { font-family: var(--f-mono); font-size: .88em; background: var(--code); padding: .05em .35em; border-radius: 4px; }
+
+.display-eq { background: var(--laser-soft); border-radius: 10px; padding: .9rem 1rem; margin: 1rem 0 1.2rem; overflow-x: auto; text-align: center; }
+.display-eq.quiet { background: var(--code); }
+.keyline { border-left: 3px solid var(--guide); padding: .2rem 0 .2rem 1rem; margin: 1.2rem 0; }
+.keyline strong { color: var(--guide); }
+
+figure { margin: 1.4rem 0; }
+figure .plate { background: var(--plate); border-radius: 10px; padding: .8rem; display: flex; justify-content: center; gap: .8rem; flex-wrap: wrap; }
+figure .plate img { max-width: 100%; height: auto; display: block; }
+figure .plate.photo { padding: 0; overflow: hidden; }
+figcaption { font-size: .88rem; color: var(--muted); margin-top: .5rem; }
+.fig-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .8rem; }
+.fig-row figure { margin: 0; }
+
+.tablewrap { overflow-x: auto; margin: 1rem 0; }
+table.data { border-collapse: collapse; width: 100%; font-size: .95rem; }
+table.data th, table.data td { border-bottom: 1px solid var(--line); padding: .45rem .7rem; text-align: right; font-variant-numeric: tabular-nums; }
+table.data th { background: var(--code); font-weight: 600; }
+table.data th:first-child, table.data td:first-child { text-align: left; }
+table.data .l { text-align: left; }
+
+.steps { counter-reset: s; list-style: none; padding: 0; margin: 1rem 0 1.2rem; display: grid; gap: .7rem; }
+.steps li { counter-increment: s; display: grid; grid-template-columns: 2rem 1fr; gap: .7rem; align-items: start; }
+.steps li::before { content: counter(s); display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: var(--laser); color: var(--ink-inv); font-weight: 700; font-size: .9rem; }
+
+.hero-meta { display: flex; flex-wrap: wrap; gap: .5rem 1.4rem; font-family: var(--f-mono); font-size: .8rem; color: var(--muted); margin: 1rem 0 0; }
+.hero-meta b { color: var(--ink); font-weight: 500; }
+
+/* concept check */
+.check { border: 1px solid var(--line); background: var(--surface); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.6rem 0; }
+.check-head { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--guide); margin-bottom: .4rem; }
+.check .stem { font-weight: 600; margin-bottom: .6rem; }
+.check .opts { display: grid; gap: .4rem; }
+.check .opts button { all: unset; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; padding: .5rem .75rem; cursor: pointer; background: var(--paper); }
+.check .opts button:hover { border-color: var(--guide); }
+.check .opts button:focus-visible { outline: 2px solid var(--laser); }
+.check .opts button.right { border-color: var(--ok); background: var(--ok-soft); }
+.check .opts button.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.check .why { margin-top: .6rem; font-size: .93rem; color: var(--muted); }
+
+/* widgets */
+.widget { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; margin: 1.4rem 0; }
+.widget-head { font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--laser); margin-bottom: .6rem; }
+.slider { display: grid; grid-template-columns: 11rem 1fr 4.5rem; gap: .7rem; align-items: center; margin: .35rem 0; }
+.slider input { width: 100%; accent-color: var(--laser); }
+.slider output { font-family: var(--f-mono); font-size: .88rem; text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 560px) { .slider { grid-template-columns: 1fr 4.5rem; } .slider label { grid-column: 1 / -1; } }
+.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; margin-top: .7rem; }
+.readout div { background: var(--code); border-radius: 8px; padding: .55rem .7rem; }
+.readout b { display: block; font-family: var(--f-mono); font-size: 1.15rem; font-variant-numeric: tabular-nums; }
+.readout small { color: var(--muted); font-size: .8rem; }
+.conv { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.conv label { display: grid; gap: .25rem; font-size: .88rem; color: var(--muted); }
+.conv input { padding: .55rem .6rem; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; font-family: var(--f-mono); }
+
+/* exercise panel */
+section.ex { margin: 2rem 0; }
+section.ex .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 1.2rem 1.2rem 1rem; box-shadow: 0 1px 0 var(--line); }
+.ex-tag { display: inline-flex; gap: .5rem; align-items: center; font-family: var(--f-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-inv); background: var(--guide); padding: .2rem .6rem; border-radius: 999px; margin-bottom: .4rem; }
+section.ex h2 { margin: .2rem 0 .4rem; font-size: 1.35rem; }
+section.ex h3 { font-family: var(--f-body); font-size: 1rem; }
+.lead { color: var(--muted); margin: 0 0 .9rem; font-size: .97rem; }
+.eq { background: var(--laser-soft); border-radius: 8px; padding: .6rem .8rem; margin: .6rem 0; text-align: center; overflow-x: auto; }
+.toolbar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .7rem 0; }
+.btn { border: 0; background: var(--laser); color: var(--ink-inv); padding: .5rem .95rem; border-radius: 8px; cursor: pointer; font: inherit; font-size: .93rem; font-weight: 600; }
+.btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+.btn.teal { background: var(--guide); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--ink); padding: .45rem .8rem; cursor: pointer; font: inherit; font-size: .88rem; }
+.seg button.on { background: var(--guide); color: var(--ink-inv); }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
+@media (max-width: 760px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+.q { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .4rem .8rem; align-items: center; padding: .6rem 0; border-top: 1px dashed var(--line); }
+.q:first-of-type { border-top: 0; }
+.q label { font-weight: 500; font-size: .97rem; }
+.q .inp { display: flex; align-items: center; gap: .4rem; }
+.q input { width: 7.5rem; padding: .45rem .6rem; border: 1px solid var(--line); border-radius: 8px; background: var(--paper); color: var(--ink); font: inherit; font-family: var(--f-mono); font-size: .92rem; }
+.q .unit { color: var(--muted); font-size: .85rem; min-width: 4rem; }
+@media (max-width: 560px) { .q { grid-template-columns: minmax(0, 1fr); } .q input { width: 100%; } }
+.fb { grid-column: 1 / -1; font-size: .88rem; border-radius: 8px; }
+.fb.ok { background: var(--ok-soft); color: var(--ok); padding: .35rem .6rem; }
+.fb.bad { background: var(--bad-soft); color: var(--bad); padding: .35rem .6rem; }
+.result { margin-top: .6rem; padding: .6rem .8rem; border-radius: 8px; font-weight: 600; display: none; }
+.result.ok { display: block; background: var(--ok-soft); color: var(--ok); }
+.result.bad { display: block; background: var(--bad-soft); color: var(--bad); }
+details.sol { margin-top: .8rem; border: 1px solid var(--line); border-radius: 10px; padding: 0 .9rem; }
+details.sol summary { cursor: pointer; padding: .6rem 0; font-weight: 600; color: var(--guide); }
+details.sol .body { padding-bottom: .8rem; min-width: 0; }
+.mono-block, section.ex .mono { font-family: var(--f-mono); font-size: .8rem; background: var(--code); border-radius: 8px; padding: .6rem .75rem; overflow-x: auto; white-space: pre; line-height: 1.5; }
+.plot { width: 100%; height: auto; display: block; }
+.plot text { fill: var(--muted); font-size: 14px; font-family: var(--f-body); font-variant-numeric: tabular-nums; }
+.plot text.ttl { fill: var(--ink); font-size: 15px; }
+.plot .axis { stroke: var(--muted); stroke-width: 1; }
+.plot .grid { stroke: var(--plot-grid); stroke-width: 1; }
+.note { font-size: .88rem; color: var(--muted); }
+.pill { display: inline-block; font-size: .75rem; font-weight: 600; padding: .1rem .55rem; border-radius: 999px; background: var(--guide-soft); color: var(--guide); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; margin-top: .6rem; }
+.stat { background: var(--code); border-radius: 8px; padding: .55rem .7rem; }
+.stat .v { font-family: var(--f-mono); font-size: 1.05rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.stat .k { font-size: .8rem; color: var(--muted); }
+.legend { display: flex; flex-wrap: wrap; gap: .9rem; font-size: .82rem; color: var(--muted); margin-top: .3rem; }
+.legend i { display: inline-block; width: 18px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+.legend i.dot { width: 9px; height: 9px; border-radius: 50%; }
+.csv-fallback { width: 100%; min-height: 6rem; font-family: var(--f-mono); font-size: .8rem; margin-top: .4rem; background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; }
+
+/* part footer */
+.part-foot { display: flex; justify-content: space-between; gap: .8rem; flex-wrap: wrap; border-top: 1px solid var(--line); margin-top: 2.6rem; padding-top: 1.2rem; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+/* PIC course additions to template.html */
+/* setup diagram */
+.setup { display: grid; grid-template-columns: auto 1fr auto 1fr auto; align-items: center; gap: 0; margin: 1.2rem 0; }
+.setup .blk { background: var(--ink); color: var(--paper); border-radius: 8px; padding: .6rem .8rem; text-align: center; font-weight: 600; font-size: .92rem; }
+.setup .blk small { display: block; font-weight: 400; opacity: .8; font-size: .75rem; }
+.setup .blk.dut { background: var(--laser); color: var(--ink-inv); }
+.setup .fib { height: 4px; background: var(--amber); position: relative; }
+.setup .fib span { position: absolute; top: .4rem; left: 0; right: 0; text-align: center; font-size: .72rem; color: var(--amber); font-weight: 600; }
+@media (max-width: 560px) { .setup { grid-template-columns: 1fr; } .setup .fib { height: 1.4rem; width: 4px; justify-self: center; } .setup .fib span { left: .8rem; top: .1rem; text-align: left; white-space: nowrap; } }
+.budget { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px; margin: 1.2rem 0 .4rem; }
+.budget div { border-radius: 6px; padding: .55rem .3rem; text-align: center; background: var(--laser-soft); }
+.budget div.end { background: var(--ink); color: var(--paper); }
+.budget b { display: block; font-family: var(--f-mono); font-size: .95rem; }
+.budget small { font-size: .7rem; line-height: 1.2; display: block; }
+@media (max-width: 560px) { .budget { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+/* setup flow diagram (embed: setup-flow) */
+.flow { margin: 1.4rem 0; display: grid; gap: 1.1rem; overflow-x: auto; padding-bottom: .3rem; }
+.flow-title { display: flex; align-items: baseline; gap: .55rem; font-weight: 600; font-size: .95rem; margin-bottom: .45rem; }
+.flow-title b { display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--laser); color: var(--ink-inv); font-size: .8rem; }
+.flow-title em { font-style: normal; font-family: var(--f-mono); font-size: .8rem; color: var(--guide); margin-left: .2rem; }
+.flow-chain { display: flex; align-items: center; min-width: max-content; }
+.flow .node { background: var(--ink); color: var(--paper); border-radius: 8px; padding: .4rem .55rem; text-align: center; font-size: .8rem; font-weight: 600; line-height: 1.25; white-space: nowrap; }
+.flow .node small { display: block; font-weight: 400; font-size: .7rem; opacity: .75; }
+.flow .node.pc { background: var(--guide); color: var(--ink-inv); }
+.flow .node.dut { background: var(--laser); color: var(--ink-inv); }
+.flow .node.soft { background: var(--code); color: var(--ink); border: 1px solid var(--line); }
+.flow .link { position: relative; flex: 0 0 1.7rem; height: 4px; }
+.flow .link span { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font-family: var(--f-mono); font-size: .62rem; }
+.flow .link.fiber { background: var(--amber); }
+.flow .link.fiber span { color: var(--amber); }
+.flow .link.oil { background: var(--laser); }
+.flow .link.oil span { color: var(--laser); }
+.flow .link.free { height: 0; border-top: 2px dashed var(--laser); }
+.flow .link.free::after { content: ""; position: absolute; right: -1px; top: -6px; border: 5px solid transparent; border-left: 7px solid var(--laser); }
+.flow-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.2rem; font-size: .8rem; color: var(--muted); min-width: 0; }
+.flow-legend i { display: inline-block; width: 1.4rem; height: 4px; vertical-align: middle; margin-right: .4rem; }
+.flow-legend i.fiber { background: var(--amber); }
+.flow-legend i.oil { background: var(--laser); }
+.flow-legend i.free { height: 0; border-top: 2px dashed var(--laser); }
+/* fiber–chip alignment cases (embed: alignment-cases) */
+.align-cases { display: grid; gap: 1.4rem; margin: 1.4rem 0; }
+.align-case { margin: 0; }
+.align-pair { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: .6rem; }
+.xs, .cam { position: relative; aspect-ratio: 3 / 2; border-radius: 8px; overflow: hidden; max-width: 100%; }
+.xs { display: grid; grid-template-rows: 32fr 38fr 30fr; font-family: var(--f-mono); font-size: .72rem; border: 1px solid var(--line); }
+.xs > div > span { position: absolute; right: .5rem; margin-top: .3rem; }
+.xs-lid { background: #d6f0d8; color: #1b3a22; position: relative; }
+.xs-wg { background: #dbe8f3; color: #1b2a3a; position: relative; border-top: 1px solid #1b2a3a33; border-bottom: 1px solid #1b2a3a33; }
+.xs-sub { background: #2f5d73; color: #e8f1f6; position: relative; }
+.xs-core { position: absolute; left: 50%; top: 51%; width: 8%; aspect-ratio: 1; transform: translate(-50%, -50%); background: #1c8fb8; border: 1px solid #1b2a3a; }
+.xs .xs-core span { position: absolute; right: auto; margin: 0; left: 115%; top: 50%; transform: translateY(-50%); color: #1b2a3a; }
+.xs-fiber { position: absolute; left: var(--x); top: var(--y); width: 17%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: rgba(250, 217, 77, .55); border: 2px solid #c27006; }
+.xs-fiber::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1; border-radius: 50%; background: #c2410c; transform: translate(-50%, -50%); }
+.xs.good .xs-fiber { box-shadow: 0 0 0 3px rgba(21, 127, 60, .55); }
+.cam { background: #000; }
+.cam img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1); }
+.cam > span { position: absolute; left: .5rem; top: .4rem; font-family: var(--f-mono); font-size: .68rem; color: #fff; opacity: .8; }
+.align-case figcaption { margin-top: .5rem; font-size: .92rem; color: var(--ink); }
+.align-case figcaption b { margin-right: .2rem; }
+@media (max-width: 480px) { .align-pair { grid-template-columns: minmax(0, 1fr); } }
+.xs.good .xs-core span { display: none; }
+
+</style>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+  svg: { fontCache: "global" },
+  options: { enableMenu: false }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg-full.js" defer></script>
+
+<div class="shell">
+  <aside class="index" aria-label="Course contents">
+    <p class="brand">PIC Loss Evaluation</p>
+    <p class="brand-sub">ONLINE COURSE · λ = 1550 nm</p>
+    <div class="seg lang-seg" role="group" aria-label="Language" hidden style="margin:0 0 1rem"><button type="button" data-setlang="en" lang="en">English</button><button type="button" data-setlang="ko" lang="ko">한국어</button></div>
+    <div class="progress"><div class="bar"><i id="progBar"></i></div><small id="progText"></small></div>
+    <nav><ol id="partList"></ol></nav>
+    <div class="index-tools"><button class="btn secondary" id="themeBtn" type="button"><span data-l="en">Light / dark</span><span data-l="ko">라이트 / 다크</span></button><button class="btn secondary" id="resetBtn" type="button"></button></div>
+  </aside>
+
+  <main id="main">
+    <div class="mobile-index"><label for="partSelect" class="note">Part</label><select id="partSelect"></select><div class="seg lang-seg" role="group" aria-label="Language" hidden><button type="button" data-setlang="en" lang="en">EN</button><button type="button" data-setlang="ko" lang="ko">한국어</button></div><button class="btn secondary" id="themeBtn2" type="button" aria-label="Toggle light or dark theme">◐</button></div>
+
+<article class="part" id="part-1" data-title="Introduction" data-group="Getting started" data-title-ko="Introduction" data-group-ko="시작하기">
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 1 · Introduction</p>
+  <h1>How much light does a chip lose, and where?</h1>
+  <p class="lede">This course shows how to measure the loss of a fabricated photonic integrated circuit (PIC) and how to split one measured number into its physical parts: coupling loss, propagation loss and S-bend loss. Each extraction step is paired with the linear algebra it needs.</p>
+</header>
+<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>7</strong> exercises</span><span><strong>≈ 3 h</strong> of study</span><span>prerequisites: logarithms, waveguide modes, basic matrices</span></div>
+<figure><div class="plate photo"><img src="img/ref_pic_photo.jpg" alt="Packaged photonic integrated circuit on a printed circuit board, with a fiber array coupled to the chip edge and red laser light visible" width="495" height="400"></div><figcaption>A packaged PIC with an edge-coupled fiber array. The red light marks where the laser enters the chip.</figcaption></figure>
+<p>Light enters the chip from a fiber, travels through straight waveguides, bends and devices, and leaves through a second fiber. Every interface and every millimetre of waveguide consumes some optical power. Before a chip can be used in a system, we need to know how much power it loses and which part of the chip is responsible.</p>
+<h2>The loss budget</h2>
+<p>A link has a fixed amount of power to spend: the laser provides it, and the detector needs a minimum amount. Everything in between draws on the difference.</p>
+<div class="budget" role="img" aria-label="Loss budget"><div class="end"><b>+10 dBm</b><small>Laser</small></div><div><b>−3 dB</b><small>Input coupling</small></div><div><b>−2 dB</b><small>Waveguides</small></div><div><b>−4 dB</b><small>Bends &amp; devices</small></div><div><b>−3 dB</b><small>Output coupling</small></div><div class="end"><b>−2 dBm</b><small>Detector</small></div></div>
+<p>Illustrative numbers: 10 dBm − 3 − 2 − 4 − 3 dB = −2 dBm arrives at the detector.</p>
+<ul class="tight">
+<li><strong>Fabrication feedback:</strong> propagation loss (dB/cm) reveals sidewall roughness, absorption and leakage of the process.</li>
+<li><strong>Design feedback:</strong> coupling and bend losses tell the designer whether tapers, radii and offsets work as intended.</li>
+</ul>
+<h2>How this course works</h2>
+<p>Read each part in order. Short <em>concept checks</em> test the idea you just read. <em>Exercises</em> generate a new random problem every time and grade your answer; a worked solution opens after you try. A part is marked complete when you move on to a later part; your progress is kept in this browser.</p>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Exercise</th>
+<th style="text-align: left;">Topic</th>
+<th>Found in</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exercise 1</td>
+<td style="text-align: left;">dB / dBm warm-up</td>
+<td>Part 2</td>
+</tr>
+<tr>
+<td>Exercise 2</td>
+<td style="text-align: left;">Insertion loss from meter readings</td>
+<td>Part 4</td>
+</tr>
+<tr>
+<td>Exercise 3</td>
+<td style="text-align: left;">Cut-back without measurement error</td>
+<td>Part 5</td>
+</tr>
+<tr>
+<td>Exercise 4</td>
+<td style="text-align: left;">Cut-back with measurement error</td>
+<td>Part 6</td>
+</tr>
+<tr>
+<td>Exercise 5</td>
+<td style="text-align: left;">Least squares playground (not graded)</td>
+<td>Part 6</td>
+</tr>
+<tr>
+<td>Exercise 6</td>
+<td style="text-align: left;">S-bend loss from one angle</td>
+<td>Part 8</td>
+</tr>
+<tr>
+<td>Exercise 7</td>
+<td style="text-align: left;">S-bend components from 10°/20°/30°</td>
+<td>Part 9</td>
+</tr>
+</tbody>
+</table></div>
+<div class="check" data-quiz="1"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 1 · Introduction</p>
+  <h1>Chip에서 빛이 얼마나, 어디서 손실되는가?</h1>
+  <p class="lede">이 강의에서는 제작한 photonic integrated circuit (PIC)의 loss를 측정하는 방법과, 측정한 값 하나를 물리적 성분(coupling loss, propagation loss, S-bend loss)으로 나누는 방법을 배웁니다. 각 추출 단계에는 필요한 선형대수를 함께 다룹니다.</p>
+</header>
+<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>7</strong> exercises</span><span><strong>약 3시간</strong> 학습</span><span>선수 지식: 로그, waveguide mode, 기초 행렬</span></div>
+<figure><div class="plate photo"><img src="img/ref_pic_photo.jpg" alt="Packaged photonic integrated circuit on a printed circuit board, with a fiber array coupled to the chip edge and red laser light visible" width="495" height="400"></div><figcaption>fiber array가 edge coupling된 packaged PIC. 빨간 빛이 laser가 chip으로 들어가는 위치입니다.</figcaption></figure>
+<p>빛은 fiber에서 chip으로 들어와 straight waveguide, bend, 각종 소자를 지나 두 번째 fiber로 나갑니다. 모든 interface와 waveguide 1 mm마다 optical power가 조금씩 줄어듭니다. chip을 시스템에 쓰기 전에 power가 얼마나 줄어드는지, 그리고 chip의 어느 부분이 원인인지 알아야 합니다.</p>
+<h2>Loss budget</h2>
+<p>링크에는 쓸 수 있는 power가 정해져 있습니다. laser가 power를 공급하고 detector는 최소한의 power가 필요합니다. 그 사이의 모든 요소가 이 차이를 나눠 씁니다.</p>
+<div class="budget" role="img" aria-label="Loss budget"><div class="end"><b>+10 dBm</b><small>Laser</small></div><div><b>−3 dB</b><small>Input coupling</small></div><div><b>−2 dB</b><small>Waveguides</small></div><div><b>−4 dB</b><small>Bends &amp; devices</small></div><div><b>−3 dB</b><small>Output coupling</small></div><div class="end"><b>−2 dBm</b><small>Detector</small></div></div>
+<p>예시 값: 10 dBm − 3 − 2 − 4 − 3 dB = −2 dBm이 detector에 도달합니다.</p>
+<ul class="tight">
+<li><strong>공정 피드백:</strong> propagation loss (dB/cm)는 공정의 sidewall roughness, absorption, leakage를 보여 줍니다.</li>
+<li><strong>설계 피드백:</strong> coupling loss와 bend loss는 taper, radius, offset 설계가 의도대로 동작하는지 알려 줍니다.</li>
+</ul>
+<h2>이 강의를 공부하는 방법</h2>
+<p>각 Part를 순서대로 읽으세요. 짧은 <em>개념 확인</em>으로 방금 읽은 내용을 점검합니다. <em>Exercise</em>는 매번 새로운 랜덤 문제를 만들고 답을 채점하며, 풀어 본 뒤 worked solution을 열 수 있습니다. 다음 Part로 넘어가면 지금 Part가 완료로 표시되고, 진도는 이 브라우저에 저장됩니다.</p>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Exercise</th>
+<th style="text-align: left;">주제</th>
+<th>위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exercise 1</td>
+<td style="text-align: left;">dB / dBm 기초 연습</td>
+<td>Part 2</td>
+</tr>
+<tr>
+<td>Exercise 2</td>
+<td style="text-align: left;">측정값으로부터 insertion loss 구하기</td>
+<td>Part 4</td>
+</tr>
+<tr>
+<td>Exercise 3</td>
+<td style="text-align: left;">측정 오차가 없는 cut-back</td>
+<td>Part 5</td>
+</tr>
+<tr>
+<td>Exercise 4</td>
+<td style="text-align: left;">측정 오차가 있는 cut-back</td>
+<td>Part 6</td>
+</tr>
+<tr>
+<td>Exercise 5</td>
+<td style="text-align: left;">Least squares 체험 (채점 없음)</td>
+<td>Part 6</td>
+</tr>
+<tr>
+<td>Exercise 6</td>
+<td style="text-align: left;">한 각도로 S-bend loss 구하기</td>
+<td>Part 8</td>
+</tr>
+<tr>
+<td>Exercise 7</td>
+<td style="text-align: left;">10°/20°/30°로 S-bend loss 성분 분리</td>
+<td>Part 9</td>
+</tr>
+</tbody>
+</table></div>
+<div class="check" data-quiz="ko1"></div>
+</div>
+</article>
+
+<article class="part" id="part-2" data-title="dB scale" data-group="Measurement" data-title-ko="dB scale" data-group-ko="측정" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 2 · Optical power and the decibel scale</p>
+  <h1>Why loss is written in dB, not mW</h1>
+  <p class="lede">Every number in a loss measurement is a power reading or a ratio of two readings. The decibel scale is the language for both.</p>
+</header>
+<p>The instrument at the end of every setup in this course is an optical <strong>power meter</strong>: an InGaAs photodiode that converts light at 1550 nm into a current and displays the power in mW or directly in dBm. dB is a ratio; dBm is an absolute power referenced to 1 mW.</p>
+<div class="display-eq">\[\text{Loss [dB]} = 10\log_{10}\frac{P_\text{in}}{P_\text{out}} \qquad P\,[\text{dBm}] = 10\log_{10}\frac{P}{1\ \text{mW}}\]</div>
+<div data-slot="embed:dbm-converter"></div>
+<h2>Reason 1: cascaded losses add</h2>
+<p>Light passes through elements in series: connectors, fiber, chip facets, waveguides. In linear units the transmissions multiply; in dB the losses add.</p>
+<div class="grid2"><div><div class="display-eq quiet">\[1\,\text{mW}\times0.8\times0.5\times0.9 = 0.36\,\text{mW}\]</div></div><div><div class="display-eq">\[0.97+3.01+0.46 = 4.44\ \text{dB} \;\Rightarrow\; -4.44\ \text{dBm}\]</div></div></div>
+<p>Both give the same answer, but the dB version needs only additions. A loss budget with ten elements stays a simple column of numbers.</p>
+<h2>Reason 2: exponential decay becomes a straight line</h2>
+<p>Propagation loss is exponential: \(P(L) = P_0 e^{-\alpha L}\). In mW the curve bends. In dBm the same data is a straight line whose slope is the loss in dB/cm. This is why cut-back (Part 5) is a straight-line fit.</p>
+<div class="grid2"><div><figure><div data-slot="chart:decayLin"></div><figcaption>Linear scale (mW). 1 mW launched, α = 3 dB/cm.</figcaption></figure></div><div><figure><div data-slot="chart:decayLog"></div><figcaption>Log scale (dBm): slope = −α.</figcaption></figure></div></div>
+<h2>Reason 3: wide dynamic range</h2>
+<p>Powers from 1 nW to 10 mW span seven orders of magnitude, but only −60 to +10 dBm. Very small quantities stay readable too. A connector with a <strong>return loss</strong> of 60 dB reflects \(10^{-6}\) of the power back toward the laser; 15 dB means 3 % is reflected. Part 3 uses both numbers.</p>
+<ul class="tight">
+<li>3 dB ≈ half the power; 10 dB = one tenth.</li>
+<li>dBm − dBm = dB (a loss). dBm ± dB = dBm (a power).</li>
+<li>Never add two dBm values. Two 1 mW signals combined give 2 mW = +3.0 dBm, not 0 dBm.</li>
+</ul>
+<div data-slot="exercise:1"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 2 · Optical power와 decibel scale</p>
+  <h1>loss를 mW가 아니라 dB로 쓰는 이유</h1>
+  <p class="lede">loss 측정의 모든 숫자는 power 측정값이거나 두 측정값의 비율입니다. decibel scale은 이 둘을 표현하는 공통 언어입니다.</p>
+</header>
+<p>이 강의의 모든 setup 끝에는 optical <strong>power meter</strong>가 있습니다. 1550 nm 빛을 전류로 바꾸는 InGaAs photodiode이며, power를 mW 또는 dBm으로 바로 보여 줍니다. dB는 비율이고, dBm은 1 mW를 기준으로 한 절대 power입니다.</p>
+<div class="display-eq">\[\text{Loss [dB]} = 10\log_{10}\frac{P_\text{in}}{P_\text{out}} \qquad P\,[\text{dBm}] = 10\log_{10}\frac{P}{1\ \text{mW}}\]</div>
+<div data-slot="embed:dbm-converter"></div>
+<h2>이유 1: 직렬로 연결된 loss는 더하면 된다</h2>
+<p>빛은 connector, fiber, chip facet, waveguide를 차례로 지납니다. 선형 단위에서는 transmission을 곱하고 dB에서는 loss를 더합니다.</p>
+<div class="grid2"><div><div class="display-eq quiet">\[1\,\text{mW}\times0.8\times0.5\times0.9 = 0.36\,\text{mW}\]</div></div><div><div class="display-eq">\[0.97+3.01+0.46 = 4.44\ \text{dB} \;\Rightarrow\; -4.44\ \text{dBm}\]</div></div></div>
+<p>두 방법의 답은 같지만 dB 쪽은 덧셈만 하면 됩니다. 요소가 열 개인 loss budget도 숫자 한 줄로 정리됩니다.</p>
+<h2>이유 2: 지수 감쇠가 직선이 된다</h2>
+<p>propagation loss는 지수적입니다: \(P(L) = P_0 e^{-\alpha L}\). mW로 그리면 곡선이지만, dBm으로 그리면 같은 데이터가 직선이 되고 그 slope가 dB/cm 단위의 loss입니다. 그래서 cut-back (Part 5)이 직선 fit 문제가 됩니다.</p>
+<div class="grid2"><div><figure><div data-slot="chart:decayLin"></div><figcaption>선형 scale (mW). 1 mW 입사, α = 3 dB/cm.</figcaption></figure></div><div><figure><div data-slot="chart:decayLog"></div><figcaption>로그 scale (dBm): slope = −α.</figcaption></figure></div></div>
+<h2>이유 3: 넓은 dynamic range</h2>
+<p>1 nW에서 10 mW까지는 일곱 자릿수 차이지만 dBm으로는 −60에서 +10까지입니다. 아주 작은 양도 읽기 쉽습니다. <strong>return loss</strong>가 60 dB인 connector는 power의 \(10^{-6}\)만 laser 쪽으로 반사하고, 15 dB면 3 %를 반사합니다. Part 3에서 두 숫자를 모두 사용합니다.</p>
+<ul class="tight">
+<li>3 dB ≈ power 절반, 10 dB = 1/10.</li>
+<li>dBm − dBm = dB (loss). dBm ± dB = dBm (power).</li>
+<li>dBm 두 값을 더하면 안 됩니다. 1 mW 신호 두 개를 합치면 2 mW = +3.0 dBm이지 0 dBm이 아닙니다.</li>
+</ul>
+<div data-slot="exercise:1"></div>
+</div>
+</article>
+
+<article class="part" id="part-3" data-title="Setup &amp; alignment" data-group="Measurement" data-title-ko="Setup &amp; 정렬" data-group-ko="측정" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 3 · Optical setup and fiber–chip alignment</p>
+  <h1>From the laser to a guided mode in the chip</h1>
+  <p class="lede">Light from a DFB laser travels through fiber, connectors and a polarization controller into a fiber block that is butt-coupled to the chip. This part builds that path and aligns it.</p>
+</header>
+<h2>Three setups, one measurement</h2>
+<p>A loss measurement uses three configurations of the same bench, one after the other:</p>
+<ul class="tight">
+<li><strong>A. Alignment and polarization:</strong> couple the input fiber block to the waveguide while watching the chip's output facet with an IR camera, and set the input polarization (Part 4).</li>
+<li><strong>B. DUT measurement:</strong> replace the lens and camera with an output fiber block and read the transmitted power \(P_\text{DUT}\).</li>
+<li><strong>C. Reference measurement:</strong> remove the chip, face the two fiber blocks to each other and read \(P_\text{ref}\).</li>
+</ul>
+<div data-slot="embed:setup-flow"></div>
+<h2>Light source, adapter and polarization controller</h2>
+<figure><div class="plate"><img src="img/setup-light_input.webp" alt="DFB laser, fiber adapter and polarization controller on the optical table" width="800" height="304"></div><figcaption>DFB laser, adapter and polarization controller (PC).</figcaption></figure>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Component</th>
+<th style="text-align: left;">Role and practical notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DFB laser</td>
+<td style="text-align: left;">Single-longitudinal-mode, narrow-linewidth source at 1550 nm. The reference and DUT readings are taken minutes apart and subtracted, so the power must be stable: let the laser warm up.</td>
+</tr>
+<tr>
+<td>Adapter</td>
+<td style="text-align: left;">Joins two FC connectors face to face.</td>
+</tr>
+<tr>
+<td>Polarization controller (PC)</td>
+<td style="text-align: left;">Sets the polarization of the light in the fiber (Part 4).</td>
+</tr>
+<tr>
+<td>Fiber block</td>
+<td style="text-align: left;">Input and output coupling to the chip facets (below).</td>
+</tr>
+<tr>
+<td>Power meter</td>
+<td style="text-align: left;">InGaAs photodiode; reads mW or dBm. Use the same wavelength setting, range and averaging for every reading.</td>
+</tr>
+</tbody>
+</table></div>
+<p>A DFB laser is sensitive to <strong>back reflection</strong>. Light returning into its cavity (optical feedback) causes mode hopping and power fluctuations, so the readings drift. The connector type and the matching gel below both exist to keep reflections small.</p>
+<h3>FC connectors: PC/UPC vs. APC</h3>
+<figure><div class="plate photo"><img src="img/fiber-connector-APC-PC.jpg" alt="Flat PC/UPC connector reflects light straight back; 8-degree APC connector sends the reflection out of the core" width="403" height="269"></div><figcaption>PC (UPC) vs. APC. The 8° angled end face of an APC connector sends the reflection out of the core.</figcaption></figure>
+<ul class="tight">
+<li><strong>PC and UPC</strong> connectors have a flat (slightly domed) polished fiber end. <strong>APC</strong> (angled physical contact) connectors are polished at an angle, typically <strong>8°</strong>.</li>
+<li>Two mating fibers are never perfectly aligned, and the polished end faces reflect some light backward. With a PC connector this light goes straight back into the source. With an APC connector the angle sends it into the cladding, where the fiber jacket absorbs it; it does not return to the source.</li>
+</ul>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th></th>
+<th style="text-align: left;">PC / UPC</th>
+<th style="text-align: left;">APC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>End face</td>
+<td style="text-align: left;">flat (slightly domed)</td>
+<td style="text-align: left;">8° angle</td>
+</tr>
+<tr>
+<td>Typical return loss</td>
+<td style="text-align: left;">PC ≈ 40 dB, UPC ≈ 50 dB</td>
+<td style="text-align: left;">≥ 60 dB</td>
+</tr>
+<tr>
+<td>Usual boot colour</td>
+<td style="text-align: left;">blue</td>
+<td style="text-align: left;">green</td>
+</tr>
+</tbody>
+</table></div>
+<p class="keyline"><strong>Never mix them.</strong> Mating an APC connector with a PC connector leaves an air gap between the cores: several dB of loss, strong reflection, and possible damage to the end faces. Connect APC to APC and PC to PC only.</p>
+<h3>Fresnel reflection and index-matching gel</h3>
+<figure><div class="plate"><img src="img/setup-matching_gel.webp" alt="Applying index-matching gel to an FC connector end face before inserting it into the adapter" width="800" height="1066"></div><figcaption>Index-matching gel applied to an FC connector before it goes into the adapter.</figcaption></figure>
+<p>Even in an adapter a thin air gap can remain between the two end faces. At every boundary between two refractive indices part of the light is reflected: <strong>Fresnel reflection</strong>. At normal incidence</p>
+<div class="display-eq">\[R = \left(\frac{n_1 - n_2}{n_1 + n_2}\right)^2, \qquad \text{transmission loss} = -10\log_{10}(1 - R)\ \text{dB}\]</div>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Interface</th>
+<th>\(n_1\) / \(n_2\)</th>
+<th>\(R\)</th>
+<th>Return loss</th>
+<th>Transmission loss per surface</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>silica fiber – air</td>
+<td>1.45 / 1.00</td>
+<td>3.4 %</td>
+<td>14.7 dB</td>
+<td>0.15 dB</td>
+</tr>
+<tr>
+<td>silicon – air</td>
+<td>3.48 / 1.00</td>
+<td>30.6 %</td>
+<td>5.1 dB</td>
+<td>1.6 dB</td>
+</tr>
+<tr>
+<td>silica – matching gel</td>
+<td>1.45 / ≈ 1.45</td>
+<td>≈ 0</td>
+<td>very large</td>
+<td>≈ 0 dB</td>
+</tr>
+</tbody>
+</table></div>
+<p>An air gap has two such surfaces, so about 0.3 dB is lost and the reflected light heads back to the laser. Light bouncing between the two surfaces also forms a small Fabry–Perot cavity, so the transmitted power <strong>ripples</strong> with wavelength and gap distance. <strong>Index-matching gel</strong> with the same index as the fiber fills the gap and makes the boundaries optically disappear.</p>
+<figure><div class="plate"><img src="img/fresnel-gap.png" alt="Air gap with two Fresnel reflections versus index-matching gel with no reflection" width="1900" height="636"></div><figcaption>An air gap gives two Fresnel reflections; matching gel removes them.</figcaption></figure>
+<p>For the same reason <strong>index-matching oil</strong> is used between the fiber block and the chip facet. It also reduces the facet part of the coupling loss studied in Part 5.</p>
+<h2>Fiber block and PIC device</h2>
+<figure><div class="plate"><img src="img/setup-align_fiber.webp" alt="Input fiber block, PIC device and lens on their alignment stages" width="800" height="572"></div><figcaption>Setup A: input fiber block, PIC device and imaging lens.</figcaption></figure>
+<div class="fig-row"><figure><div class="plate"><img src="img/fiber-block.webp" alt="A fiber block: a ribbon of fibers fixed in a glass V-groove block" width="800" height="450"></div></figure><figure><div class="plate"><img src="img/fiber-block-facet.webp" alt="End face of a fiber block: optical fibers sitting in V-grooves, cores visible" width="1375" height="1032"></div><figcaption>End face of a fiber block: each fiber sits in a V-groove; the bright dot is the core.</figcaption></figure></div>
+<p>A <strong>fiber block</strong> (fiber array) is a glass plate with precisely etched V-grooves, typically at 127 µm or 250 µm pitch. Single-mode fibers are fixed in the grooves and the end face is polished.</p>
+<ul class="tight">
+<li>The fiber positions are fixed, so alignment is more stable and repeatable than with a bare fiber.</li>
+<li>Several channels can be aligned at once.</li>
+<li>The wide flat end face is easy to set parallel to the chip facet and holds the matching oil.</li>
+</ul>
+<p>The fiber blocks sit on multi-axis stages (x, y, z and tilt); the chip sits on the stage in the middle.</p>
+<h2>Aligning the fiber block to the waveguide</h2>
+<figure><div class="plate"><img src="img/setup-alignment.webp" alt="Microscope view of the input fiber next to the chip facet with red light marking the target waveguide" width="800" height="456"></div><figcaption>Coarse alignment with red light: the input fiber is moved to the target waveguide.</figcaption></figure>
+<ol class="steps">
+<li><div><strong>Apply matching oil</strong> between the fiber block and the chip input facet.</div></li>
+<li><div><strong>Coarse alignment with red light.</strong> 1550 nm light is invisible and the cores are only micrometres wide. Launch visible <strong>red light</strong> into the fiber and, under the microscope, move the glowing fiber core onto the target waveguide.</div></li>
+<li><div><strong>Image the output facet.</strong> Switch back to the 1550 nm DFB laser. A <strong>lens</strong> images the chip's output facet onto an <strong>IR camera</strong>.</div></li>
+<li><div><strong>Maximize the guided mode.</strong> When the fiber is on the core, the camera shows the waveguide mode as a bright spot. Step x, y and z until the spot is brightest. Move slowly in z so the fiber block never touches the chip.</div></li>
+</ol>
+<p>The camera image tells you where the fiber is:</p>
+<div data-slot="embed:alignment-cases"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 3 · 광학 setup과 fiber–chip 정렬</p>
+  <h1>Laser에서 chip 안의 guided mode까지</h1>
+  <p class="lede">DFB laser의 빛은 fiber, connector, polarization controller를 지나 chip에 butt coupling된 fiber block으로 들어갑니다. 이 Part에서는 그 경로를 구성하고 정렬합니다.</p>
+</header>
+<h2>측정 하나, setup 세 가지</h2>
+<p>loss 측정은 같은 bench를 세 가지 구성으로 차례로 사용합니다.</p>
+<ul class="tight">
+<li><strong>A. 정렬·편광 조정:</strong> IR camera로 chip의 output facet을 보면서 input fiber block을 waveguide에 coupling하고, 입력 편광을 맞춥니다 (Part 4).</li>
+<li><strong>B. DUT 측정:</strong> lens와 camera 대신 output fiber block을 붙여 통과 power \(P_\text{DUT}\)를 읽습니다.</li>
+<li><strong>C. Reference 측정:</strong> chip을 빼고 fiber block 두 개를 마주 보게 맞대어 \(P_\text{ref}\)를 읽습니다.</li>
+</ul>
+<div data-slot="embed:setup-flow"></div>
+<h2>광원, adapter, polarization controller</h2>
+<figure><div class="plate"><img src="img/setup-light_input.webp" alt="DFB laser, fiber adapter and polarization controller on the optical table" width="800" height="304"></div><figcaption>DFB laser, adapter, polarization controller (PC).</figcaption></figure>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>구성 요소</th>
+<th style="text-align: left;">역할과 실무 참고 사항</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DFB laser</td>
+<td style="text-align: left;">1550 nm single-longitudinal-mode, narrow-linewidth 광원. reference와 DUT 측정을 몇 분 간격으로 하고 빼기 때문에 power가 안정해야 합니다. 충분히 warm-up 하세요.</td>
+</tr>
+<tr>
+<td>Adapter</td>
+<td style="text-align: left;">FC connector 두 개를 마주 보게 연결합니다.</td>
+</tr>
+<tr>
+<td>Polarization controller (PC)</td>
+<td style="text-align: left;">fiber 안 빛의 편광을 맞춥니다 (Part 4).</td>
+</tr>
+<tr>
+<td>Fiber block</td>
+<td style="text-align: left;">chip facet에 빛을 넣고 받는 부품 (아래 설명).</td>
+</tr>
+<tr>
+<td>Power meter</td>
+<td style="text-align: left;">InGaAs photodiode로 mW 또는 dBm을 읽습니다. 모든 측정에서 같은 파장 설정, range, averaging을 쓰세요.</td>
+</tr>
+</tbody>
+</table></div>
+<p>DFB laser는 <strong>back reflection</strong>에 민감합니다. 빛이 laser cavity로 되돌아오면 (optical feedback) mode hopping과 power 흔들림이 생겨 측정값이 drift합니다. 아래의 connector 종류와 matching gel은 모두 반사를 작게 유지하기 위한 것입니다.</p>
+<h3>FC connector: PC/UPC와 APC</h3>
+<figure><div class="plate photo"><img src="img/fiber-connector-APC-PC.jpg" alt="Flat PC/UPC connector reflects light straight back; 8-degree APC connector sends the reflection out of the core" width="403" height="269"></div><figcaption>PC(UPC)와 APC. APC는 단면이 8° 기울어져 있어 반사광이 core 밖으로 빠집니다.</figcaption></figure>
+<ul class="tight">
+<li><strong>PC, UPC</strong>는 fiber 단면을 평평하게(약간 볼록하게) 연마한 connector이고, <strong>APC</strong> (angled physical contact)는 보통 <strong>8°</strong> 기울여 연마한 connector입니다.</li>
+<li>두 fiber를 연결하면 정렬이 아주 조금 어긋나고, 연마된 단면에서 빛 일부가 반대 방향으로 반사됩니다. PC connector에서는 이 빛이 그대로 광원으로 돌아갑니다. APC connector에서는 기울어진 단면 때문에 반사광이 cladding 쪽으로 꺾여 fiber jacket에서 흡수되므로 광원으로 돌아가지 않습니다.</li>
+</ul>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th></th>
+<th style="text-align: left;">PC / UPC</th>
+<th style="text-align: left;">APC</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>단면</td>
+<td style="text-align: left;">평면 (약간 볼록)</td>
+<td style="text-align: left;">8° 경사</td>
+</tr>
+<tr>
+<td>대표 return loss</td>
+<td style="text-align: left;">PC ≈ 40 dB, UPC ≈ 50 dB</td>
+<td style="text-align: left;">≥ 60 dB</td>
+</tr>
+<tr>
+<td>보통의 boot 색</td>
+<td style="text-align: left;">파란색</td>
+<td style="text-align: left;">초록색</td>
+</tr>
+</tbody>
+</table></div>
+<p class="keyline"><strong>혼용 금지.</strong> APC와 PC를 연결하면 core끼리 맞닿지 않고 air gap이 생깁니다. 수 dB 이상의 loss와 큰 반사가 생기고 단면이 손상될 수 있습니다. 반드시 APC–APC, PC–PC로만 연결하세요.</p>
+<h3>Fresnel reflection과 index-matching gel</h3>
+<figure><div class="plate"><img src="img/setup-matching_gel.webp" alt="Applying index-matching gel to an FC connector end face before inserting it into the adapter" width="800" height="1066"></div><figcaption>adapter에 연결하기 전 FC connector 단면에 index-matching gel을 바르는 모습.</figcaption></figure>
+<p>adapter로 연결해도 두 단면 사이에 얇은 air gap이 남을 수 있습니다. 굴절률이 다른 두 매질의 경계에서는 빛 일부가 반사되는데, 이것이 <strong>Fresnel reflection</strong>입니다. 수직 입사에서</p>
+<div class="display-eq">\[R = \left(\frac{n_1 - n_2}{n_1 + n_2}\right)^2, \qquad \text{투과에 의한 loss} = -10\log_{10}(1 - R)\ \text{dB}\]</div>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>경계</th>
+<th>\(n_1\) / \(n_2\)</th>
+<th>\(R\)</th>
+<th>Return loss</th>
+<th>한 면의 투과 loss</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>silica fiber – air</td>
+<td>1.45 / 1.00</td>
+<td>3.4 %</td>
+<td>14.7 dB</td>
+<td>0.15 dB</td>
+</tr>
+<tr>
+<td>silicon – air</td>
+<td>3.48 / 1.00</td>
+<td>30.6 %</td>
+<td>5.1 dB</td>
+<td>1.6 dB</td>
+</tr>
+<tr>
+<td>silica – matching gel</td>
+<td>1.45 / ≈ 1.45</td>
+<td>≈ 0</td>
+<td>매우 큼</td>
+<td>≈ 0 dB</td>
+</tr>
+</tbody>
+</table></div>
+<p>air gap에는 이런 면이 두 개 있으므로 약 0.3 dB가 사라지고 반사광은 laser로 돌아갑니다. 두 면 사이를 빛이 왕복하면 작은 Fabry–Perot cavity가 되어, 파장과 gap 거리에 따라 투과 power가 <strong>ripple</strong>처럼 출렁입니다. fiber와 굴절률이 같은 <strong>index-matching gel</strong>로 gap을 채우면 경계가 광학적으로 사라집니다.</p>
+<figure><div class="plate"><img src="img/fresnel-gap.png" alt="Air gap with two Fresnel reflections versus index-matching gel with no reflection" width="1900" height="636"></div><figcaption>air gap에서는 두 면에서 Fresnel reflection이 생기고, matching gel을 채우면 사라집니다.</figcaption></figure>
+<p>같은 이유로 fiber block과 chip facet 사이에는 <strong>index-matching oil</strong>을 씁니다. 이것은 Part 5에서 다루는 coupling loss 중 facet 반사 부분도 줄여 줍니다.</p>
+<h2>Fiber block과 PIC device</h2>
+<figure><div class="plate"><img src="img/setup-align_fiber.webp" alt="Input fiber block, PIC device and lens on their alignment stages" width="800" height="572"></div><figcaption>Setup A: input fiber block, PIC device, imaging lens.</figcaption></figure>
+<div class="fig-row"><figure><div class="plate"><img src="img/fiber-block.webp" alt="A fiber block: a ribbon of fibers fixed in a glass V-groove block" width="800" height="450"></div></figure><figure><div class="plate"><img src="img/fiber-block-facet.webp" alt="End face of a fiber block: optical fibers sitting in V-grooves, cores visible" width="1375" height="1032"></div><figcaption>fiber block 단면: 각 fiber가 V-groove에 놓여 있고, 밝은 점이 core입니다.</figcaption></figure></div>
+<p><strong>Fiber block</strong> (fiber array)은 유리 기판에 V-groove를 정밀하게 파고 (pitch는 보통 127 µm 또는 250 µm) single-mode fiber를 고정한 뒤 단면을 연마한 부품입니다.</p>
+<ul class="tight">
+<li>fiber 위치가 고정되어 맨 fiber보다 정렬이 안정적이고 재현성이 좋습니다.</li>
+<li>여러 채널을 한 번에 정렬할 수 있습니다.</li>
+<li>넓고 평평한 단면은 chip facet과 평행을 맞추기 쉽고 matching oil을 잘 붙잡아 둡니다.</li>
+</ul>
+<p>fiber block은 multi-axis stage(x, y, z, 기울기) 위에, chip은 가운데 stage 위에 놓습니다.</p>
+<h2>Fiber block을 waveguide에 정렬하기</h2>
+<figure><div class="plate"><img src="img/setup-alignment.webp" alt="Microscope view of the input fiber next to the chip facet with red light marking the target waveguide" width="800" height="456"></div><figcaption>red light로 대략 정렬: input fiber를 target waveguide 위치로 옮깁니다.</figcaption></figure>
+<ol class="steps">
+<li><div>fiber block과 chip input facet 사이에 <strong>matching oil</strong>을 바릅니다.</div></li>
+<li><div><strong>Red light로 대략 정렬.</strong> 1550 nm 빛은 보이지 않고 core는 수 µm에 불과합니다. fiber에 visible <strong>red light</strong>을 넣고 현미경으로 보면서, 빛나는 fiber core를 target waveguide 입구로 옮깁니다.</div></li>
+<li><div><strong>Output facet 관찰.</strong> 광원을 1550 nm DFB laser로 바꿉니다. <strong>lens</strong>로 chip output facet의 상을 <strong>IR camera</strong>에 맺습니다.</div></li>
+<li><div><strong>Guided mode가 가장 밝게.</strong> fiber가 core에 맞으면 camera에 waveguide mode가 밝은 점으로 보입니다. x, y, z를 조금씩 움직여 점이 가장 밝은 위치를 찾습니다. fiber block이 chip에 부딪히지 않도록 z는 천천히 움직이세요.</div></li>
+</ol>
+<p>camera 영상을 보면 fiber가 어디에 있는지 알 수 있습니다.</p>
+<div data-slot="embed:alignment-cases"></div>
+</div>
+</article>
+
+<article class="part" id="part-4" data-title="Polarization &amp; IL" data-group="Measurement" data-title-ko="편광 &amp; IL" data-group-ko="측정" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 4 · Polarization and insertion loss</p>
+  <h1>Set TE, read two powers, subtract</h1>
+  <p class="lede">With the fiber coupled, two steps remain: fix the input polarization, then measure the power with and without the chip.</p>
+</header>
+<h2>TE and TM modes</h2>
+<figure><div class="plate"><img src="img/te-tm.png" alt="TE mode with E-field parallel to the chip surface and TM mode with E-field perpendicular" width="1465" height="461"></div><figcaption>TE: E-field parallel to the chip surface. TM: E-field perpendicular to it.</figcaption></figure>
+<p>A waveguide's guided modes split by E-field direction into <strong>TE</strong> and <strong>TM</strong>. The two have different effective index, propagation loss, bending loss and coupling loss, so loss is always measured for a defined polarization, usually TE and TM separately. Standard single-mode fiber does not hold polarization: after a few metres of fiber the polarization is an unknown ellipse. The polarization controller turns it into the state we want.</p>
+<h2>The 3-paddle polarization controller</h2>
+<figure><div class="plate"><img src="img/3-paddle-PC.webp" alt="Three-paddle fiber polarization controller" width="780" height="365"></div><figcaption>3-paddle polarization controller (PC).</figcaption></figure>
+<p>The fiber is wound a few times around each of three paddles.</p>
+<ul class="tight">
+<li><strong>Bend-induced birefringence.</strong> Bending squeezes the inner side of the fiber and stretches the outer side, so the index differs for the two polarizations in and perpendicular to the bend plane. For a fiber of cladding radius \(r\) wound with radius \(R\):</li>
+</ul>
+<div class="display-eq">\[\Delta n \approx 0.133\left(\frac{r}{R}\right)^2, \qquad \Gamma = \frac{2\pi}{\lambda}\,\Delta n\,(2\pi R N)\]</div>
+<p>where \(N\) is the number of loops and \(\Gamma\) the retardance (H. C. Lefevre, Electron. Lett. 16, 778 (1980)).
+- <strong>Each paddle is a waveplate.</strong> Loop count and paddle diameter are chosen so the paddles act as <strong>λ/4, λ/2 and λ/4</strong> plates at the design wavelength.
+- <strong>Turning a paddle rotates the fast axis.</strong> Three angles are enough to turn any input polarization into any output polarization.</p>
+<h2>Polarization control with waveplates (Jones calculus)</h2>
+<p>A polarization state is the Jones vector \(\mathbf{E} = (E_x, E_y)^\mathsf{T}\) of the TE (x) and TM (y) field components. A waveplate with retardance \(\Gamma\) and fast axis at angle \(\theta\) acts as</p>
+<div class="display-eq">\[J(\Gamma, \theta) = R(-\theta)\begin{bmatrix} 1 &amp; 0\\ 0 &amp; e^{i\Gamma}\end{bmatrix}R(\theta), \qquad R(\theta) = \begin{bmatrix} \cos\theta &amp; \sin\theta\\ -\sin\theta &amp; \cos\theta\end{bmatrix}\]</div>
+<ul class="tight">
+<li><strong>λ/4 plate</strong> (\(\Gamma = \pi/2\)): with its fast axis on the major axis of an ellipse it turns elliptical into linear polarization; linear light at 45° becomes circular.</li>
+<li>
+<p><strong>λ/2 plate</strong> (\(\Gamma = \pi\)): rotates a linear polarization by \(2\theta\) and keeps it linear.</p>
+</li>
+<li>
+<p><strong>Paddle 1 (λ/4):</strong> turns the unknown ellipse from the fiber into a line.</p>
+</li>
+<li><strong>Paddle 2 (λ/2):</strong> rotates the line to the wanted direction, e.g. x for TE.</li>
+<li><strong>Paddle 3 (λ/4):</strong> aligned with that line it keeps it linear; at other angles it makes any wanted ellipse.</li>
+</ul>
+<figure><div class="plate"><img src="img/pc-waveplates.png" alt="Polarization ellipse after each paddle: input ellipse, line after the quarter-wave paddle, horizontal line after the half-wave paddle, still horizontal after the last quarter-wave paddle" width="2055" height="651"></div><figcaption>Polarization after each paddle, computed with Jones matrices: ellipse → line → TE-oriented line.</figcaption></figure>
+<p>The fiber between the PC and the chip changes the polarization again, so the paddle angles are not calculated in practice. They are adjusted while watching the chip output, as follows.</p>
+<h2>Setting the input polarization to TE</h2>
+<figure><div class="plate"><img src="img/setup-polarizer.webp" alt="Polarizer on a rotation mount in front of the IR camera" width="800" height="599"></div><figcaption>A polarizer (analyzer) between the lens and the IR camera.</figcaption></figure>
+<figure><div class="plate photo"><img src="img/Polarizer.jpg" alt="Unpolarized light passing a polarization filter becomes linearly polarized" width="1636" height="741"></div><figcaption>A polarizer passes only one linear polarization component.</figcaption></figure>
+<p>A <strong>polarizer</strong> passes only one linear polarization. Light polarized at angle \(\phi\) to its transmission axis is transmitted according to Malus's law, \(I = I_0\cos^2\phi\).</p>
+<ol class="steps">
+<li><div>Couple the input light into a <strong>straight waveguide</strong> (Part 3).</div></li>
+<li><div>Set the polarizer to <strong>TM-pass</strong> and place it in front of the camera. Used this way it is called an <strong>analyzer</strong>.</div></li>
+<li><div>Watch the waveguide mode on the camera and turn the PC paddles until the spot disappears: the output has <strong>no TM component</strong>.</div></li>
+<li><div>The input polarization is now TE.</div></li>
+<li><div>For TM, set the analyzer to <strong>TE-pass</strong> and repeat.</div></li>
+</ol>
+<p>Why this works: in a straight waveguide TE and TM are eigenmodes that do not exchange power. No TM at the output means the input coupled only into the TE mode. Bends or asymmetric structures can convert TE↔TM, so always set the polarization on a straight waveguide.</p>
+<p class="keyline"><strong>Keep the fiber still.</strong> After setting the polarization, do not touch the fiber between the PC and the fiber block. Moving or bending it changes the polarization again; tape it down.</p>
+<h2>Measuring the DUT power (setup B)</h2>
+<figure><div class="plate"><img src="img/setup-power_measurement.webp" alt="Two fiber blocks coupled to the input and output facets of the PIC device" width="800" height="460"></div><figcaption>Setup B: input fiber block, PIC device, output fiber block.</figcaption></figure>
+<div class="display-eq quiet">\[\text{DFB laser} \rightarrow \text{PC} \rightarrow \text{fiber block} \rightarrow \text{PIC device} \rightarrow \text{fiber block} \rightarrow \text{power meter}\]</div>
+<ol class="steps">
+<li><div>Replace the lens and camera with the output fiber block; use matching oil on this facet too.</div></li>
+<li><div>Keep the input alignment and align the output fiber block to the waveguide exit.</div></li>
+<li><div>Fine-tune the input and output blocks alternately until the power meter reaches its maximum.</div></li>
+<li><div>Record the maximum as \(P_\text{DUT}\) (dBm). Re-align and repeat a few times, then average.</div></li>
+</ol>
+<h2>The reference measurement (setup C)</h2>
+<figure><div class="plate"><img src="img/setup-fiber2fiber.webp" alt="Two fiber blocks aligned face to face with the chip removed" width="800" height="548"></div><figcaption>Setup C: fiber block aligned to fiber block, chip removed.</figcaption></figure>
+<p>To know the loss of the chip we need the power that arrives <strong>without the chip</strong>. Taking the laser's output power as the input would add the excess loss of the connectors, adapter, PC and fiber to the chip's loss. Instead, remove the chip and face the two fiber blocks to each other. Identical single-mode fibers have identical modes, so ideally their coupling loss is zero, and this reading contains every loss except the chip.</p>
+<div class="display-eq quiet">\[\text{DFB laser} \rightarrow \text{PC} \rightarrow \text{fiber block} \rightarrow \text{fiber block} \rightarrow \text{power meter}\]</div>
+<p>Align for maximum power, using matching oil as in setup B, and record \(P_\text{ref}\) (dBm).</p>
+<h2>Insertion loss</h2>
+<div class="display-eq">\[\mathrm{IL}\,[\text{dB}] = P_\text{ref}\,[\text{dBm}] - P_\text{DUT}\,[\text{dBm}]\]</div>
+<p>Example: \(P_\text{ref} = +2.50\) dBm and \(P_\text{DUT} = -4.30\) dBm give \(\mathrm{IL} = 2.50 - (-4.30) = 6.80\) dB. This number includes both fiber–chip interfaces and everything on the chip.</p>
+<p class="keyline"><strong>Sign.</strong> \(P_\text{DUT} - P_\text{ref}\) is negative. This course writes loss as a positive number, \(P_\text{ref} - P_\text{DUT}\).</p>
+<p>Between the reference and the DUT reading, keep everything else fixed; any change shows up directly as loss error:</p>
+<ul class="tight">
+<li>connectors (re-plugging an adapter can change the loss by a few hundredths to tenths of a dB),</li>
+<li>PC paddle positions and fiber routing (polarization),</li>
+<li>power-meter wavelength setting, range and averaging.</li>
+</ul>
+<p>Measuring the reference before and after the DUT shows whether the laser drifted.</p>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Step</th>
+<th style="text-align: left;">Check</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Source</td>
+<td style="text-align: left;">DFB warmed up, APC–APC connections, matching gel in the adapters</td>
+</tr>
+<tr>
+<td>Alignment</td>
+<td style="text-align: left;">matching oil, coarse alignment with red light, brightest mode spot on the IR camera</td>
+</tr>
+<tr>
+<td>Polarization</td>
+<td style="text-align: left;">analyzer shows zero TM on a straight waveguide (for TE), fiber taped down</td>
+</tr>
+<tr>
+<td>DUT</td>
+<td style="text-align: left;">output block aligned, maximum \(P_\text{DUT}\) recorded, repeated</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td style="text-align: left;">blocks aligned to each other, \(P_\text{ref}\) recorded, connectors, PC and meter unchanged</td>
+</tr>
+<tr>
+<td>Result</td>
+<td style="text-align: left;">\(\mathrm{IL} = P_\text{ref} - P_\text{DUT}\) (dB, positive)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="check" data-quiz="4"></div>
+<div class="check" data-quiz="4b"></div>
+<div data-slot="exercise:2"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 4 · 편광 조정과 insertion loss</p>
+  <h1>TE로 맞추고, power를 두 번 재고, 뺀다</h1>
+  <p class="lede">fiber가 coupling되면 두 단계가 남습니다. 입력 편광을 정하고, chip이 있을 때와 없을 때의 power를 측정합니다.</p>
+</header>
+<h2>TE mode와 TM mode</h2>
+<figure><div class="plate"><img src="img/te-tm.png" alt="TE mode with E-field parallel to the chip surface and TM mode with E-field perpendicular" width="1465" height="461"></div><figcaption>TE: E-field가 chip 표면과 평행. TM: 수직.</figcaption></figure>
+<p>waveguide의 guided mode는 E-field 방향에 따라 <strong>TE</strong>와 <strong>TM</strong>으로 나뉩니다. 두 mode는 effective index, propagation loss, bending loss, coupling loss가 모두 다르므로, loss는 항상 편광을 정해서 측정하고 보통 TE와 TM을 따로 측정합니다. 일반 single-mode fiber는 편광을 유지하지 않아서 fiber를 몇 m 지나면 편광이 알 수 없는 타원이 됩니다. 이것을 원하는 상태로 바꾸는 것이 polarization controller입니다.</p>
+<h2>3-paddle polarization controller</h2>
+<figure><div class="plate"><img src="img/3-paddle-PC.webp" alt="Three-paddle fiber polarization controller" width="780" height="365"></div><figcaption>3-paddle polarization controller (PC).</figcaption></figure>
+<p>세 개의 paddle에 fiber를 몇 번씩 감아 놓은 장치입니다.</p>
+<ul class="tight">
+<li><strong>굽힘에 의한 birefringence.</strong> fiber를 구부리면 안쪽은 압축, 바깥쪽은 인장되어 굽힘 평면에 평행한 편광과 수직인 편광의 굴절률이 달라집니다. cladding 반지름 \(r\)인 fiber를 반지름 \(R\)로 감으면</li>
+</ul>
+<div class="display-eq">\[\Delta n \approx 0.133\left(\frac{r}{R}\right)^2, \qquad \Gamma = \frac{2\pi}{\lambda}\,\Delta n\,(2\pi R N)\]</div>
+<p>이며 \(N\)은 감은 횟수, \(\Gamma\)는 retardance입니다 (H. C. Lefevre, Electron. Lett. 16, 778 (1980)).
+- <strong>각 paddle은 waveplate.</strong> 감는 횟수와 paddle 지름을 골라 사용 파장에서 <strong>λ/4, λ/2, λ/4</strong> plate가 되도록 만듭니다.
+- <strong>paddle 회전 = fast axis 회전.</strong> 세 각도만으로 어떤 입력 편광이든 원하는 출력 편광으로 바꿀 수 있습니다.</p>
+<h2>Waveplate를 이용한 편광 제어 (Jones calculus)</h2>
+<p>편광 상태는 TE(x), TM(y) 성분으로 된 Jones vector \(\mathbf{E} = (E_x, E_y)^\mathsf{T}\)로 나타냅니다. retardance \(\Gamma\), fast axis 각도 \(\theta\)인 waveplate는</p>
+<div class="display-eq">\[J(\Gamma, \theta) = R(-\theta)\begin{bmatrix} 1 &amp; 0\\ 0 &amp; e^{i\Gamma}\end{bmatrix}R(\theta), \qquad R(\theta) = \begin{bmatrix} \cos\theta &amp; \sin\theta\\ -\sin\theta &amp; \cos\theta\end{bmatrix}\]</div>
+<ul class="tight">
+<li><strong>λ/4 plate</strong> (\(\Gamma = \pi/2\)): fast axis를 타원의 장축에 맞추면 타원 편광이 선편광이 됩니다. 45°로 들어온 선편광은 원편광이 됩니다.</li>
+<li>
+<p><strong>λ/2 plate</strong> (\(\Gamma = \pi\)): 선편광 방향을 \(2\theta\)만큼 돌리고 선편광은 유지합니다.</p>
+</li>
+<li>
+<p><strong>Paddle 1 (λ/4):</strong> fiber에서 온 알 수 없는 타원을 선편광으로 바꿉니다.</p>
+</li>
+<li><strong>Paddle 2 (λ/2):</strong> 그 선을 원하는 방향(예: TE인 x 방향)으로 돌립니다.</li>
+<li><strong>Paddle 3 (λ/4):</strong> 선과 나란히 두면 선편광을 유지하고, 다른 각도로 두면 원하는 타원을 만듭니다.</li>
+</ul>
+<figure><div class="plate"><img src="img/pc-waveplates.png" alt="Polarization ellipse after each paddle: input ellipse, line after the quarter-wave paddle, horizontal line after the half-wave paddle, still horizontal after the last quarter-wave paddle" width="2055" height="651"></div><figcaption>각 paddle을 지난 뒤의 편광 (Jones matrix로 계산): 타원 → 선 → TE 방향 선.</figcaption></figure>
+<p>PC와 chip 사이의 fiber가 편광을 다시 바꾸기 때문에, 실제로는 paddle 각도를 계산하지 않고 chip 출력을 보면서 아래 순서로 맞춥니다.</p>
+<h2>입력 편광을 TE로 맞추기</h2>
+<figure><div class="plate"><img src="img/setup-polarizer.webp" alt="Polarizer on a rotation mount in front of the IR camera" width="800" height="599"></div><figcaption>lens와 IR camera 사이에 둔 polarizer (analyzer).</figcaption></figure>
+<figure><div class="plate photo"><img src="img/Polarizer.jpg" alt="Unpolarized light passing a polarization filter becomes linearly polarized" width="1636" height="741"></div><figcaption>polarizer는 한 방향의 선편광 성분만 통과시킵니다.</figcaption></figure>
+<p><strong>Polarizer</strong>는 한 방향의 선편광만 통과시킵니다. 투과축과 \(\phi\)만큼 어긋난 선편광은 Malus's law \(I = I_0\cos^2\phi\)에 따라 투과됩니다.</p>
+<ol class="steps">
+<li><div>입력광을 <strong>straight waveguide</strong>에 coupling합니다 (Part 3).</div></li>
+<li><div>polarizer를 <strong>TM-pass</strong>로 맞추고 camera 앞에 둡니다. 이렇게 쓰는 polarizer를 <strong>analyzer</strong>라고 부릅니다.</div></li>
+<li><div>camera의 waveguide mode를 보면서 PC paddle을 돌려 점이 사라지는 위치를 찾습니다. 이때 출력에 <strong>TM 성분이 없습니다</strong>.</div></li>
+<li><div>그러면 입력 편광이 TE로 맞춰진 것입니다.</div></li>
+<li><div>TM으로 맞추려면 analyzer를 <strong>TE-pass</strong>로 놓고 같은 과정을 반복합니다.</div></li>
+</ol>
+<p>이 방법이 맞는 이유: straight waveguide에서 TE와 TM은 서로 power를 주고받지 않는 eigenmode입니다. 출력에 TM이 없다면 입력광이 TE mode에만 coupling된 것입니다. bend나 비대칭 구조는 TE↔TM conversion을 일으킬 수 있으므로 편광은 반드시 straight waveguide에서 맞춥니다.</p>
+<p class="keyline"><strong>fiber를 움직이지 마세요.</strong> 편광을 맞춘 뒤에는 PC와 fiber block 사이의 fiber를 건드리지 마세요. 움직이거나 휘면 편광이 다시 바뀝니다. 테이프로 고정해 두세요.</p>
+<h2>DUT power 측정 (setup B)</h2>
+<figure><div class="plate"><img src="img/setup-power_measurement.webp" alt="Two fiber blocks coupled to the input and output facets of the PIC device" width="800" height="460"></div><figcaption>Setup B: input fiber block, PIC device, output fiber block.</figcaption></figure>
+<div class="display-eq quiet">\[\text{DFB laser} \rightarrow \text{PC} \rightarrow \text{fiber block} \rightarrow \text{PIC device} \rightarrow \text{fiber block} \rightarrow \text{power meter}\]</div>
+<ol class="steps">
+<li><div>lens와 camera를 output fiber block으로 바꾸고, 이 facet에도 matching oil을 씁니다.</div></li>
+<li><div>input 정렬은 그대로 두고 output fiber block을 waveguide 출구에 정렬합니다.</div></li>
+<li><div>power meter가 최대가 될 때까지 input과 output block을 번갈아 미세 조정합니다.</div></li>
+<li><div>최댓값을 \(P_\text{DUT}\) (dBm)로 기록합니다. 다시 정렬해서 몇 번 반복하고 평균을 냅니다.</div></li>
+</ol>
+<h2>Reference 측정 (setup C)</h2>
+<figure><div class="plate"><img src="img/setup-fiber2fiber.webp" alt="Two fiber blocks aligned face to face with the chip removed" width="800" height="548"></div><figcaption>Setup C: chip을 빼고 fiber block끼리 정렬.</figcaption></figure>
+<p>chip의 loss를 알려면 <strong>chip이 없을 때</strong> 도달하는 power가 필요합니다. laser 출력 power를 입력으로 정하면 connector, adapter, PC, fiber의 excess loss가 chip의 loss에 더해집니다. 대신 chip을 빼고 fiber block 두 개를 마주 보게 정렬합니다. 같은 single-mode fiber끼리는 mode가 같아 이론적으로 coupling loss가 0이므로, 이 측정값에는 chip을 뺀 모든 loss가 들어 있습니다.</p>
+<div class="display-eq quiet">\[\text{DFB laser} \rightarrow \text{PC} \rightarrow \text{fiber block} \rightarrow \text{fiber block} \rightarrow \text{power meter}\]</div>
+<p>setup B와 같이 matching oil을 쓰고 power가 최대가 되도록 정렬한 뒤 \(P_\text{ref}\) (dBm)를 기록합니다.</p>
+<h2>Insertion loss</h2>
+<div class="display-eq">\[\mathrm{IL}\,[\text{dB}] = P_\text{ref}\,[\text{dBm}] - P_\text{DUT}\,[\text{dBm}]\]</div>
+<p>예: \(P_\text{ref} = +2.50\) dBm, \(P_\text{DUT} = -4.30\) dBm이면 \(\mathrm{IL} = 2.50 - (-4.30) = 6.80\) dB입니다. 이 값에는 두 fiber–chip interface와 chip 위의 모든 loss가 포함됩니다.</p>
+<p class="keyline"><strong>부호.</strong> \(P_\text{DUT} - P_\text{ref}\)는 음수입니다. 이 강의에서는 loss를 양수로 쓰기 위해 \(P_\text{ref} - P_\text{DUT}\)로 정의합니다.</p>
+<p>reference와 DUT 측정 사이에는 다른 조건을 바꾸지 마세요. 바뀐 만큼 그대로 loss 오차가 됩니다.</p>
+<ul class="tight">
+<li>connector (adapter를 다시 꽂으면 loss가 수백 분의 1~수십 분의 1 dB 달라질 수 있음)</li>
+<li>PC paddle 위치와 fiber 배치 (편광)</li>
+<li>power meter의 파장 설정, range, averaging</li>
+</ul>
+<p>DUT 측정 전후로 reference를 한 번씩 재면 laser drift 여부를 확인할 수 있습니다.</p>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>단계</th>
+<th style="text-align: left;">확인할 것</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>광원</td>
+<td style="text-align: left;">DFB warm-up, APC–APC 연결, adapter에 matching gel</td>
+</tr>
+<tr>
+<td>정렬</td>
+<td style="text-align: left;">matching oil, red light로 대략 정렬, IR camera에서 mode 점이 가장 밝음</td>
+</tr>
+<tr>
+<td>편광</td>
+<td style="text-align: left;">straight waveguide에서 analyzer로 TM 성분 0 (TE 측정 시), fiber 고정</td>
+</tr>
+<tr>
+<td>DUT</td>
+<td style="text-align: left;">output block 정렬, 최댓값 \(P_\text{DUT}\) 기록, 반복 측정</td>
+</tr>
+<tr>
+<td>Reference</td>
+<td style="text-align: left;">block끼리 정렬, \(P_\text{ref}\) 기록, connector·PC·meter 그대로</td>
+</tr>
+<tr>
+<td>결과</td>
+<td style="text-align: left;">\(\mathrm{IL} = P_\text{ref} - P_\text{DUT}\) (dB, 양수)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="check" data-quiz="ko4"></div>
+<div class="check" data-quiz="ko4b"></div>
+<div data-slot="exercise:2"></div>
+</div>
+</article>
+
+<article class="part" id="part-5" data-title="Cut-back method" data-group="Straight waveguides" data-title-ko="Cut-back method" data-group-ko="Straight waveguide" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 5 · Decomposing insertion loss</p>
+  <h1>Coupling loss vs. propagation loss</h1>
+  <p class="lede">Insertion loss is the only quantity we can measure directly. The cut-back method splits it into its parts.</p>
+</header>
+<p>For a straight waveguide two mechanisms dominate:</p>
+<ul class="tight">
+<li><strong>Coupling loss CL</strong> (dB/facet): mode-size mismatch between fiber and waveguide, Fresnel reflection, facet roughness and misalignment. It occurs twice, at input and output.</li>
+<li><strong>Propagation loss α</strong> (dB/cm): sidewall scattering, material absorption and substrate leakage. It grows with the chip length \(L\).</li>
+</ul>
+<div class="display-eq">\[\mathrm{IL} = \alpha\,L + 2\,\mathrm{CL}\]</div>
+<h2>Two unknowns, two chips</h2>
+<p>Two chips of different length give two equations. Subtracting them removes the coupling term:</p>
+<div class="display-eq quiet">\[\alpha = \frac{\mathrm{IL}_2-\mathrm{IL}_1}{L_2-L_1}, \qquad \mathrm{CL} = \frac{\mathrm{IL}_1-\alpha L_1}{2}\]</div>
+<p>Example: 1.0 cm with 1.10 dB and 2.5 cm with 1.40 dB give α = 0.20 dB/cm and CL = 0.45 dB/facet.</p>
+<h2>Measurement error</h2>
+<p>Real readings fluctuate: fiber alignment is never reproduced exactly, each cleaved facet differs, the laser drifts, polarization changes. With only two points, all of that error goes into the slope. A ±0.05 dB error on two chips 1 cm apart gives up to ±0.10 dB/cm error in α, which is 50 % of a 0.2 dB/cm waveguide. The cure is more lengths and a least-squares fit (Part 6).</p>
+<h2>Cut-back by asymmetric cleaving</h2>
+<figure><div class="plate"><img src="img/cleave.png" alt="Original 2.00 cm chip cleaved asymmetrically into pieces of 1.20 cm and 0.75 cm" width="910" height="552"></div><figcaption>One chip, three lengths: the original chip and the two pieces of an asymmetric cleave.</figcaption></figure>
+<ol class="steps">
+<li><div>Measure the original chip: \(L_0 \to \mathrm{IL}_0\).</div></li>
+<li><div>Cleave it <strong>asymmetrically</strong> so that \(L_1 \ne L_2\). A symmetric cleave would give only two distinct lengths.</div></li>
+<li><div>Measure both pieces: \(L_1 \to \mathrm{IL}_1\), \(L_2 \to \mathrm{IL}_2\).</div></li>
+<li><div>Plot IL against L and fit a straight line: slope = α, intercept = 2·CL.</div></li>
+</ol>
+<figure><div class="plate"><img src="img/residuals.png" alt="Insertion loss versus chip length: three points with a least-squares line; slope 0.294 dB/cm, intercept 0.737 dB" width="1190" height="834"></div><figcaption>L = 2.00, 1.20, 0.75 cm and IL = 1.32, 1.10, 0.95 dB give α = 0.294 dB/cm and 2·CL = 0.737 dB, so CL = 0.368 dB/facet.</figcaption></figure>
+<div class="check" data-quiz="5"></div>
+<div data-slot="exercise:3"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 5 · Insertion loss 분해</p>
+  <h1>Coupling loss와 propagation loss</h1>
+  <p class="lede">직접 측정할 수 있는 것은 insertion loss뿐입니다. cut-back method로 이것을 성분별로 나눕니다.</p>
+</header>
+<p>straight waveguide에서는 두 메커니즘이 지배적입니다:</p>
+<ul class="tight">
+<li><strong>Coupling loss CL</strong> (dB/facet): fiber와 waveguide 사이의 mode 크기 mismatch, Fresnel reflection, facet roughness, misalignment. 입력과 출력에서 두 번 발생합니다.</li>
+<li><strong>Propagation loss α</strong> (dB/cm): sidewall scattering, material absorption, substrate leakage. chip 길이 \(L\)에 비례해 커집니다.</li>
+</ul>
+<div class="display-eq">\[\mathrm{IL} = \alpha\,L + 2\,\mathrm{CL}\]</div>
+<h2>미지수 둘, chip 둘</h2>
+<p>길이가 다른 chip 두 개로 식 두 개를 얻습니다. 두 식을 빼면 coupling 항이 사라집니다:</p>
+<div class="display-eq quiet">\[\alpha = \frac{\mathrm{IL}_2-\mathrm{IL}_1}{L_2-L_1}, \qquad \mathrm{CL} = \frac{\mathrm{IL}_1-\alpha L_1}{2}\]</div>
+<p>예: 1.0 cm에서 1.10 dB, 2.5 cm에서 1.40 dB이면 α = 0.20 dB/cm, CL = 0.45 dB/facet입니다.</p>
+<h2>측정 오차</h2>
+<p>실제 측정값은 흔들립니다. fiber 정렬은 매번 똑같이 재현되지 않고, cleave한 facet마다 상태가 다르며, laser가 drift하고 polarization도 바뀝니다. 점이 두 개뿐이면 이 오차가 모두 slope로 들어갑니다. 1 cm 떨어진 두 chip에 ±0.05 dB 오차가 있으면 α에 최대 ±0.10 dB/cm 오차가 생기고, 이는 0.2 dB/cm waveguide의 50 %입니다. 해결책은 길이를 늘리고 least-squares fit을 쓰는 것입니다 (Part 6).</p>
+<h2>비대칭 cleave를 이용한 cut-back</h2>
+<figure><div class="plate"><img src="img/cleave.png" alt="Original 2.00 cm chip cleaved asymmetrically into pieces of 1.20 cm and 0.75 cm" width="910" height="552"></div><figcaption>chip 하나로 길이 세 개: 원래 chip과 비대칭 cleave로 나온 두 조각.</figcaption></figure>
+<ol class="steps">
+<li><div>원래 chip을 측정합니다: \(L_0 \to \mathrm{IL}_0\).</div></li>
+<li><div><strong>비대칭으로</strong> cleave해서 \(L_1 \ne L_2\)가 되게 합니다. 대칭으로 자르면 서로 다른 길이가 두 개뿐입니다.</div></li>
+<li><div>두 조각을 측정합니다: \(L_1 \to \mathrm{IL}_1\), \(L_2 \to \mathrm{IL}_2\).</div></li>
+<li><div>IL을 L에 대해 그리고 직선을 fit합니다: slope = α, intercept = 2·CL.</div></li>
+</ol>
+<figure><div class="plate"><img src="img/residuals.png" alt="Insertion loss versus chip length: three points with a least-squares line; slope 0.294 dB/cm, intercept 0.737 dB" width="1190" height="834"></div><figcaption>L = 2.00, 1.20, 0.75 cm, IL = 1.32, 1.10, 0.95 dB에서 α = 0.294 dB/cm, 2·CL = 0.737 dB, 따라서 CL = 0.368 dB/facet.</figcaption></figure>
+<div class="check" data-quiz="ko5"></div>
+<div data-slot="exercise:3"></div>
+</div>
+</article>
+
+<article class="part" id="part-6" data-title="Linear Algebra I" data-group="Straight waveguides" data-title-ko="Linear Algebra I" data-group-ko="Straight waveguide" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 6 · Linear Algebra I</p>
+  <h1>Linear regression from the normal equations</h1>
+  <p class="lede">Three noisy equations, two unknowns: what does "the best line" mean?</p>
+</header>
+<h2>An overdetermined system</h2>
+<p>Write each cut-back measurement as a linear equation in \(\alpha\) and \(c = 2\,\mathrm{CL}\):</p>
+<div class="display-eq quiet">\[\underbrace{\begin{bmatrix} 2.00 &amp; 1\\ 1.20 &amp; 1\\ 0.75 &amp; 1\end{bmatrix}}_{A\ (3\times2)} \underbrace{\begin{bmatrix}\alpha\\ c\end{bmatrix}}_{x} = \underbrace{\begin{bmatrix}1.32\\ 1.10\\ 0.95\end{bmatrix}}_{b}\]</div>
+<p>There are more equations (m = 3) than unknowns (n = 2). Because of noise, \(b\) does not lie in the column space of \(A\), so no \(x\) satisfies all three equations.</p>
+<h2>Least squares</h2>
+<p>Define the residual \(r = b - Ax\) and choose \(x\) to minimize its squared length:</p>
+<div class="display-eq">\[E(x) = \lVert b - Ax\rVert^2 = \sum_i \left(\mathrm{IL}_i - \alpha L_i - c\right)^2\]</div>
+<p>Squares are used because \(E\) is a smooth bowl with one minimum, large deviations count more than small ones, signs cannot cancel, and for Gaussian noise the result is the maximum-likelihood estimate.</p>
+<h2>The normal equations</h2>
+<ol class="steps">
+<li><div>\(E(x) = (b-Ax)^\mathsf{T}(b-Ax) = b^\mathsf{T}b - 2x^\mathsf{T}A^\mathsf{T}b + x^\mathsf{T}A^\mathsf{T}A\,x\)</div></li>
+<li><div>\(\nabla E = -2A^\mathsf{T}b + 2A^\mathsf{T}A\,x = 0\)</div></li>
+<li><div>\(A^\mathsf{T}A\,\hat x = A^\mathsf{T}b \;\Rightarrow\; \hat x = (A^\mathsf{T}A)^{-1}A^\mathsf{T}b\) when the columns of \(A\) are independent.</div></li>
+</ol>
+<p>For a straight line \(y = m x + c\) the 2 × 2 system has a closed form:</p>
+<div class="display-eq quiet">\[A^\mathsf{T}A = \begin{bmatrix}\sum x^2 &amp; \sum x\\ \sum x &amp; n\end{bmatrix},\quad A^\mathsf{T}b = \begin{bmatrix}\sum xy\\ \sum y\end{bmatrix},\quad m = \frac{n\sum xy - \sum x\sum y}{n\sum x^2 - (\sum x)^2},\quad c = \bar y - m\bar x\]</div>
+<h3>Worked example</h3>
+<p>With the cut-back data: \(\sum x = 3.95\), \(\sum x^2 = 6.0025\), \(\sum y = 3.37\), \(\sum xy = 4.6725\), \(n = 3\).</p>
+<div class="display-eq quiet">\[m = \frac{3(4.6725) - 3.95(3.37)}{3(6.0025) - 3.95^2} = \frac{0.6940}{2.3650} = 0.294\ \text{dB/cm},\qquad c = 0.737\ \text{dB}\]</div>
+<p>Residuals are −0.004, +0.011 and −0.007 dB: small compared with the losses, so the line fits well.</p>
+<h2>Geometric view: an orthogonal projection</h2>
+<div class="grid2"><div><figure><div class="plate"><img src="img/projection.png" alt="Vector b projected onto the plane spanned by the columns of A; residual r is perpendicular to the plane" width="1051" height="924"></div></figure></div><div><p>The columns of \(A\) span a plane, the column space. Every \(Ax\) lies in it. The best \(A\hat x\) is the orthogonal projection of \(b\) onto that plane, and the residual is perpendicular to it:</p>
+<div class="display-eq">\[A^\mathsf{T}(b - A\hat x) = 0\]</div>
+<p>This is exactly the normal equations. The picture holds for any number of unknowns.</p></div></div>
+<div class="check" data-quiz="6"></div>
+<div data-slot="exercise:5"></div>
+<div data-slot="exercise:4"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 6 · Linear Algebra I</p>
+  <h1>Normal equations로 푸는 linear regression</h1>
+  <p class="lede">noise가 있는 식 세 개, 미지수 두 개: "가장 좋은 직선"이란 무엇일까요?</p>
+</header>
+<h2>Overdetermined system</h2>
+<p>cut-back 측정 하나하나를 \(\alpha\)와 \(c = 2\,\mathrm{CL}\)에 대한 일차식으로 씁니다:</p>
+<div class="display-eq quiet">\[\underbrace{\begin{bmatrix} 2.00 &amp; 1\\ 1.20 &amp; 1\\ 0.75 &amp; 1\end{bmatrix}}_{A\ (3\times2)} \underbrace{\begin{bmatrix}\alpha\\ c\end{bmatrix}}_{x} = \underbrace{\begin{bmatrix}1.32\\ 1.10\\ 0.95\end{bmatrix}}_{b}\]</div>
+<p>식의 수(m = 3)가 미지수의 수(n = 2)보다 많습니다. noise 때문에 \(b\)가 \(A\)의 column space 안에 있지 않으므로, 세 식을 모두 만족하는 \(x\)는 없습니다.</p>
+<h2>Least squares</h2>
+<p>residual \(r = b - Ax\)를 정의하고, 그 길이의 제곱이 최소가 되도록 \(x\)를 고릅니다:</p>
+<div class="display-eq">\[E(x) = \lVert b - Ax\rVert^2 = \sum_i \left(\mathrm{IL}_i - \alpha L_i - c\right)^2\]</div>
+<p>제곱을 쓰는 이유: \(E\)가 최솟값이 하나인 매끄러운 그릇 모양이 되고, 큰 편차에 더 큰 가중치를 주며, 부호끼리 상쇄되지 않고, Gaussian noise에서는 maximum-likelihood 추정값이 되기 때문입니다.</p>
+<h2>Normal equations</h2>
+<ol class="steps">
+<li><div>\(E(x) = (b-Ax)^\mathsf{T}(b-Ax) = b^\mathsf{T}b - 2x^\mathsf{T}A^\mathsf{T}b + x^\mathsf{T}A^\mathsf{T}A\,x\)</div></li>
+<li><div>\(\nabla E = -2A^\mathsf{T}b + 2A^\mathsf{T}A\,x = 0\)</div></li>
+<li><div>\(A^\mathsf{T}A\,\hat x = A^\mathsf{T}b \;\Rightarrow\; \hat x = (A^\mathsf{T}A)^{-1}A^\mathsf{T}b\) (\(A\)의 열이 서로 독립일 때)</div></li>
+</ol>
+<p>직선 \(y = m x + c\)에서는 2 × 2 system이 closed form으로 풀립니다:</p>
+<div class="display-eq quiet">\[A^\mathsf{T}A = \begin{bmatrix}\sum x^2 &amp; \sum x\\ \sum x &amp; n\end{bmatrix},\quad A^\mathsf{T}b = \begin{bmatrix}\sum xy\\ \sum y\end{bmatrix},\quad m = \frac{n\sum xy - \sum x\sum y}{n\sum x^2 - (\sum x)^2},\quad c = \bar y - m\bar x\]</div>
+<h3>풀이 예</h3>
+<p>cut-back 데이터에서: \(\sum x = 3.95\), \(\sum x^2 = 6.0025\), \(\sum y = 3.37\), \(\sum xy = 4.6725\), \(n = 3\).</p>
+<div class="display-eq quiet">\[m = \frac{3(4.6725) - 3.95(3.37)}{3(6.0025) - 3.95^2} = \frac{0.6940}{2.3650} = 0.294\ \text{dB/cm},\qquad c = 0.737\ \text{dB}\]</div>
+<p>residual은 −0.004, +0.011, −0.007 dB로 loss 값에 비해 작으므로 직선이 잘 맞습니다.</p>
+<h2>기하학적 해석: orthogonal projection</h2>
+<div class="grid2"><div><figure><div class="plate"><img src="img/projection.png" alt="Vector b projected onto the plane spanned by the columns of A; residual r is perpendicular to the plane" width="1051" height="924"></div></figure></div><div><p>\(A\)의 열들은 하나의 평면, 즉 column space를 만듭니다. 모든 \(Ax\)는 이 평면 위에 있습니다. 가장 좋은 \(A\hat x\)는 \(b\)를 이 평면에 orthogonal projection한 점이고, residual은 평면에 수직입니다:</p>
+<div class="display-eq">\[A^\mathsf{T}(b - A\hat x) = 0\]</div>
+<p>이것이 바로 normal equations입니다. 미지수가 몇 개든 같은 그림이 성립합니다.</p></div></div>
+<div class="check" data-quiz="ko6"></div>
+<div data-slot="exercise:5"></div>
+<div data-slot="exercise:4"></div>
+</div>
+</article>
+
+<article class="part" id="part-7" data-title="S-bend physics" data-group="S-bends" data-title-ko="S-bend 물리" data-group-ko="S-bend" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 7 · S-bend loss: physical origins</p>
+  <h1>Three ways an S-bend loses light</h1>
+  <p class="lede">An S-bend shifts a waveguide sideways with two circular arcs of opposite curvature, each of angle θ, so the total bend angle is 2θ.</p>
+</header>
+<figure><div class="plate"><img src="img/sbend_geometry.png" alt="S-bend: straight, arc of plus theta, arc of minus theta, straight; transitions marked straight-to-bend, bend-to-bend, bend-to-straight" width="1216" height="586"></div><figcaption>Per S-bend: two arcs (total angle 2θ), two straight-bend transitions and one bend-bend transition.</figcaption></figure>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Component</th>
+<th>Unit</th>
+<th style="text-align: left;">Where it happens</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bending loss α<sub>b</sub></td>
+<td>dB/90°</td>
+<td style="text-align: left;">Along the curved arcs, in proportion to the angle</td>
+</tr>
+<tr>
+<td>Straight-bend transition T<sub>sb</sub></td>
+<td>dB/trans.</td>
+<td style="text-align: left;">At the two junctions between straight and bend</td>
+</tr>
+<tr>
+<td>Bend-bend transition T<sub>bb</sub></td>
+<td>dB/trans.</td>
+<td style="text-align: left;">Where the curvature reverses</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Where a bent waveguide loses light</h2>
+<div class="fig-row"><figure><div class="plate"><img src="img/ref_fig1a.png" alt="90 degree bend with mode mismatch marked at both junctions and radiation from the outer side" width="254" height="200"></div><figcaption>(a) 90° circular bend: mode mismatch at the junctions, radiation on the outer side.</figcaption></figure><figure><div class="plate"><img src="img/ref_fig1c.png" alt="FDTD simulation of the Ey field: part of the field leaves the bend and radiates outward" width="188" height="160"></div><figcaption>(c) FDTD Ey field: radiation leaves the guide at the junction.</figcaption></figure></div>
+<p>Figure: M. Bahadori, M. Nikdast, Q. Cheng, K. Bergman, J. Lightwave Technol. 37(13), 3044 (2019), Fig. 1(a),(c).</p>
+<p>Radiation is a continuous leak along the arc, so it scales with angle. Mode mismatch is a lumped loss at each junction, so it counts per transition. The paper notes that the main losses happen at the input and output connections, where the curvature changes suddenly.</p>
+<h2>Why the bend radiates</h2>
+<div class="grid2"><div><figure><div class="plate"><img src="img/ref_conformal.webp" alt="Conformal transformation of a curved step-index guide into an equivalent straight guide whose index profile rises exponentially toward the outside" width="1106" height="1015"></div><figcaption>M. Heiblum, J. H. Harris, IEEE J. Quantum Electron. QE-11(2), 75 (1975), Fig. 1.</figcaption></figure></div><div><p>A conformal transformation maps the curved guide onto an equivalent <em>straight</em> guide. The price is a tilted index profile:</p>
+<div class="display-eq">\[n(u) = n\,e^{u/R}\]</div>
+<p>Far enough on the outer side, the tilted cladding index exceeds the mode's effective index. There the field stops decaying and propagates away, like light tunnelling out of a prism coupler.</p>
+<p>Equivalent picture: the phase front rotates rigidly, so the outer part of the field would have to travel faster than \(c/n_\text{clad}\).</p>
+<p>A smaller R gives a steeper tilt, which brings the radiation point closer to the core. The loss therefore grows roughly as \(e^{-CR}\) as R shrinks.</p></div></div>
+<h2>Simulated modes: straight vs. bent</h2>
+<div class="fig-row"><figure><div class="plate"><img src="img/ref_fig2_straight.webp" alt="Ex mode profile of the straight waveguide, centred, effective index 1.445234 plus 2.5e-8 i" width="1033" height="868"></div></figure><figure><div class="plate"><img src="img/ref_fig2_bend.webp" alt="Ex mode profile of the bent waveguide, shifted outward with faint radiation ripples, effective index 1.445311 plus 1.658e-5 i" width="1033" height="880"></div></figure></div>
+<p>Mode-solver results for the same low-contrast waveguide.</p>
+<ol class="steps">
+<li><div>The bend mode peak moves toward the outer side (+x). Straight and bend modes no longer overlap perfectly, which causes transition loss.</div></li>
+<li><div>Faint arcs appear on the outer side (x &gt; 15 µm). This is the radiating field, which causes bending loss.</div></li>
+<li><div>The imaginary part of \(n_\text{eff}\) rises from \(2.5\times10^{-8}\) to \(1.66\times10^{-5}\).</div></li>
+</ol>
+<div class="display-eq quiet">\[\alpha\,[\text{dB/cm}] = 4.343\cdot\frac{4\pi\,\mathrm{Im}(n_\text{eff})}{\lambda} \;\Rightarrow\; \approx 0.009\ \text{dB/cm (straight)},\ \approx 5.8\ \text{dB/cm (bend)}\]</div>
+<p>Assuming λ = 1550 nm. Multiply by the arc length to get dB per 90°.</p>
+<h2>Transition losses: mode mismatch</h2>
+<p>At a junction the incoming mode must excite the next section's mode. Only the overlapping part couples:</p>
+<div class="display-eq">\[\eta = \left|\int E_1(x)\,E_2(x)\,dx\right|^2, \qquad T = -10\log_{10}\eta\]</div>
+<div data-slot="embed:mode-overlap"></div>
+<ul class="tight">
+<li><strong>Straight-bend transition (T<sub>sb</sub>):</strong> the bend mode leans outward; the straight mode is centred. Twice per S-bend. Reduced by a lateral offset at the junction or by Euler (clothoid) curves.</li>
+<li><strong>Bend-bend transition (T<sub>bb</sub>):</strong> the mode leans to one side in arc 1 and to the other side in arc 2, so the relative shift doubles. Once per S-bend.</li>
+</ul>
+<h2>The S-bend loss model</h2>
+<div class="display-eq">\[L_\text{SB}(\theta) = \alpha_b\,\frac{2\theta}{90^\circ} + 2T_\text{sb} + T_\text{bb} \;\overset{T_\text{bb}=2T_\text{sb}}{=}\; \alpha_b\,\frac{2\theta}{90^\circ} + 4T_\text{sb}\]</div>
+<div data-slot="embed:sbend-calculator"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 7 · S-bend loss의 물리적 원인</p>
+  <h1>S-bend가 빛을 잃는 세 가지 경로</h1>
+  <p class="lede">S-bend는 곡률 방향이 반대인 두 circular arc(각각 각도 θ)로 waveguide를 옆으로 이동시키므로 전체 bend angle은 2θ입니다.</p>
+</header>
+<figure><div class="plate"><img src="img/sbend_geometry.png" alt="S-bend: straight, arc of plus theta, arc of minus theta, straight; transitions marked straight-to-bend, bend-to-bend, bend-to-straight" width="1216" height="586"></div><figcaption>S-bend 하나: arc 두 개 (전체 각도 2θ), straight-bend transition 두 번, bend-bend transition 한 번.</figcaption></figure>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>성분</th>
+<th>단위</th>
+<th style="text-align: left;">발생 위치</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bending loss α<sub>b</sub></td>
+<td>dB/90°</td>
+<td style="text-align: left;">곡선 arc를 따라, 각도에 비례</td>
+</tr>
+<tr>
+<td>Straight-bend transition T<sub>sb</sub></td>
+<td>dB/trans.</td>
+<td style="text-align: left;">straight와 bend가 만나는 두 junction</td>
+</tr>
+<tr>
+<td>Bend-bend transition T<sub>bb</sub></td>
+<td>dB/trans.</td>
+<td style="text-align: left;">곡률 방향이 바뀌는 지점</td>
+</tr>
+</tbody>
+</table></div>
+<h2>Bent waveguide는 어디서 빛을 잃는가</h2>
+<div class="fig-row"><figure><div class="plate"><img src="img/ref_fig1a.png" alt="90 degree bend with mode mismatch marked at both junctions and radiation from the outer side" width="254" height="200"></div><figcaption>(a) 90° circular bend: junction의 mode mismatch와 바깥쪽 radiation.</figcaption></figure><figure><div class="plate"><img src="img/ref_fig1c.png" alt="FDTD simulation of the Ey field: part of the field leaves the bend and radiates outward" width="188" height="160"></div><figcaption>(c) FDTD Ey field: junction에서 radiation이 waveguide 밖으로 빠져나갑니다.</figcaption></figure></div>
+<p>그림: M. Bahadori, M. Nikdast, Q. Cheng, K. Bergman, J. Lightwave Technol. 37(13), 3044 (2019), Fig. 1(a),(c).</p>
+<p>radiation은 arc 전체에서 연속적으로 새는 loss이므로 각도에 비례합니다. mode mismatch는 각 junction에서 한 번씩 생기는 loss이므로 transition 수로 셉니다. 이 논문은 곡률이 갑자기 바뀌는 입력·출력 connection에서 주된 loss가 생긴다고 설명합니다.</p>
+<h2>Bend에서 radiation이 생기는 이유</h2>
+<div class="grid2"><div><figure><div class="plate"><img src="img/ref_conformal.webp" alt="Conformal transformation of a curved step-index guide into an equivalent straight guide whose index profile rises exponentially toward the outside" width="1106" height="1015"></div><figcaption>M. Heiblum, J. H. Harris, IEEE J. Quantum Electron. QE-11(2), 75 (1975), Fig. 1.</figcaption></figure></div><div><p>conformal transformation은 휘어진 waveguide를 등가의 <em>straight</em> waveguide로 바꿔 줍니다. 그 대가로 굴절률 분포가 기울어집니다:</p>
+<div class="display-eq">\[n(u) = n\,e^{u/R}\]</div>
+<p>바깥쪽으로 충분히 멀어지면 기울어진 cladding 굴절률이 mode의 effective index보다 커집니다. 그 지점부터 field가 감쇠하지 않고 퍼져 나가며, prism coupler에서 빛이 tunneling으로 빠져나가는 것과 같습니다.</p>
+<p>같은 현상을 다르게 보면: phase front가 강체처럼 회전하므로, field의 바깥 부분은 \(c/n_\text{clad}\)보다 빨리 움직여야 합니다.</p>
+<p>R이 작을수록 기울기가 커져 radiation 지점이 core에 가까워집니다. 그래서 R이 줄면 loss가 대략 \(e^{-CR}\)처럼 커집니다.</p></div></div>
+<h2>Simulation 결과: straight mode와 bend mode</h2>
+<div class="fig-row"><figure><div class="plate"><img src="img/ref_fig2_straight.webp" alt="Ex mode profile of the straight waveguide, centred, effective index 1.445234 plus 2.5e-8 i" width="1033" height="868"></div></figure><figure><div class="plate"><img src="img/ref_fig2_bend.webp" alt="Ex mode profile of the bent waveguide, shifted outward with faint radiation ripples, effective index 1.445311 plus 1.658e-5 i" width="1033" height="880"></div></figure></div>
+<p>같은 low-contrast waveguide에 대한 mode solver 결과.</p>
+<ol class="steps">
+<li><div>bend mode의 peak가 바깥쪽(+x)으로 이동합니다. straight mode와 bend mode가 완전히 겹치지 않으므로 transition loss가 생깁니다.</div></li>
+<li><div>바깥쪽(x &gt; 15 µm)에 희미한 호 모양 무늬가 보입니다. 이것이 방사되는 field이며 bending loss의 원인입니다.</div></li>
+<li><div>\(n_\text{eff}\)의 허수부가 \(2.5\times10^{-8}\)에서 \(1.66\times10^{-5}\)로 커집니다.</div></li>
+</ol>
+<div class="display-eq quiet">\[\alpha\,[\text{dB/cm}] = 4.343\cdot\frac{4\pi\,\mathrm{Im}(n_\text{eff})}{\lambda} \;\Rightarrow\; \approx 0.009\ \text{dB/cm (straight)},\ \approx 5.8\ \text{dB/cm (bend)}\]</div>
+<p>λ = 1550 nm로 가정했습니다. arc 길이를 곱하면 90°당 dB 값이 됩니다.</p>
+<h2>Transition loss: mode mismatch</h2>
+<p>junction에서는 들어오는 mode가 다음 구간의 mode를 여기해야 합니다. 겹치는 부분만 전달됩니다:</p>
+<div class="display-eq">\[\eta = \left|\int E_1(x)\,E_2(x)\,dx\right|^2, \qquad T = -10\log_{10}\eta\]</div>
+<div data-slot="embed:mode-overlap"></div>
+<ul class="tight">
+<li><strong>Straight-bend transition (T<sub>sb</sub>):</strong> bend mode는 바깥쪽으로 치우치고 straight mode는 가운데에 있습니다. S-bend 하나에 두 번 생깁니다. junction에 lateral offset을 주거나 Euler (clothoid) curve를 쓰면 줄일 수 있습니다.</li>
+<li><strong>Bend-bend transition (T<sub>bb</sub>):</strong> mode가 arc 1에서는 한쪽으로, arc 2에서는 반대쪽으로 치우치므로 상대 이동량이 두 배가 됩니다. S-bend 하나에 한 번 생깁니다.</li>
+</ul>
+<h2>S-bend loss model</h2>
+<div class="display-eq">\[L_\text{SB}(\theta) = \alpha_b\,\frac{2\theta}{90^\circ} + 2T_\text{sb} + T_\text{bb} \;\overset{T_\text{bb}=2T_\text{sb}}{=}\; \alpha_b\,\frac{2\theta}{90^\circ} + 4T_\text{sb}\]</div>
+<div data-slot="embed:sbend-calculator"></div>
+</div>
+</article>
+
+<article class="part" id="part-8" data-title="S-bend extraction" data-group="S-bends" data-title-ko="S-bend 추출" data-group-ko="S-bend" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 8 · S-bend test patterns and extraction</p>
+  <h1>One angle for the total, three angles for the parts</h1>
+  <p class="lede">One S-bend loses too little to measure accurately, so many are cascaded and the per-S-bend loss is taken from the trend.</p>
+</header>
+<div class="display-eq quiet">\[\text{input} - \text{straight} - \{\text{S-bend} - \text{short straight} - \text{S-bend} - \text{short straight}\}\times N - \text{straight} - \text{output}\]</div>
+<figure><div class="plate"><img src="img/test_pattern.png" alt="Test patterns with N = 1, 2 and 3 units, containing 2, 4 and 6 S-bends" width="2071" height="760"></div><figcaption>Each unit holds two S-bends (one up, one back down), so the patterns contain n_S = 2, 4, 6, 8 S-bends.</figcaption></figure>
+<p>All patterns share the same facets and input/output straights, so coupling loss and straight propagation loss form one common constant C. Small differences in path length are corrected with α from the cut-back.</p>
+<h2>Step 1: one angle gives the loss per S-bend</h2>
+<div class="display-eq">\[\mathrm{IL} = C + n_S\,L_\text{SB}(\theta)\]</div>
+<div class="grid2"><div><figure><div data-slot="chart:step1Plot"></div><figcaption>θ = 30°: IL = 2.99, 4.59, 6.21, 7.81 dB for n_S = 2, 4, 6, 8.</figcaption></figure></div><div><p>A straight-line fit of IL against n<sub>S</sub> gives</p>
+<div data-slot="output:step1Out"></div>
+<p>This is the total per S-bend. α<sub>b</sub> and T<sub>sb</sub> are still mixed together.</p></div></div>
+<div data-slot="exercise:6"></div>
+<h2>Why one angle is not enough</h2>
+<p>\(L_\text{SB}(30^\circ) = 0.667\,\alpha_b + 4T_\text{sb}\) is one equation with two unknowns. (0.30, 0.151) fits, but so do (0, 0.201) and (0.6, 0.101). In matrix language the angle column and the transition column are proportional, so \(A^\mathsf{T}A\) is singular. More patterns of the same kind do not help; a different experiment does.</p>
+<p class="keyline"><strong>Fix:</strong> make the same pattern family with S-bends of θ = 10°, 20° and 30°. The bending term changes with angle; the transition term does not.</p>
+<h2>Step 2: repeat the fit for every angle</h2>
+<div data-slot="embed:sbend-table"></div>
+<figure><div data-slot="chart:step2Plot"></div><figcaption>Each angle family gives its own slope L_SB(θ); the intercepts agree (same facets).</figcaption></figure>
+<h2>Step 3: fit L<sub>SB</sub> against angle</h2>
+<div class="display-eq">\[L_\text{SB}(\theta) = \alpha_b\cdot\underbrace{\tfrac{2\theta}{90^\circ}}_{x} + \underbrace{4T_\text{sb}}_{\text{intercept}}\]</div>
+<div class="grid2"><div><figure><div data-slot="chart:step3Plot"></div><figcaption>The intercept at 2θ = 0 is the pure transition part.</figcaption></figure></div><div><div data-slot="output:step3Out"></div>
+<p>True values used to make the data: α<sub>b</sub> = 0.30 dB/90°, T<sub>sb</sub> = 0.15 dB, noise σ = 0.02 dB.</p></div></div>
+<div class="check" data-quiz="8"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 8 · S-bend test pattern과 loss 추출</p>
+  <h1>한 각도로 전체를, 세 각도로 성분을</h1>
+  <p class="lede">S-bend 하나의 loss는 너무 작아서 정확히 측정하기 어렵습니다. 그래서 여러 개를 이어 붙이고, 그 경향에서 S-bend 하나당 loss를 구합니다.</p>
+</header>
+<div class="display-eq quiet">\[\text{input} - \text{straight} - \{\text{S-bend} - \text{short straight} - \text{S-bend} - \text{short straight}\}\times N - \text{straight} - \text{output}\]</div>
+<figure><div class="plate"><img src="img/test_pattern.png" alt="Test patterns with N = 1, 2 and 3 units, containing 2, 4 and 6 S-bends" width="2071" height="760"></div><figcaption>unit 하나에 S-bend가 두 개(올라갔다 다시 내려옴) 있으므로 pattern은 n_S = 2, 4, 6, 8개의 S-bend를 포함합니다.</figcaption></figure>
+<p>모든 pattern이 같은 facet과 입출력 straight 구간을 공유하므로, coupling loss와 straight 구간의 propagation loss는 하나의 공통 상수 C가 됩니다. 경로 길이의 작은 차이는 cut-back에서 구한 α로 보정합니다.</p>
+<h2>Step 1: 한 각도로 S-bend 하나당 loss 구하기</h2>
+<div class="display-eq">\[\mathrm{IL} = C + n_S\,L_\text{SB}(\theta)\]</div>
+<div class="grid2"><div><figure><div data-slot="chart:step1Plot"></div><figcaption>θ = 30°: n_S = 2, 4, 6, 8에서 IL = 2.99, 4.59, 6.21, 7.81 dB.</figcaption></figure></div><div><p>IL을 n<sub>S</sub>에 대해 직선으로 fit하면</p>
+<div data-slot="output:step1Out"></div>
+<p>이것은 S-bend 하나의 전체 loss입니다. α<sub>b</sub>와 T<sub>sb</sub>가 아직 섞여 있습니다.</p></div></div>
+<div data-slot="exercise:6"></div>
+<h2>한 각도로는 부족한 이유</h2>
+<p>\(L_\text{SB}(30^\circ) = 0.667\,\alpha_b + 4T_\text{sb}\)는 미지수 두 개에 식 하나입니다. (0.30, 0.151)도 맞지만 (0, 0.201)이나 (0.6, 0.101)도 맞습니다. 행렬로 보면 angle 열과 transition 열이 비례하므로 \(A^\mathsf{T}A\)가 singular입니다. 같은 종류의 pattern을 더 만들어도 소용없고, 실험 설계를 바꿔야 합니다.</p>
+<p class="keyline"><strong>해결:</strong> 같은 pattern family를 θ = 10°, 20°, 30°의 S-bend로 만듭니다. bending 항은 각도에 따라 변하고 transition 항은 변하지 않습니다.</p>
+<h2>Step 2: 각도마다 fit 반복</h2>
+<div data-slot="embed:sbend-table"></div>
+<figure><div data-slot="chart:step2Plot"></div><figcaption>각도별 pattern family마다 slope L_SB(θ)가 따로 나오고, intercept는 같습니다 (facet이 같으므로).</figcaption></figure>
+<h2>Step 3: L<sub>SB</sub>를 각도에 대해 fit</h2>
+<div class="display-eq">\[L_\text{SB}(\theta) = \alpha_b\cdot\underbrace{\tfrac{2\theta}{90^\circ}}_{x} + \underbrace{4T_\text{sb}}_{\text{intercept}}\]</div>
+<div class="grid2"><div><figure><div data-slot="chart:step3Plot"></div><figcaption>2θ = 0에서의 intercept가 순수한 transition 성분입니다.</figcaption></figure></div><div><div data-slot="output:step3Out"></div>
+<p>데이터 생성에 사용한 참값: α<sub>b</sub> = 0.30 dB/90°, T<sub>sb</sub> = 0.15 dB, noise σ = 0.02 dB.</p></div></div>
+<div class="check" data-quiz="ko8"></div>
+</div>
+</article>
+
+<article class="part" id="part-9" data-title="Linear Algebra II" data-group="S-bends" data-title-ko="Linear Algebra II" data-group-ko="S-bend" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 9 · Linear Algebra II</p>
+  <h1>Least squares with many unknowns</h1>
+  <p class="lede">Steps 1–3 can be done in one shot: twelve patterns, three unknowns.</p>
+</header>
+<div class="display-eq quiet">\[\underbrace{\begin{bmatrix} 1 &amp; n_1\frac{2\theta_1}{90} &amp; 4n_1\\ 1 &amp; n_2\frac{2\theta_2}{90} &amp; 4n_2\\ \vdots &amp; \vdots &amp; \vdots\\ 1 &amp; n_{12}\frac{2\theta_{12}}{90} &amp; 4n_{12}\end{bmatrix}}_{A\ (12\times3)} \begin{bmatrix} C\\ \alpha_b\\ T_\text{sb}\end{bmatrix} = \begin{bmatrix}\mathrm{IL}_1\\ \mathrm{IL}_2\\ \vdots\\ \mathrm{IL}_{12}\end{bmatrix}\]</div>
+<p>The derivation from Part 6 is unchanged: \(\hat x = (A^\mathsf{T}A)^{-1}A^\mathsf{T}b\), now with a 3 × 3 matrix. In practice Excel LINEST, MATLAB <code>A\b</code> or Python <code>numpy.linalg.lstsq</code> solve exactly this problem.</p>
+<h2>Identifiability</h2>
+<ul class="tight">
+<li><strong>rank(A) = n:</strong> \(A^\mathsf{T}A\) is invertible and \(\hat x\) is unique.</li>
+<li><strong>rank(A) &lt; n:</strong> \(A^\mathsf{T}A\) is singular; the parameters cannot be identified. This is the one-angle case.</li>
+<li><strong>Nearly dependent columns</strong> (e.g. 29°, 30°, 31°): \(A^\mathsf{T}A\) is ill-conditioned and noise is amplified. Spread the x values.</li>
+</ul>
+<h2>Worked example: all 12 patterns</h2>
+<div data-slot="output:oneShotOut"></div>
+<p>The two-stage result from Part 8 is close but not identical, because the one-shot fit forces a single common C while the per-angle fits each had their own intercept. Both are valid estimates within the noise.</p>
+<h2>Judging the fit</h2>
+<figure><div data-slot="chart:residPlot"></div><figcaption>Residuals of the 12-pattern fit: small and without a trend. One large bar would point to a bad facet or a misaligned measurement.</figcaption></figure>
+<div class="display-eq quiet">\[R^2 = 1-\frac{\sum r_i^2}{\sum (y_i-\bar y)^2},\qquad \hat\sigma = \sqrt{\frac{\sum r_i^2}{m-n}},\qquad \mathrm{Cov}(\hat x) = \hat\sigma^2 (A^\mathsf{T}A)^{-1}\]</div>
+<div data-slot="output:fitStats"></div>
+<div class="check" data-quiz="9"></div>
+<div data-slot="exercise:7"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 9 · Linear Algebra II</p>
+  <h1>미지수가 많은 least squares</h1>
+  <p class="lede">Steps 1–3을 한 번에 할 수 있습니다: pattern 12개, 미지수 3개.</p>
+</header>
+<div class="display-eq quiet">\[\underbrace{\begin{bmatrix} 1 &amp; n_1\frac{2\theta_1}{90} &amp; 4n_1\\ 1 &amp; n_2\frac{2\theta_2}{90} &amp; 4n_2\\ \vdots &amp; \vdots &amp; \vdots\\ 1 &amp; n_{12}\frac{2\theta_{12}}{90} &amp; 4n_{12}\end{bmatrix}}_{A\ (12\times3)} \begin{bmatrix} C\\ \alpha_b\\ T_\text{sb}\end{bmatrix} = \begin{bmatrix}\mathrm{IL}_1\\ \mathrm{IL}_2\\ \vdots\\ \mathrm{IL}_{12}\end{bmatrix}\]</div>
+<p>Part 6의 유도는 그대로입니다: \(\hat x = (A^\mathsf{T}A)^{-1}A^\mathsf{T}b\), 이제 3 × 3 행렬일 뿐입니다. 실제로는 Excel LINEST, MATLAB <code>A\b</code>, Python <code>numpy.linalg.lstsq</code>가 정확히 이 문제를 풉니다.</p>
+<h2>Identifiability</h2>
+<ul class="tight">
+<li><strong>rank(A) = n:</strong> \(A^\mathsf{T}A\)가 invertible이고 \(\hat x\)가 유일합니다.</li>
+<li><strong>rank(A) &lt; n:</strong> \(A^\mathsf{T}A\)가 singular이며 parameter를 구분할 수 없습니다. 한 각도만 쓴 경우입니다.</li>
+<li><strong>거의 종속인 열</strong> (예: 29°, 30°, 31°): \(A^\mathsf{T}A\)가 ill-conditioned가 되어 noise가 증폭됩니다. x 값을 넓게 분포시키세요.</li>
+</ul>
+<h2>풀이 예: 12개 pattern 전체</h2>
+<div data-slot="output:oneShotOut"></div>
+<p>Part 8의 두 단계 결과와 가깝지만 같지는 않습니다. 한 번에 푸는 fit은 공통 C 하나를 쓰고, 각도별 fit은 intercept를 따로 두기 때문입니다. 둘 다 noise 범위 안에서 타당한 추정값입니다.</p>
+<h2>Fit 평가</h2>
+<figure><div data-slot="chart:residPlot"></div><figcaption>12개 pattern fit의 residual: 작고 경향이 없습니다. 하나만 크게 튀면 facet 불량이나 정렬 오류를 의심하세요.</figcaption></figure>
+<div class="display-eq quiet">\[R^2 = 1-\frac{\sum r_i^2}{\sum (y_i-\bar y)^2},\qquad \hat\sigma = \sqrt{\frac{\sum r_i^2}{m-n}},\qquad \mathrm{Cov}(\hat x) = \hat\sigma^2 (A^\mathsf{T}A)^{-1}\]</div>
+<div data-slot="output:fitStats"></div>
+<div class="check" data-quiz="ko9"></div>
+<div data-slot="exercise:7"></div>
+</div>
+</article>
+
+<article class="part" id="part-10" data-title="Wrap-up" data-group="Wrap-up" data-title-ko="정리" data-group-ko="정리" hidden>
+<div data-l="en">
+<header class="part-head">
+  <p class="eyebrow">Part 10 · Wrap-up</p>
+  <h1>Good practice and summary</h1>
+  <p class="lede">Most bad loss numbers come from the measurement, not the math.</p>
+</header>
+<h2>Summary</h2>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>Step</th>
+<th style="text-align: left;">Equation</th>
+<th style="text-align: left;">What you get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insertion loss</td>
+<td style="text-align: left;">\(\mathrm{IL} = P_\text{ref} - P_\text{DUT}\)</td>
+<td style="text-align: left;">total loss of the DUT (dB)</td>
+</tr>
+<tr>
+<td>dB bookkeeping</td>
+<td style="text-align: left;">\(P[\text{dBm}] = 10\log_{10}(P/1\,\text{mW})\)</td>
+<td style="text-align: left;">losses add, decay is linear</td>
+</tr>
+<tr>
+<td>Cut-back</td>
+<td style="text-align: left;">\(\mathrm{IL} = \alpha L + 2\,\mathrm{CL}\)</td>
+<td style="text-align: left;">α (dB/cm), CL (dB/facet)</td>
+</tr>
+<tr>
+<td>S-bend, one angle</td>
+<td style="text-align: left;">\(\mathrm{IL} = C + n_S L_\text{SB}(\theta)\)</td>
+<td style="text-align: left;">loss per S-bend</td>
+</tr>
+<tr>
+<td>S-bend, three angles</td>
+<td style="text-align: left;">\(L_\text{SB} = \alpha_b\frac{2\theta}{90^\circ} + 2T_\text{sb} + T_\text{bb}\)</td>
+<td style="text-align: left;">α<sub>b</sub>, T<sub>sb</sub>, T<sub>bb</sub></td>
+</tr>
+<tr>
+<td>Least squares</td>
+<td style="text-align: left;">\(A^\mathsf{T}A\,\hat x = A^\mathsf{T}b\)</td>
+<td style="text-align: left;">best-fit parameters from noisy data</td>
+</tr>
+</tbody>
+</table></div>
+<h2>References</h2>
+<ol class="steps">
+<li><div>M. Heiblum and J. H. Harris, "Analysis of curved optical waveguides by conformal transformation," IEEE J. Quantum Electron. QE-11(2), 75–83 (1975).</div></li>
+<li><div>M. Bahadori, M. Nikdast, Q. Cheng, K. Bergman, "Universal design of waveguide bends in silicon-on-insulator photonics platform," J. Lightwave Technol. 37(13), 3044–3054 (2019).</div></li>
+</ol>
+<div class="check" data-quiz="10"></div>
+</div>
+<div data-l="ko" lang="ko">
+<header class="part-head">
+  <p class="eyebrow">Part 10 · 정리</p>
+  <h1>Good practice와 요약</h1>
+  <p class="lede">잘못된 loss 값은 대부분 계산이 아니라 측정에서 나옵니다.</p>
+</header>
+<h2>요약</h2>
+<div class="tablewrap"><table class="data">
+<thead>
+<tr>
+<th>단계</th>
+<th style="text-align: left;">식</th>
+<th style="text-align: left;">얻는 값</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Insertion loss</td>
+<td style="text-align: left;">\(\mathrm{IL} = P_\text{ref} - P_\text{DUT}\)</td>
+<td style="text-align: left;">DUT의 전체 loss (dB)</td>
+</tr>
+<tr>
+<td>dB 계산</td>
+<td style="text-align: left;">\(P[\text{dBm}] = 10\log_{10}(P/1\,\text{mW})\)</td>
+<td style="text-align: left;">loss는 더하고, 감쇠는 직선</td>
+</tr>
+<tr>
+<td>Cut-back</td>
+<td style="text-align: left;">\(\mathrm{IL} = \alpha L + 2\,\mathrm{CL}\)</td>
+<td style="text-align: left;">α (dB/cm), CL (dB/facet)</td>
+</tr>
+<tr>
+<td>S-bend, 한 각도</td>
+<td style="text-align: left;">\(\mathrm{IL} = C + n_S L_\text{SB}(\theta)\)</td>
+<td style="text-align: left;">S-bend 하나당 loss</td>
+</tr>
+<tr>
+<td>S-bend, 세 각도</td>
+<td style="text-align: left;">\(L_\text{SB} = \alpha_b\frac{2\theta}{90^\circ} + 2T_\text{sb} + T_\text{bb}\)</td>
+<td style="text-align: left;">α<sub>b</sub>, T<sub>sb</sub>, T<sub>bb</sub></td>
+</tr>
+<tr>
+<td>Least squares</td>
+<td style="text-align: left;">\(A^\mathsf{T}A\,\hat x = A^\mathsf{T}b\)</td>
+<td style="text-align: left;">noise가 있는 데이터의 best-fit parameter</td>
+</tr>
+</tbody>
+</table></div>
+<h2>참고 문헌</h2>
+<ol class="steps">
+<li><div>M. Heiblum and J. H. Harris, "Analysis of curved optical waveguides by conformal transformation," IEEE J. Quantum Electron. QE-11(2), 75–83 (1975).</div></li>
+<li><div>M. Bahadori, M. Nikdast, Q. Cheng, K. Bergman, "Universal design of waveguide bends in silicon-on-insulator photonics platform," J. Lightwave Technol. 37(13), 3044–3054 (2019).</div></li>
+</ol>
+<div class="check" data-quiz="ko10"></div>
+</div>
+</article>
+
+<div class="slot-holder">
+<div id="decayLin" data-slot-key="chart:decayLin"></div>
+<div id="decayLog" data-slot-key="chart:decayLog"></div>
+<div data-slot-key="embed:dbm-converter"><div class="widget" aria-label="mW and dBm converter">
+  <div class="widget-head"><span data-l="en">Converter</span><span data-l="ko">단위 변환기</span></div>
+  <div class="conv">
+    <label for="convMw"><span data-l="en">Power in mW</span><span data-l="ko">Power (mW)</span><input id="convMw" inputmode="decimal" value="0.5"></label>
+    <label for="convDbm"><span data-l="en">Power in dBm</span><span data-l="ko">Power (dBm)</span><input id="convDbm" inputmode="decimal" value="-3.01"></label>
+  </div>
+  <p class="note" style="margin:.6rem 0 0"><span data-l="en">Type in either box. Anchors: 1 mW = 0 dBm, 2× = +3 dB, 10× = +10 dB, 1 µW = −30 dBm.</span><span data-l="ko">어느 칸에 입력해도 됩니다. 기준값: 1 mW = 0 dBm, 2배 = +3 dB, 10배 = +10 dB, 1 µW = −30 dBm.</span></p>
+</div></div>
+<div data-slot-key="exercise:1"><section class="ex" id="ex1" aria-label="Exercise 1">
+  <div class="card">
+    <span class="ex-tag">Exercise 1</span>
+    <h2><span data-l="en">dB / dBm warm-up</span><span data-l="ko">dB / dBm 기초 연습</span></h2>
+    <p class="lead"><span data-l="en">Convert between linear and logarithmic units and add up a loss budget. Tolerance: ±0.05 dB (±2 % for mW).</span><span data-l="ko">선형 단위와 로그 단위를 변환하고 loss budget을 계산합니다. 허용 오차: ±0.05 dB (mW는 ±2 %).</span></p>
+    <div class="eq">P[dBm] = 10·log₁₀(P / 1 mW) &nbsp;&nbsp;|&nbsp;&nbsp; Loss[dB] = 10·log₁₀(P_in / P_out)</div>
+    <div class="toolbar"><button class="btn" data-new="1"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="1"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button></div>
+    <div id="ex1q"></div>
+    <div class="result" id="ex1r"></div>
+    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex1s"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="embed:setup-flow"><div class="flow" role="img" aria-label="Three setups: A alignment and polarization with lens, polarizer and IR camera; B DUT measurement with two fiber blocks and a power meter; C fiber-to-fiber reference">
+  <div class="flow-row">
+    <div class="flow-title"><b>A</b><span data-l="en">Alignment / polarization</span><span data-l="ko">정렬 · 편광 조정</span></div>
+    <div class="flow-chain">
+      <div class="node">DFB laser<small>1550 nm</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node pc">PC<small>3-paddle</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node">Fiber block<small>input</small></div><div class="link oil"><span>oil</span></div>
+      <div class="node dut">PIC device<small>DUT</small></div><div class="link free"></div>
+      <div class="node soft">Lens</div><div class="link free"></div>
+      <div class="node soft">Polarizer<small>analyzer</small></div><div class="link free"></div>
+      <div class="node">IR camera</div>
+    </div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-title"><b>B</b><span data-l="en">DUT measurement</span><span data-l="ko">DUT 측정</span><em>P<sub>DUT</sub></em></div>
+    <div class="flow-chain">
+      <div class="node">DFB laser<small>1550 nm</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node pc">PC<small>3-paddle</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node">Fiber block<small>input</small></div><div class="link oil"><span>oil</span></div>
+      <div class="node dut">PIC device<small>DUT</small></div><div class="link oil"><span>oil</span></div>
+      <div class="node">Fiber block<small>output</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node">Power meter<small>dBm</small></div>
+    </div>
+  </div>
+  <div class="flow-row">
+    <div class="flow-title"><b>C</b><span data-l="en">Reference (fiber-to-fiber)</span><span data-l="ko">Reference (fiber-to-fiber)</span><em>P<sub>ref</sub></em></div>
+    <div class="flow-chain">
+      <div class="node">DFB laser<small>1550 nm</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node pc">PC<small>3-paddle</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node">Fiber block<small>input</small></div><div class="link oil"><span>oil</span></div>
+      <div class="node">Fiber block<small>output</small></div><div class="link fiber"><span>SMF</span></div>
+      <div class="node">Power meter<small>dBm</small></div>
+    </div>
+  </div>
+  <div class="flow-legend">
+    <span><i class="fiber"></i><span data-l="en">single-mode fiber (FC/APC)</span><span data-l="ko">single-mode fiber (FC/APC)</span></span>
+    <span><i class="oil"></i><span data-l="en">butt coupling with index-matching oil</span><span data-l="ko">index-matching oil로 butt coupling</span></span>
+    <span><i class="free"></i><span data-l="en">free-space beam</span><span data-l="ko">free-space beam</span></span>
+  </div>
+</div></div>
+<div data-slot-key="embed:alignment-cases"><div class="align-cases">
+  <figure class="align-case">
+    <div class="align-pair">
+      <div class="xs" style="--x:30%;--y:16%" role="img" aria-label="Chip facet cross-section: the fiber mode sits on the lid glass">
+        <div class="xs-lid"><span>lid glass</span></div><div class="xs-wg"><span>waveguide layer</span></div><div class="xs-sub"><span>Si substrate</span></div>
+        <div class="xs-core"><span>core</span></div><div class="xs-fiber"></div>
+      </div>
+      <div class="cam"><img src="img/camera-glass_lid.jpg" alt="IR camera image: broad horizontal fringes across the output facet" width="720" height="480"><span>IR camera</span></div>
+    </div>
+    <figcaption><b><span data-l="en">(a) Fiber on the lid glass.</span><span data-l="ko">(a) Fiber가 lid glass 위.</span></b> <span data-l="en">Light spreads in the thick glass lid and shows broad horizontal fringes; there is no guided mode. Move the fiber down.</span><span data-l="ko">두꺼운 glass lid에 빛이 퍼져 넓은 가로 무늬가 보이며 guided mode는 없습니다. fiber를 아래로 내리세요.</span></figcaption>
+  </figure>
+  <figure class="align-case">
+    <div class="align-pair">
+      <div class="xs" style="--x:22%;--y:51%" role="img" aria-label="Chip facet cross-section: the fiber mode is at the height of the waveguide layer but beside the core">
+        <div class="xs-lid"><span>lid glass</span></div><div class="xs-wg"><span>waveguide layer</span></div><div class="xs-sub"><span>Si substrate</span></div>
+        <div class="xs-core"><span>core</span></div><div class="xs-fiber"></div>
+      </div>
+      <div class="cam"><img src="img/camera-core_layer.jpg" alt="IR camera image: a bright horizontal line at the height of the waveguide layer" width="720" height="480"><span>IR camera</span></div>
+    </div>
+    <figcaption><b><span data-l="en">(b) Fiber on the waveguide layer, beside the core.</span><span data-l="ko">(b) Fiber가 waveguide layer 높이, core 옆.</span></b> <span data-l="en">Light is trapped in the slab (cladding) layer and appears as a bright horizontal line. The height is right: scan sideways until the line collapses into one spot.</span><span data-l="ko">slab(cladding) 층에 갇힌 빛이 밝은 가로 선으로 보입니다. 높이는 맞았으므로 선이 하나의 점으로 모일 때까지 좌우로 움직이세요.</span></figcaption>
+  </figure>
+  <figure class="align-case">
+    <div class="align-pair">
+      <div class="xs good" style="--x:50%;--y:51%" role="img" aria-label="Chip facet cross-section: the fiber mode is centred on the core">
+        <div class="xs-lid"><span>lid glass</span></div><div class="xs-wg"><span>waveguide layer</span></div><div class="xs-sub"><span>Si substrate</span></div>
+        <div class="xs-core"><span>core</span></div><div class="xs-fiber"></div>
+      </div>
+      <div class="cam"><img src="img/camera-coupling.jpg" alt="IR camera image: a single bright spot, the guided waveguide mode" width="720" height="480"><span>IR camera</span></div>
+    </div>
+    <figcaption><b><span data-l="en">(c) Fiber on the core: coupled.</span><span data-l="ko">(c) Fiber가 core 위: coupling 성공.</span></b> <span data-l="en">A single bright spot is the guided mode. Fine-tune x, y and z until it is brightest.</span><span data-l="ko">하나의 밝은 점이 guided mode입니다. x, y, z를 미세 조정해 가장 밝게 맞추세요.</span></figcaption>
+  </figure>
+  <figure class="align-case">
+    <div class="align-pair">
+      <div class="xs" style="--x:62%;--y:85%" role="img" aria-label="Chip facet cross-section: the fiber mode sits on the silicon substrate">
+        <div class="xs-lid"><span>lid glass</span></div><div class="xs-wg"><span>waveguide layer</span></div><div class="xs-sub"><span>Si substrate</span></div>
+        <div class="xs-core"><span>core</span></div><div class="xs-fiber"></div>
+      </div>
+      <div class="cam"><img src="img/camera-silicon_sub.jpg" alt="IR camera image: diffuse glow in the lower part of the facet" width="720" height="480"><span>IR camera</span></div>
+    </div>
+    <figcaption><b><span data-l="en">(d) Fiber on the silicon substrate.</span><span data-l="ko">(d) Fiber가 silicon substrate 위.</span></b> <span data-l="en">Light scatters in the substrate and glows diffusely below the layers. Move the fiber up.</span><span data-l="ko">substrate에서 빛이 산란되어 층 아래쪽이 흐릿하게 빛납니다. fiber를 위로 올리세요.</span></figcaption>
+  </figure>
+</div></div>
+<div data-slot-key="exercise:2"><section class="ex" id="ex2" aria-label="Exercise 2">
+  <div class="card">
+    <span class="ex-tag">Exercise 2</span>
+    <h2><span data-l="en">Insertion loss from meter readings</span><span data-l="ko">측정값으로부터 insertion loss 구하기</span></h2>
+    <p class="lead"><span data-l="en">A reference (fiber-to-fiber) reading and a DUT reading are given, sometimes in mW/µW, sometimes in dBm. Compute the insertion loss. Tolerance: ±0.05 dB.</span><span data-l="ko">reference (fiber-to-fiber) 측정값과 DUT 측정값이 mW/µW 또는 dBm으로 주어집니다. insertion loss를 계산하세요. 허용 오차: ±0.05 dB.</span></p>
+    <div class="eq">IL [dB] = P_ref [dBm] − P_DUT [dBm]</div>
+    <div class="toolbar"><button class="btn" data-new="2"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="2"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button></div>
+    <div id="ex2q"></div>
+    <div class="result" id="ex2r"></div>
+    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex2s"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="exercise:3"><section class="ex" id="ex3" aria-label="Exercise 3">
+  <div class="card">
+    <span class="ex-tag">Exercise 3</span>
+    <h2><span data-l="en">Cut-back without measurement error</span><span data-l="ko">측정 오차가 없는 cut-back</span></h2>
+    <p class="lead"><span data-l="en">A chip of length L₀ was measured, then cleaved asymmetrically and both pieces were measured. There is <b>no measurement error</b>: any two points give the exact answer. Find the propagation loss α and the coupling loss CL. Tolerance: ±0.01.</span><span data-l="ko">길이 L₀인 chip을 측정한 뒤 비대칭으로 cleave하고 두 조각을 다시 측정했습니다. <b>측정 오차가 없으므로</b> 아무 두 점이나 사용해도 정확한 답이 나옵니다. propagation loss α와 coupling loss CL을 구하세요. 허용 오차: ±0.01.</span></p>
+    <div class="eq">IL = α · L + 2 · CL</div>
+    <div class="toolbar"><button class="btn" data-new="3"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="3"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="3"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button></div>
+    <div class="grid2">
+      <div><div class="tablewrap" id="ex3t"></div><div id="ex3q"></div><div class="result" id="ex3r"></div></div>
+      <div><div id="ex3p"></div></div>
+    </div>
+    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex3s"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="exercise:5"><section class="ex" id="ex5" aria-label="Exercise 5">
+  <div class="card">
+    <span class="ex-tag">Exercise 5</span>
+    <h2><span data-l="en">Least squares playground</span><span data-l="ko">Least squares 체험</span></h2>
+    <p class="lead"><span data-l="en">Explore how measurement noise and the number and spread of chip lengths affect the extracted α and CL. Compare a two-point estimate (first and last point only) with the least-squares fit.</span><span data-l="ko">측정 noise, chip 길이의 개수와 범위가 추출한 α와 CL에 어떤 영향을 주는지 살펴봅니다. 두 점(처음과 마지막 점)만 쓴 추정과 least-squares fit을 비교해 보세요.</span></p>
+    <div class="slider"><label for="pgN"><span data-l="en">Number of lengths</span><span data-l="ko">길이 개수</span></label><input id="pgN" type="range" min="2" max="12" value="3"><span id="pgNv"></span></div>
+    <div class="slider"><label for="pgS"><span data-l="en">Noise σ (dB)</span><span data-l="ko">Noise σ (dB)</span></label><input id="pgS" type="range" min="0" max="0.2" step="0.005" value="0.05"><span id="pgSv"></span></div>
+    <div class="slider"><label for="pgR"><span data-l="en">Longest length (cm)</span><span data-l="ko">최대 길이 (cm)</span></label><input id="pgR" type="range" min="0.6" max="4" step="0.1" value="2"><span id="pgRv"></span></div>
+    <div class="toolbar"><button class="btn" id="pgNew"><span data-l="en">Re-measure (new noise)</span><span data-l="ko">다시 측정 (새 noise)</span></button><span class="note"><span data-l="en">True values</span><span data-l="ko">참값</span>: α = 0.20 dB/cm, CL = 0.50 dB/facet</span></div>
+    <div id="pgPlot"></div>
+    <div class="legend"><span><i class="dot" style="background:var(--ink)"></i><span data-l="en">measured</span><span data-l="ko">측정값</span></span><span><i style="background:var(--teal)"></i>least-squares fit</span><span><i style="background:var(--amber)"></i><span data-l="en">two-point estimate</span><span data-l="ko">두 점 추정</span></span><span><i style="background:var(--muted);opacity:.5"></i><span data-l="en">true line</span><span data-l="ko">참값 직선</span></span><span><i style="background:var(--acc)"></i>residuals</span></div>
+    <div class="stats" id="pgStats"></div>
+    <details class="sol" open><summary><span data-l="en">Normal equations for the current data</span><span data-l="ko">현재 데이터의 normal equations</span></summary><div class="body" id="pgMat"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="exercise:4"><section class="ex" id="ex4" aria-label="Exercise 4">
+  <div class="card">
+    <span class="ex-tag">Exercise 4</span>
+    <h2><span data-l="en">Cut-back with measurement error</span><span data-l="ko">측정 오차가 있는 cut-back</span></h2>
+    <p class="lead"><span data-l="en">Same experiment, but each insertion loss now carries a random measurement error. The three points do not lie on one line, so use <b>linear regression</b> (least squares). Your answer passes if it is close to the least-squares solution of the given data (α within ±0.01 dB/cm, CL within ±0.02 dB).</span><span data-l="ko">같은 실험이지만 각 insertion loss에 무작위 측정 오차가 들어 있습니다. 세 점이 한 직선 위에 있지 않으므로 <b>linear regression</b> (least squares)을 사용하세요. 주어진 데이터의 least-squares 해에 가까우면 정답입니다 (α ±0.01 dB/cm, CL ±0.02 dB).</span></p>
+    <div class="eq">AᵀA x̂ = Aᵀb, &nbsp; A = [Lᵢ 1], &nbsp; x = [α 2·CL]ᵀ, &nbsp; b = [ILᵢ]</div>
+    <div class="toolbar"><button class="btn" data-new="4"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="4"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="4"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button></div>
+    <div class="grid2">
+      <div><div class="tablewrap" id="ex4t"></div><div id="ex4q"></div><div class="result" id="ex4r"></div></div>
+      <div><div id="ex4p"></div></div>
+    </div>
+    <details class="sol"><summary>Worked solution (normal equations)</summary><div class="body" id="ex4s"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="embed:mode-overlap"><div class="widget" aria-label="Mode overlap explorer">
+  <div class="widget-head"><span data-l="en">Mode overlap explorer</span><span data-l="ko">Mode overlap 탐색기</span></div>
+  <div class="slider"><label for="ovShift"><span data-l="en">Mode shift in the bend (µm)</span><span data-l="ko">bend에서의 mode shift (µm)</span></label><input id="ovShift" type="range" min="0" max="0.6" step="0.01" value="0.2"><output id="ovShiftV" for="ovShift">0.20</output></div>
+  <div class="slider"><label for="ovW"><span data-l="en">Mode half-width w (µm)</span><span data-l="ko">mode 반폭 w (µm)</span></label><input id="ovW" type="range" min="0.4" max="2" step="0.05" value="0.75"><output id="ovWV" for="ovW">0.75</output></div>
+  <div id="ovPlot"></div>
+  <div class="readout">
+    <div><b id="ovSb">–</b><small>T<sub>sb</sub>: straight → bend (shift d)</small></div>
+    <div><b id="ovBb">–</b><small>T<sub>bb</sub>: bend → bend (shift 2d)</small></div>
+    <div><b id="ovRatio">–</b><small>T<sub>bb</sub> / T<sub>sb</sub></small></div>
+  </div>
+  <p class="note" style="margin:.6rem 0 0"><span data-l="en">Gaussian modes: η = exp(−d²/w²). Tighter bends shift the mode further; wider modes tolerate the same shift better. For Gaussian modes the bend-bend loss is about 4× T<sub>sb</sub>; this course uses the simpler assumption T<sub>bb</sub> = 2·T<sub>sb</sub>.</span><span data-l="ko">Gaussian mode: η = exp(−d²/w²). bend가 급할수록 mode가 더 많이 이동하고, mode 폭이 넓을수록 같은 shift에 덜 민감합니다. Gaussian mode에서는 bend-bend loss가 T<sub>sb</sub>의 약 4배이지만, 이 강의에서는 단순화하여 T<sub>bb</sub> = 2·T<sub>sb</sub>로 가정합니다.</span></p>
+</div></div>
+<div data-slot-key="embed:sbend-calculator"><div class="widget" aria-label="S-bend loss calculator">
+  <div class="widget-head"><span data-l="en">S-bend loss calculator</span><span data-l="ko">S-bend loss 계산기</span></div>
+  <div class="slider"><label for="sbA">α<sub>b</sub> (dB/90°)</label><input id="sbA" type="range" min="0.01" max="0.5" step="0.01" value="0.30"><output id="sbAV" for="sbA">0.30</output></div>
+  <div class="slider"><label for="sbT">T<sub>sb</sub> (dB/trans.)</label><input id="sbT" type="range" min="0.05" max="1" step="0.01" value="0.15"><output id="sbTV" for="sbT">0.15</output></div>
+  <div class="slider"><label for="sbTh">Arc angle θ (°)</label><input id="sbTh" type="range" min="5" max="90" step="1" value="30"><output id="sbThV" for="sbTh">30</output></div>
+  <div class="readout">
+    <div><b id="sbBend">–</b><small>bending α<sub>b</sub>·2θ/90°</small></div>
+    <div><b id="sbTrans">–</b><small>transitions 2T<sub>sb</sub> + T<sub>bb</sub></small></div>
+    <div><b id="sbTotal">–</b><small>L<sub>SB</sub> per S-bend</small></div>
+  </div>
+</div></div>
+<div id="step1Plot" data-slot-key="chart:step1Plot"></div>
+<div class="mono-block" id="step1Out" data-slot-key="output:step1Out"></div>
+<div id="step3Plot" data-slot-key="chart:step3Plot"></div>
+<div class="mono-block" id="step3Out" data-slot-key="output:step3Out"></div>
+<div data-slot-key="exercise:6"><section class="ex" id="ex6" aria-label="Exercise 6">
+  <div class="card">
+    <span class="ex-tag">Exercise 6</span>
+    <h2><span data-l="en">S-bend loss from one angle (Step 1)</span><span data-l="ko">한 각도로 S-bend loss 구하기 (Step 1)</span></h2>
+    <p class="lead"><span data-l="en">Test patterns <i>input — straight — {S-bend — short straight — S-bend — short straight} × N — straight — output</i> with <b>one fixed arc angle θ</b> contain n<sub>S</sub> = 2N = 2, 4, 6, 8 S-bends. The insertion losses below are already corrected for straight-waveguide propagation, so all patterns share one constant C (coupling + straights). Find the loss per S-bend L<sub>SB</sub> and C.</span><span data-l="ko">test pattern <i>input — straight — {S-bend — short straight — S-bend — short straight} × N — straight — output</i>은 <b>하나의 arc angle θ</b>로 만들어졌고 n<sub>S</sub> = 2N = 2, 4, 6, 8개의 S-bend를 포함합니다. 아래 insertion loss는 straight waveguide의 propagation loss를 이미 보정한 값이므로, 모든 pattern이 하나의 상수 C (coupling + straight 구간)를 공유합니다. S-bend 하나당 loss L<sub>SB</sub>와 C를 구하세요.</span></p>
+    <div class="eq">IL = C + n_S · L_SB, &nbsp;&nbsp; L_SB = α_b·(2θ/90°) + 2·T_sb + T_bb</div>
+    <div class="toolbar"><button class="btn" data-new="6"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="6"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="6"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
+      <span class="seg" data-noise="6"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
+    <div class="grid2">
+      <div><div class="tablewrap" id="ex6t"></div><div id="ex6q"></div><div class="result" id="ex6r"></div></div>
+      <div><div id="ex6p"></div></div>
+    </div>
+    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex6s"></div></details>
+  </div>
+</section></div>
+<div data-slot-key="embed:sbend-table"><div class="tablewrap"><table class="data" id="sbTable"></table></div></div>
+<div id="step2Plot" data-slot-key="chart:step2Plot"></div>
+<div class="mono-block" id="oneShotOut" data-slot-key="output:oneShotOut"></div>
+<div id="residPlot" data-slot-key="chart:residPlot"></div>
+<div class="mono-block" id="fitStats" data-slot-key="output:fitStats"></div>
+<div data-slot-key="exercise:7"><section class="ex" id="ex7" aria-label="Exercise 7">
+  <div class="card">
+    <span class="ex-tag">Exercise 7</span>
+    <h2><span data-l="en">Separating bending and transition losses (Steps 2–3)</span><span data-l="ko">bending loss와 transition loss 분리하기 (Steps 2–3)</span></h2>
+    <p class="lead"><span data-l="en">The same pattern family was made with S-bends of three arc angles, <b>θ = 10°, 20° and 30°</b> (each S-bend = two arcs of θ, total angle 2θ), each with n<sub>S</sub> = 2, 4, 6, 8 S-bends: 12 patterns. Assume T<sub>bb</sub> = 2·T<sub>sb</sub>; the insertion losses are corrected for straight-waveguide propagation.<br>
+    <b>Step 2:</b> fit IL vs. n<sub>S</sub> separately for each angle → L<sub>SB</sub>(10°), L<sub>SB</sub>(20°), L<sub>SB</sub>(30°).<br>
+    <b>Step 3:</b> fit L<sub>SB</sub> vs. 2θ/90° → slope = α<sub>b</sub>, intercept = 2·T<sub>sb</sub> + T<sub>bb</sub> = 4·T<sub>sb</sub>.<br>
+    (Alternatively solve all 12 patterns at once with 3-unknown least squares; both answers are accepted.)</span><span data-l="ko">같은 pattern family를 세 가지 arc angle <b>θ = 10°, 20°, 30°</b>의 S-bend로 만들었습니다 (S-bend 하나 = 각도 θ인 arc 두 개, 전체 각도 2θ). 각 각도마다 n<sub>S</sub> = 2, 4, 6, 8개이므로 모두 12개 pattern입니다. T<sub>bb</sub> = 2·T<sub>sb</sub>로 가정하며, insertion loss는 straight waveguide의 propagation loss를 보정한 값입니다.<br>
+    <b>Step 2:</b> 각도별로 IL vs. n<sub>S</sub>를 따로 fit → L<sub>SB</sub>(10°), L<sub>SB</sub>(20°), L<sub>SB</sub>(30°).<br>
+    <b>Step 3:</b> L<sub>SB</sub> vs. 2θ/90°를 fit → slope = α<sub>b</sub>, intercept = 2·T<sub>sb</sub> + T<sub>bb</sub> = 4·T<sub>sb</sub>.<br>
+    (12개 pattern을 미지수 3개의 least squares로 한 번에 풀어도 됩니다. 두 방법 모두 정답으로 인정합니다.)</span></p>
+    <div class="eq">Step 2: IL = C + n_S · L_SB(θ) &nbsp;&nbsp;|&nbsp;&nbsp; Step 3: L_SB(θ) = α_b · (2θ/90°) + 4·T_sb</div>
+    <div class="toolbar"><button class="btn" data-new="7"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="7"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="7"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
+      <span class="seg" data-noise="7"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
+    <div class="grid2">
+      <div><div class="tablewrap" id="ex7t"></div></div>
+      <div><div id="ex7p"></div><div class="legend" id="ex7leg"></div></div>
+    </div>
+    <div id="ex7q"></div><div class="result" id="ex7r"></div>
+    <details class="sol"><summary><span data-l="en">Worked solution (Steps 2–3 and the one-shot 3 × 3 least squares)</span><span data-l="ko">Worked solution (Steps 2–3 및 한 번에 푸는 3 × 3 least squares)</span></summary><div class="body" id="ex7s"></div></details>
+  </div>
+</section></div>
+</div>
+  </main>
+</div>
+
+<script>
+"use strict";
+const COURSE_ID = "pic-loss-course";
+const QUIZ = {"1": {"q": "Why do we decompose the insertion loss instead of reporting one number?", "o": ["Because the power meter cannot measure insertion loss directly", "Because fabrication and design need to know which mechanism causes the loss", "Because dB values cannot be compared between chips"], "a": 1, "why": "Propagation loss gives feedback to the process, coupling and bend losses to the designer. A single total cannot tell them apart."}, "4": {"q": "Why is the reference taken fiber block to fiber block instead of using the laser&#x27;s output power?", "o": ["Because the laser&#x27;s output power cannot be measured", "Because it contains all losses of connectors, adapter, PC and fiber, so subtracting it leaves only the chip&#x27;s loss", "Because fiber-to-fiber coupling has a large known loss"], "a": 1, "why": "Identical fibers couple with ideally zero loss, so the reference includes every loss in the path except the chip."}, "4b": {"q": "How do you know the input polarization is TE?", "o": ["The power meter shows its maximum", "With the analyzer set to TM-pass, the mode on the IR camera disappears", "The red alignment light turns off"], "a": 1, "why": "In a straight waveguide TE and TM do not mix. Zero TM at the output means all input light coupled into the TE mode."}, "5": {"q": "Why must the cleave in a cut-back measurement be asymmetric?", "o": ["Symmetric cleaves damage the facet", "A symmetric cleave gives two equal lengths, so only two distinct lengths in total", "The power meter needs pieces of different length"], "a": 1, "why": "Two pieces of equal length repeat one data point. Asymmetric pieces give three distinct lengths from one chip."}, "6": {"q": "In the cut-back fit IL = αL + c, what does the intercept c represent?", "o": ["The propagation loss of a 1 cm chip", "2 × coupling loss, the loss of a zero-length chip", "The reference power"], "a": 1, "why": "At L = 0 only the two facets remain: c = 2·CL."}, "8": {"q": "Why can&#x27;t one angle separate α_b from T_sb?", "o": ["Because the noise is too large", "Because both terms grow in proportion to n_S, so the matrix columns are dependent", "Because T_bb is unknown"], "a": 1, "why": "With one θ, the bending term and the transition term are both proportional to n_S. AᵀA is singular."}, "9": {"q": "The one-shot 12-pattern fit and the two-stage fit give slightly different α_b. Why?", "o": ["One of them has an arithmetic error", "The one-shot fit uses a single common C, the per-angle fits each have their own intercept", "Least squares is not unique"], "a": 1, "why": "Different models of the constant term weigh the noise differently. Both are valid estimates."}, "10": {"q": "One residual in your fit is five times larger than the others. What is the most likely cause?", "o": ["A bad facet or misaligned measurement for that sample", "The model needs more unknowns", "R² is too high"], "a": 0, "why": "Outliers usually come from the measurement. Re-measure or inspect that facet before changing the model."}, "ko1": {"q": "insertion loss를 숫자 하나로 보고하지 않고 성분별로 나누는 이유는?", "o": ["power meter로는 insertion loss를 직접 측정할 수 없어서", "공정과 설계 쪽에서 어떤 메커니즘이 loss를 만드는지 알아야 해서", "chip끼리 dB 값을 비교할 수 없어서"], "a": 1, "why": "propagation loss는 공정에, coupling loss와 bend loss는 설계에 피드백을 줍니다. 전체 값 하나로는 이들을 구분할 수 없습니다."}, "ko4": {"q": "reference를 laser 출력 power가 아니라 fiber block끼리 맞대어 측정하는 이유는?", "o": ["laser 출력 power는 측정할 수 없어서", "connector, adapter, PC, fiber의 loss가 모두 포함되어, 빼면 chip의 loss만 남기 때문에", "fiber-to-fiber coupling에 큰 loss가 알려져 있어서"], "a": 1, "why": "같은 fiber끼리는 이론적으로 coupling loss가 0이므로, reference에는 chip을 뺀 경로의 모든 loss가 들어 있습니다."}, "ko4b": {"q": "입력 편광이 TE로 맞춰졌는지 어떻게 알 수 있나요?", "o": ["power meter 값이 최대일 때", "analyzer를 TM-pass로 두었을 때 IR camera의 mode가 사라질 때", "red light가 꺼질 때"], "a": 1, "why": "straight waveguide에서 TE와 TM은 섞이지 않습니다. 출력에 TM이 없으면 입력광이 모두 TE mode로 coupling된 것입니다."}, "ko5": {"q": "cut-back 측정에서 cleave를 비대칭으로 해야 하는 이유는?", "o": ["대칭 cleave는 facet을 손상시켜서", "대칭 cleave는 같은 길이 두 개를 만들어 서로 다른 길이가 두 개뿐이 되므로", "power meter가 길이가 다른 조각을 필요로 해서"], "a": 1, "why": "길이가 같은 두 조각은 같은 데이터 점을 반복할 뿐입니다. 비대칭으로 자르면 chip 하나에서 서로 다른 길이 세 개를 얻습니다."}, "ko6": {"q": "cut-back fit IL = αL + c에서 intercept c는 무엇을 뜻할까요?", "o": ["1 cm chip의 propagation loss", "2 × coupling loss, 즉 길이 0인 chip의 loss", "reference power"], "a": 1, "why": "L = 0이면 두 facet만 남습니다: c = 2·CL."}, "ko8": {"q": "한 각도만으로 α_b와 T_sb를 분리할 수 없는 이유는?", "o": ["noise가 너무 커서", "두 항이 모두 n_S에 비례해 커지므로 행렬의 열이 서로 종속이 되어서", "T_bb를 모르기 때문에"], "a": 1, "why": "θ가 하나면 bending 항과 transition 항이 모두 n_S에 비례합니다. 그래서 AᵀA가 singular가 됩니다."}, "ko9": {"q": "12개 pattern을 한 번에 푼 fit과 두 단계 fit의 α_b가 조금 다릅니다. 왜일까요?", "o": ["둘 중 하나에 계산 실수가 있어서", "한 번에 푸는 fit은 공통 C 하나를 쓰고, 각도별 fit은 각자 intercept를 가지기 때문에", "least squares 해가 유일하지 않아서"], "a": 1, "why": "상수항을 다르게 모델링하면 noise가 다르게 반영됩니다. 둘 다 타당한 추정값입니다."}, "ko10": {"q": "fit에서 residual 하나가 다른 것보다 다섯 배 큽니다. 가장 가능성 높은 원인은?", "o": ["그 시료의 facet 불량이나 정렬 오류", "model에 미지수가 더 필요함", "R²가 너무 높음"], "a": 0, "why": "튀는 점은 대개 측정에서 생깁니다. model을 바꾸기 전에 그 facet을 다시 측정하거나 검사하세요."}};
+
+// ===================== utilities (available to exercises.js) =====================
+const $ = id => document.getElementById(id);
+const rnd = (a, b) => a + Math.random() * (b - a);
+const rnd2 = (a, b, d = 2) => +rnd(a, b).toFixed(d);
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const gauss = () => { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); };
+const f = (v, d = 3) => (Math.abs(v) < 1e-12 ? 0 : v).toFixed(d);
+const store = {
+  get(k) { try { return localStorage.getItem(COURSE_ID + ":" + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(COURSE_ID + ":" + k, v); } catch (e) {} },
+};
+
+// ---------- theme: light by default; a choice made with the Light / dark button is remembered ----------
+document.documentElement.dataset.theme = store.get("theme") === "dark" ? "dark" : "light";
+
+// ---------- language ----------
+// A course is bilingual when its content contains data-l="ko" blocks. L(en, ko) returns markup that
+// shows the right text for the current language and follows the KO/EN switch without re-rendering.
+const HAS_KO = !!document.querySelector('[data-l="ko"]');
+let LANG = HAS_KO && store.get("lang") === "ko" ? "ko" : "en";
+document.documentElement.dataset.lang = LANG;
+document.documentElement.lang = LANG;
+const L = (en, ko) => (ko === undefined || !HAS_KO) ? en : `<span data-l="en">${en}</span><span data-l="ko">${ko}</span>`;
+const UI = {
+  en: { parts: "parts", exercises: "exercises", of: "of", part: "Part", finish: "Finish the course ✓", finished: "Course completed ✓",
+        reset: "Reset progress", resetAgain: "Click again to reset", resetDone: "Progress reset", check: "Concept check",
+        right: "Correct. ", wrong: "Not quite. ", lang: "한국어", langShort: "KO" },
+  ko: { parts: "parts", exercises: "exercises", of: "/", part: "Part", finish: "강의 완료 ✓", finished: "강의를 모두 마쳤습니다 ✓",
+        reset: "진도 초기화", resetAgain: "한 번 더 누르면 초기화", resetDone: "진도를 초기화했습니다", check: "개념 확인",
+        right: "정답입니다. ", wrong: "다시 생각해 보세요. ", lang: "English", langShort: "EN" },
+};
+const t = k => UI[LANG][k];
+
+// Least squares via normal equations (Gaussian elimination with partial pivoting).
+// A: m×n array of rows, b: length m. Returns { x, AtA, Atb, res, r2, ssr }.
+function lsq(A, b) {
+  const n = A[0].length;
+  const AtA = [...Array(n)].map(() => Array(n).fill(0)), Atb = Array(n).fill(0);
+  A.forEach((row, k) => { for (let i = 0; i < n; i++) { Atb[i] += row[i] * b[k]; for (let j = 0; j < n; j++) AtA[i][j] += row[i] * row[j]; } });
+  const M = AtA.map((r, i) => [...r, Atb[i]]);
+  for (let i = 0; i < n; i++) {
+    let p = i; for (let r = i + 1; r < n; r++) if (Math.abs(M[r][i]) > Math.abs(M[p][i])) p = r;
+    [M[i], M[p]] = [M[p], M[i]];
+    for (let r = 0; r < n; r++) if (r !== i) { const c = M[r][i] / M[i][i]; for (let k = i; k <= n; k++) M[r][k] -= c * M[i][k]; }
+  }
+  const x = M.map((r, i) => r[n] / r[i]);
+  const pred = A.map(row => row.reduce((s, v, i) => s + v * x[i], 0));
+  const res = b.map((v, i) => v - pred[i]);
+  const ybar = b.reduce((s, v) => s + v, 0) / b.length;
+  const sst = b.reduce((s, v) => s + (v - ybar) ** 2, 0), ssr = res.reduce((s, v) => s + v * v, 0);
+  return { x, AtA, Atb, res, r2: sst > 0 ? 1 - ssr / sst : 1, ssr };
+}
+// Matrix as monospace text with bracket glyphs (for .mono-block worked solutions)
+const matStr = (M, d = 4) => {
+  const rows = M.map(r => (Array.isArray(r) ? r : [r]).map(v => f(v, d)));
+  const w = rows[0].map((_, j) => Math.max(...rows.map(r => r[j].length)));
+  return rows.map((r, i) => (rows.length === 1 ? "[ " : i === 0 ? "⎡ " : i === rows.length - 1 ? "⎣ " : "⎢ ") + r.map((v, j) => v.padStart(w[j])).join("   ") + (rows.length === 1 ? " ]" : i === 0 ? " ⎤" : i === rows.length - 1 ? " ⎦" : " ⎥")).join("\n");
+};
+
+// SVG plot. o = { xLabel, yLabel, xmin?, xmax?, ymin?, ymax?, aria, resid?: [[x, y1, y2]...],
+//   series: [{ type: "line"|"points", color: "--token", pts: [[x,y]...], w?, r?, dash?, op? }] }
+function niceTicks(lo, hi, n = 5) {
+  const span = hi - lo || 1, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(s => span / s <= n) || 10 * mag;
+  const t = []; for (let v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) t.push(+v.toFixed(10));
+  return t;
+}
+// The chart is drawn at the element's real on-screen width, so 1 SVG unit = 1 CSS px and labels keep a
+// readable size (see .plot text). Charts are redrawn when their part is shown, on resize and on language change.
+function plot(el, o) {
+  el._plot = o; el.classList.add("has-plot");
+  drawPlot(el);
+}
+function redrawPlots(root) {
+  (root || document).querySelectorAll(".has-plot").forEach(el => { if (el.getClientRects().length) drawPlot(el); });
+}
+let _resizeT;
+window.addEventListener("resize", () => { clearTimeout(_resizeT); _resizeT = setTimeout(() => redrawPlots(), 150); });
+document.addEventListener("toggle", e => { if (e.target.open) redrawPlots(e.target); }, true); // charts inside <details>
+window.addEventListener("load", () => redrawPlots()); // after web fonts and layout settle
+function drawPlot(el) {
+  const o = el._plot;
+  const W = Math.round(el.getBoundingClientRect().width) || 520;
+  const H = Math.round(Math.min(380, Math.max(250, W * 0.64))), m = { l: 64, r: 14, t: 14, b: 56 };
+  const xs = [], ys = [];
+  o.series.forEach(s => s.pts.forEach(p => { xs.push(p[0]); ys.push(p[1]); }));
+  let x0 = o.xmin ?? Math.min(...xs), x1 = o.xmax ?? Math.max(...xs), y0 = o.ymin ?? Math.min(...ys), y1 = o.ymax ?? Math.max(...ys);
+  const py = (y1 - y0) * 0.12 || 0.5; if (o.ymin === undefined) y0 -= py; if (o.ymax === undefined) y1 += py;
+  const X = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r), Y = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  let s = `<svg class="plot" viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.aria || "plot"}">`;
+  const nx = W < 420 ? 4 : 6;
+  niceTicks(y0, y1).forEach(t => { s += `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l - 8}" y="${Y(t) + 5}" text-anchor="end">${+t.toFixed(3)}</text>`; });
+  niceTicks(x0, x1, nx).forEach(t => { s += `<text x="${X(t)}" y="${H - m.b + 21}" text-anchor="middle">${+t.toFixed(3)}</text>`; });
+  s += `<line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}"/><line class="axis" x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${H - m.b}"/>`;
+  s += `<text class="ttl" x="${(m.l + W - m.r) / 2}" y="${H - 10}" text-anchor="middle">${o.xLabel}</text>`;
+  s += `<text class="ttl" transform="translate(17 ${(m.t + H - m.b) / 2}) rotate(-90)" text-anchor="middle">${o.yLabel}</text>`;
+  (o.resid || []).forEach(r => { s += `<line x1="${X(r[0])}" x2="${X(r[0])}" y1="${Y(r[1])}" y2="${Y(r[2])}" style="stroke:var(--laser)" stroke-width="2.5"/>`; });
+  o.series.forEach(se => {
+    const c = `var(${se.color})`;
+    if (se.type === "line") s += `<polyline fill="none" style="stroke:${c}" stroke-width="${se.w || 2.5}" ${se.dash ? `stroke-dasharray="${se.dash}"` : ""} opacity="${se.op || 1}" points="${se.pts.map(p => X(p[0]) + "," + Y(p[1])).join(" ")}"/>`;
+    else se.pts.forEach(p => { s += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${se.r || 5.5}" style="fill:${c}"/>`; });
+  });
+  s += "</svg>";
+  const old = el.querySelector(":scope > svg.plot"); // keep other children (e.g. a legend appended after the chart)
+  if (old) old.outerHTML = s; else el.insertAdjacentHTML("afterbegin", s);
+}
+
+// ---------- exercise helpers ----------
+const P = {};          // current problem per exercise number
+const EX = {};         // registry: n -> { part, newProblem, check, csv? }
+const solved = new Set((store.get("solved") || "").split(",").filter(Boolean).map(Number));
+function registerExercise(n, spec) { EX[n] = spec; }
+function qRow(id, label, unit) {
+  return `<div class="q"><label for="${id}">${label}</label><div class="inp"><input id="${id}" inputmode="decimal" autocomplete="off"><span class="unit">${unit}</span></div><div class="fb" id="${id}fb"></div></div>`;
+}
+function grade(id, truth, tolAbs, tolRel = 0, fmt = 3) {
+  const el = $(id), fb = $(id + "fb"), v = parseFloat(String(el.value).replace(",", "."));
+  const tol = Math.max(tolAbs, Math.abs(truth) * tolRel);
+  if (Number.isNaN(v)) { fb.className = "fb bad"; fb.innerHTML = L("Enter a number.", "숫자를 입력하세요."); return false; }
+  const ok = Math.abs(v - truth) <= tol + 1e-12;
+  fb.className = "fb " + (ok ? "ok" : "bad");
+  fb.innerHTML = ok ? L(`Correct ✓ (expected ${f(truth, fmt)})`, `정답 ✓ (기댓값 ${f(truth, fmt)})`) : L("Not quite. Try again, or open the worked solution.", "아직 아닙니다. 다시 풀어 보거나 worked solution을 열어 보세요.");
+  return ok;
+}
+function gradeAny(id, truths, tolAbs, tolRel = 0, fmt = 3) { // accept the closest of several valid answers
+  const v = parseFloat(String($(id).value).replace(",", "."));
+  const t = Number.isNaN(v) ? truths[0] : truths.reduce((best, x) => Math.abs(x - v) < Math.abs(best - v) ? x : best, truths[0]);
+  return grade(id, t, tolAbs, tolRel, fmt);
+}
+function showResult(n, allOk, extra = "") {
+  const r = $("ex" + n + "r");
+  r.className = "result " + (allOk ? "ok" : "bad");
+  r.innerHTML = allOk ? L("All answers correct. Well done! ", "모두 정답입니다! ") + extra : L("Some answers are not correct yet.", "아직 틀린 답이 있습니다.");
+  if (allOk) { solved.add(n); store.set("solved", [...solved].join(",")); renderNav(); }
+}
+function resetResult(n) { const r = $("ex" + n + "r"); if (!r) return; r.className = "result"; r.textContent = ""; document.querySelectorAll(`#ex${n} details.sol`).forEach(d => d.open = false); }
+function dataTable(head, rows) {
+  return `<table class="data"><thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function copyCSV(text, btn) {
+  const done = () => { const old = btn.innerHTML; btn.innerHTML = L("Copied ✓", "복사됨 ✓"); setTimeout(() => btn.innerHTML = old, 1200); };
+  const fallback = () => {
+    let ta = btn.parentElement.parentElement.querySelector("textarea.csv-fallback");
+    if (!ta) { ta = document.createElement("textarea"); ta.className = "csv-fallback"; ta.setAttribute("aria-label", "Data as CSV"); btn.parentElement.after(ta); }
+    ta.value = text; ta.focus(); ta.select();
+  };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+}
+// Re-typeset math inserted by script (e.g. a worked solution containing \( ... \))
+function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise(el ? [el] : undefined).catch(() => {}); }
+
+// ===================== course content scripts =====================
+// PIC Loss Evaluation: exercise generators/graders, static charts and widgets.
+// Loaded into template.html by md2html.py. Utilities (lsq, plot, grade, ...) come from the template.
+const dbm = mw => 10 * Math.log10(mw);
+const mw = d => Math.pow(10, d / 10);
+const noise = { 6: false, 7: false };
+
+// ===== Exercise 1 =====
+function new1() {
+  const p1 = pick([0.05, 0.2, 0.35, 0.8, 1.6, 2.5, 4, 6.3, 12, 20]) * rnd2(0.9, 1.1);
+  const p2 = rnd2(-30, 10, 1);
+  const launch = rnd2(-3, 8, 1), losses = [rnd2(0.5, 4, 1), rnd2(0.2, 3, 1), rnd2(1, 6, 1)];
+  const T = rnd2(5, 90, 0);
+  P[1] = { p1: +p1.toFixed(3), p2, launch, losses, T };
+  const q = P[1];
+  $("ex1q").innerHTML =
+    qRow("e1a", L(`(a) Convert <b>${q.p1} mW</b> to dBm.`, `(a) <b>${q.p1} mW</b>를 dBm으로 변환하세요.`), "dBm") +
+    qRow("e1b", L(`(b) Convert <b>${q.p2} dBm</b> to mW.`, `(b) <b>${q.p2} dBm</b>을 mW로 변환하세요.`), "mW") +
+    qRow("e1c", L(`(c) <b>${q.launch} dBm</b> is launched into three components with losses <b>${q.losses.join(" dB, ")} dB</b>. What is the output power?`, `(c) loss가 <b>${q.losses.join(" dB, ")} dB</b>인 세 component에 <b>${q.launch} dBm</b>을 입사했습니다. 출력 power는?`), "dBm") +
+    qRow("e1d", L(`(d) A component transmits <b>${q.T} %</b> of the input power. What is its loss?`, `(d) 어떤 component가 입력 power의 <b>${q.T} %</b>를 투과시킵니다. loss는?`), "dB");
+  const out = q.launch - q.losses.reduce((a, b) => a + b, 0);
+  $("ex1s").innerHTML = `<div class="mono">(a) 10·log₁₀(${q.p1}) = ${f(dbm(q.p1), 2)} dBm
+(b) 10^(${q.p2}/10) = ${f(mw(q.p2), 4)} mW
+(c) ${q.launch} − (${q.losses.join(" + ")}) = ${f(out, 2)} dBm      ← ${L("losses simply add in dB", "dB에서는 loss를 더하기만 하면 됩니다")}
+(d) 10·log₁₀(1 / ${(q.T / 100).toFixed(2)}) = ${f(-dbm(q.T / 100), 2)} dB</div>`;
+  resetResult(1);
+}
+function check1() {
+  const q = P[1], out = q.launch - q.losses.reduce((a, b) => a + b, 0);
+  const r = [grade("e1a", dbm(q.p1), 0.05, 0, 2), grade("e1b", mw(q.p2), 0, 0.02, 4), grade("e1c", out, 0.05, 0, 2), grade("e1d", -dbm(q.T / 100), 0.05, 0, 2)];
+  showResult(1, r.every(Boolean));
+}
+
+// ===== Exercise 2 =====
+function new2() {
+  const refDbm = rnd2(-2, 6, 2), il1 = rnd2(3, 18, 2);
+  const refMw = mw(refDbm), dutMw = mw(refDbm - il1);
+  const ref2 = rnd2(-5, 3, 2), il2 = rnd2(2, 25, 2);
+  P[2] = { refMw: +refMw.toFixed(3), dutUw: +(dutMw * 1000).toFixed(2), ref2, dut2: +(ref2 - il2).toFixed(2) };
+  const q = P[2];
+  $("ex2q").innerHTML =
+    qRow("e2a", L(`(a) Reference reading: <b>${q.refMw} mW</b>. With the DUT inserted: <b>${q.dutUw} µW</b>. Insertion loss?`, `(a) reference 측정값: <b>${q.refMw} mW</b>, DUT 삽입 후: <b>${q.dutUw} µW</b>. insertion loss는?`), "dB") +
+    qRow("e2b", L(`(b) Reference reading: <b>${q.ref2} dBm</b>. With the DUT inserted: <b>${q.dut2} dBm</b>. Insertion loss?`, `(b) reference 측정값: <b>${q.ref2} dBm</b>, DUT 삽입 후: <b>${q.dut2} dBm</b>. insertion loss는?`), "dB");
+  const a = dbm(q.refMw) - dbm(q.dutUw / 1000);
+  $("ex2s").innerHTML = `<div class="mono">(a) P_ref = 10·log₁₀(${q.refMw}) = ${f(dbm(q.refMw), 2)} dBm
+    P_DUT = 10·log₁₀(${q.dutUw}/1000) = ${f(dbm(q.dutUw / 1000), 2)} dBm      ${L("(convert µW → mW first!)", "(먼저 µW → mW로 변환!)")}
+    IL = ${f(dbm(q.refMw), 2)} − (${f(dbm(q.dutUw / 1000), 2)}) = ${f(a, 2)} dB
+(b) IL = ${q.ref2} − (${q.dut2}) = ${f(q.ref2 - q.dut2, 2)} dB</div>`;
+  resetResult(2);
+}
+function check2() {
+  const q = P[2];
+  const r = [grade("e2a", dbm(q.refMw) - dbm(q.dutUw / 1000), 0.05, 0, 2), grade("e2b", q.ref2 - q.dut2, 0.05, 0, 2)];
+  showResult(2, r.every(Boolean));
+}
+
+// ===== Exercises 3 & 4: cut-back =====
+function makeCutback(noisy) {
+  const alpha = rnd2(0.1, 0.3), CL = rnd2(0.2, 1.0);
+  const L0 = rnd2(1.5, 3.0), frac = rnd2(0.25, 0.42);
+  const L1 = +(L0 * (1 - frac)).toFixed(2), L2 = +(L0 - L1 - 0.02).toFixed(2); // ~200 µm lost to the cleave
+  const Ls = [L0, L1, L2];
+  const sigma = noisy ? rnd2(0.03, 0.06, 3) : 0;
+  const IL = Ls.map(L => +(alpha * L + 2 * CL + sigma * gauss()).toFixed(3));
+  const fit = lsq(Ls.map(L => [L, 1]), IL);
+  return { alpha, CL, Ls, IL, sigma, fit };
+}
+function cutbackView(n, q) {
+  const names = [L("original chip", "원래 chip"), L("piece 1", "조각 1"), L("piece 2", "조각 2")];
+  $(`ex${n}t`).innerHTML = dataTable([L("Sample", "시료"), L("Length L (cm)", "길이 L (cm)"), "IL (dB)"], q.Ls.map((L, i) => [names[i], L.toFixed(2), q.IL[i].toFixed(3)]));
+  $(`ex${n}q`).innerHTML = qRow(`e${n}a`, "Propagation loss α", "dB/cm") + qRow(`e${n}b`, "Coupling loss CL", "dB/facet");
+  plot($(`ex${n}p`), { xLabel: "chip length L (cm)", yLabel: "insertion loss (dB)", xmin: 0, ymin: 0, aria: "Insertion loss versus chip length",
+    series: [{ type: "points", color: "--ink", pts: q.Ls.map((L, i) => [L, q.IL[i]]) }] });
+}
+function cutbackPlotWithFit(n, q) {
+  const xmax = Math.max(...q.Ls) * 1.08, [a, c] = q.fit.x;
+  plot($(`ex${n}p`), { xLabel: "chip length L (cm)", yLabel: "insertion loss (dB)", xmin: 0, ymin: 0, aria: "Insertion loss versus chip length with fit",
+    resid: q.Ls.map((L, i) => [L, q.IL[i], a * L + c]),
+    series: [{ type: "line", color: "--teal", pts: [[0, c], [xmax, a * xmax + c]] }, { type: "points", color: "--ink", pts: q.Ls.map((L, i) => [L, q.IL[i]]) }] });
+}
+function new3() {
+  const q = P[3] = makeCutback(false);
+  cutbackView(3, q);
+  const [L0, L1] = q.Ls, [I0, I1] = q.IL, a = (I0 - I1) / (L0 - L1);
+  $("ex3s").innerHTML = `<p>${L("With no measurement error any two points give the exact answer. Use the original chip and piece 1:", "측정 오차가 없으므로 아무 두 점이나 정확한 답을 줍니다. 원래 chip과 조각 1을 사용합니다:")}</p>
+<div class="mono">α  = (IL₀ − IL₁) / (L₀ − L₁) = (${I0.toFixed(3)} − ${I1.toFixed(3)}) / (${L0.toFixed(2)} − ${L1.toFixed(2)}) = ${f(a, 4)} dB/cm
+2·CL = IL₀ − α·L₀ = ${I0.toFixed(3)} − ${f(a, 4)}·${L0.toFixed(2)} = ${f(I0 - a * L0, 4)} dB
+CL = ${f((I0 - a * L0) / 2, 4)} dB/facet</div><p class="note">${L("Check: the third point (piece 2) lies exactly on the same line.", "확인: 세 번째 점(조각 2)도 정확히 같은 직선 위에 있습니다.")}</p>`;
+  resetResult(3);
+}
+function check3() {
+  const q = P[3];
+  const r = [grade("e3a", q.alpha, 0.01, 0, 3), grade("e3b", q.CL, 0.01, 0, 3)];
+  if (r.every(Boolean)) cutbackPlotWithFit(3, q);
+  showResult(3, r.every(Boolean));
+}
+function regressionSolution(q, xName, labels) {
+  const n = q.Ls.length, Sx = q.Ls.reduce((s, v) => s + v, 0), Sy = q.IL.reduce((s, v) => s + v, 0);
+  const Sxx = q.Ls.reduce((s, v) => s + v * v, 0), Sxy = q.Ls.reduce((s, v, i) => s + v * q.IL[i], 0);
+  const det = n * Sxx - Sx * Sx, m = (n * Sxy - Sx * Sy) / det, c = (Sy - m * Sx) / n;
+  return `<p><b>1. ${L("Set up A x = b", "A x = b 세우기")}</b> ${L("(one row per measurement)", "(측정 하나당 한 행)")}:</p>
+<div class="mono">A = ${matStr(q.Ls.map(L => [L, 1]), 2).split("\n").join("\n    ")}
+
+b = ${matStr(q.IL.map(v => [v]), 3).split("\n").join("\n    ")}</div>
+<p><b>2. Normal equations</b> AᵀA x̂ = Aᵀb:</p>
+<div class="mono">AᵀA = ${matStr(q.fit.AtA, 4).split("\n").join("\n       ")}      Aᵀb = ${matStr(q.fit.Atb.map(v => [v]), 4).split("\n").join("\n")}</div>
+<p><b>3. ${L("Closed form", "Closed form 공식")}</b> (Σx = ${f(Sx, 4)}, Σx² = ${f(Sxx, 4)}, Σy = ${f(Sy, 4)}, Σxy = ${f(Sxy, 4)}, n = ${n}):</p>
+<div class="mono">slope     = (n·Σxy − Σx·Σy)/(n·Σx² − (Σx)²) = (${f(n * Sxy - Sx * Sy, 5)}) / (${f(det, 5)}) = ${f(m, 4)}
+intercept = (Σy − slope·Σx)/n = ${f(c, 4)}
+⇒ ${labels[0]} = ${f(m, 4)},  ${labels[1]}</div>
+<p><b>4. Residuals</b> r = b − A x̂: ${q.fit.res.map(v => f(v, 4)).join(", ")} dB &nbsp; (R² = ${f(q.fit.r2, 5)})</p>`;
+}
+function new4() {
+  const q = P[4] = makeCutback(true);
+  cutbackView(4, q);
+  const [a, c] = q.fit.x;
+  $("ex4s").innerHTML = regressionSolution(q, "L", ["α", `2·CL = ${f(c, 4)} ⇒ CL = ${f(c / 2, 4)} dB/facet`]) +
+    `<p class="note">${L(`The data were generated with α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet and noise σ = ${q.sigma} dB. The least-squares estimate differs slightly because of the measurement error; that is expected.`, `데이터는 α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet, noise σ = ${q.sigma} dB로 만들었습니다. 측정 오차 때문에 least-squares 추정값이 참값과 조금 다른 것은 정상입니다.`)}</p>`;
+  resetResult(4);
+}
+function check4() {
+  const q = P[4], [a, c] = q.fit.x;
+  const r = [grade("e4a", a, 0.01, 0, 3), grade("e4b", c / 2, 0.02, 0, 3)];
+  if (r.every(Boolean)) cutbackPlotWithFit(4, q);
+  showResult(4, r.every(Boolean), L(`True values: α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet.`, `참값: α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet.`));
+}
+
+// ===== Exercise 5: playground =====
+const PG = { alpha: 0.2, CL: 0.5, eps: [] };
+function pgResample() { PG.eps = Array.from({ length: 12 }, gauss); pgDraw(); }
+function pgDraw() {
+  const N = +$("pgN").value, sig = +$("pgS").value, Lmax = +$("pgR").value;
+  $("pgNv").textContent = N; $("pgSv").textContent = sig.toFixed(3); $("pgRv").textContent = Lmax.toFixed(1);
+  const Lmin = Math.min(0.5, Lmax * 0.5);
+  const Ls = Array.from({ length: N }, (_, i) => +(N === 1 ? Lmax : Lmin + (Lmax - Lmin) * i / (N - 1)).toFixed(3));
+  const IL = Ls.map((L, i) => PG.alpha * L + 2 * PG.CL + sig * PG.eps[i]);
+  const fit = lsq(Ls.map(L => [L, 1]), IL), [a, c] = fit.x;
+  const a2 = (IL[N - 1] - IL[0]) / (Ls[N - 1] - Ls[0]), c2 = IL[0] - a2 * Ls[0];
+  const xm = Lmax * 1.08;
+  plot($("pgPlot"), { xLabel: "chip length L (cm)", yLabel: "insertion loss (dB)", xmin: 0, xmax: xm, aria: "Least squares playground",
+    resid: Ls.map((L, i) => [L, IL[i], a * L + c]),
+    series: [
+      { type: "line", color: "--muted", op: 0.5, dash: "5 5", pts: [[0, 2 * PG.CL], [xm, PG.alpha * xm + 2 * PG.CL]] },
+      { type: "line", color: "--amber", w: 2, pts: [[0, c2], [xm, a2 * xm + c2]] },
+      { type: "line", color: "--teal", pts: [[0, c], [xm, a * xm + c]] },
+      { type: "points", color: "--ink", pts: Ls.map((L, i) => [L, IL[i]]) }] });
+  const err = (v, t) => `${v >= t ? "+" : ""}${f(100 * (v - t) / t, 1)} %`;
+  $("pgStats").innerHTML = [
+    [f(a, 3) + " dB/cm", L("α (least squares) · error ", "α (least squares) · 오차 ") + err(a, PG.alpha)],
+    [f(c / 2, 3) + " dB", L("CL (least squares) · error ", "CL (least squares) · 오차 ") + err(c / 2, PG.CL)],
+    [f(a2, 3) + " dB/cm", L("α (two points only) · error ", "α (두 점만 사용) · 오차 ") + err(a2, PG.alpha)],
+    [f(fit.r2, 4), L("R² of the fit", "fit의 R²")],
+  ].map(s => `<div class="stat"><div class="v">${s[0]}</div><div class="k">${s[1]}</div></div>`).join("");
+  $("pgMat").innerHTML = `<div class="mono">AᵀA = ${matStr(fit.AtA, 3).split("\n").join("\n       ")}
+
+Aᵀb = ${matStr(fit.Atb.map(v => [v]), 3).split("\n").join("\n       ")}
+
+x̂ = (AᵀA)⁻¹Aᵀb = [ α  2·CL ]ᵀ = [ ${f(a, 4)}  ${f(c, 4)} ]ᵀ</div>
+<p class="note">${L("Try: σ = 0.1 dB with only 2 lengths, then 12 lengths. Then shrink the longest length: a short lever arm makes α much less certain, even with many points.", "해 보기: σ = 0.1 dB에서 길이 2개, 그다음 12개로 바꿔 보세요. 이어서 최대 길이를 줄여 보세요. 길이 범위가 좁으면 점이 많아도 α가 훨씬 불확실해집니다.")}</p>`;
+}
+
+// ===== Exercise 6: S-bend Set A =====
+function new6() {
+  const ab = rnd2(0.01, 0.5, 3), Tsb = rnd2(0.05, 1.0, 3), Tbb = +(2 * Tsb).toFixed(3);
+  const th = pick([10, 20, 30]), C = rnd2(1.0, 3.5);
+  const LSB = ab * (2 * th / 90) + 2 * Tsb + Tbb;
+  const nS = [2, 4, 6, 8], sig = noise[6] ? rnd2(0.03, 0.08, 3) : 0;
+  const IL = nS.map(n => +(C + n * LSB + sig * gauss()).toFixed(3));
+  const fit = lsq(nS.map(n => [n, 1]), IL);
+  const q = P[6] = { ab, Tsb, Tbb, th, C, LSB, nS, IL, sig, fit, Ls: nS };
+  $("ex6t").innerHTML = `<p class="note">Arc angle θ = ${th}° (${L("total", "S-bend당 전체")} ${2 * th}°${L(" per S-bend", "")})${noise[6] ? L(" · measurement error present", " · 측정 오차 있음") : L(" · no measurement error", " · 측정 오차 없음")}</p>` +
+    dataTable(["Pattern", L("N (units)", "N (unit 수)"), L("n_S (S-bends)", "n_S (S-bend 수)"), "IL (dB)"], nS.map((n, i) => [`P${i + 1}`, n / 2, n, IL[i].toFixed(3)]));
+  $("ex6q").innerHTML = qRow("e6a", L("Loss per S-bend L<sub>SB</sub>", "S-bend 하나당 loss L<sub>SB</sub>"), "dB/S-bend") + qRow("e6b", L("Common constant C", "공통 상수 C"), "dB");
+  plot($("ex6p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends",
+    series: [{ type: "points", color: "--ink", pts: nS.map((n, i) => [n, IL[i]]) }] });
+  const [m, c] = fit.x;
+  $("ex6s").innerHTML = (noise[6]
+    ? regressionSolution(q, "n_S", ["L_SB", `C = ${f(c, 4)} dB`])
+    : `<p>${L("Without measurement error the points lie exactly on a line; any two points give the slope:", "측정 오차가 없으면 점들이 정확히 한 직선 위에 있으므로 아무 두 점으로 slope를 구할 수 있습니다:")}</p><div class="mono">L_SB = (IL(n_S=8) − IL(n_S=2)) / (8 − 2) = (${IL[3].toFixed(3)} − ${IL[0].toFixed(3)}) / 6 = ${f((IL[3] - IL[0]) / 6, 4)} dB
+C    = IL(n_S=2) − 2·L_SB = ${f(IL[0] - 2 * (IL[3] - IL[0]) / 6, 4)} dB</div>`) +
+    `<p class="note">${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, θ = ${th}°: L_SB = ${ab}·${(2 * th / 90).toFixed(3)} + 2·${Tsb} + ${Tbb} = ${f(LSB, 4)} dB. ${L("Note that with a single angle you <b>cannot</b> separate α_b from T_sb; see Exercise 7.", "한 각도만으로는 α_b와 T_sb를 <b>분리할 수 없습니다</b>. Exercise 7을 보세요.")}</p>`;
+  resetResult(6);
+}
+function check6() {
+  const q = P[6], [m, c] = q.fit.x;
+  const tA = noise[6] ? 0.02 : 0.01, tC = noise[6] ? 0.05 : 0.01;
+  const r = [grade("e6a", noise[6] ? m : q.LSB, tA, 0, 3), grade("e6b", noise[6] ? c : q.C, tC, 0, 3)];
+  if (r.every(Boolean)) plot($("ex6p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends with fit",
+    resid: q.nS.map((n, i) => [n, q.IL[i], m * n + c]),
+    series: [{ type: "line", color: "--teal", pts: [[0, c], [9, m * 9 + c]] }, { type: "points", color: "--ink", pts: q.nS.map((n, i) => [n, q.IL[i]]) }] });
+  showResult(6, r.every(Boolean), L(`True L_SB = ${f(q.LSB, 3)} dB.`, `참값 L_SB = ${f(q.LSB, 3)} dB.`));
+}
+
+// ===== Exercise 7: S-bend, three angles =====
+const ANG = [10, 20, 30], NS = [2, 4, 6, 8], ACOL = ["--teal", "--amber", "--acc"];
+function new7() {
+  const ab = rnd2(0.01, 0.5, 3), Tsb = rnd2(0.05, 1.0, 3), Tbb = +(2 * Tsb).toFixed(3), C = rnd2(1.0, 3.5);
+  const sig = noise[7] ? rnd2(0.015, 0.04, 3) : 0;
+  const rows = [];
+  ANG.forEach(th => NS.forEach(n => rows.push({ th, n, IL: +(C + ab * n * 2 * th / 90 + n * (2 * Tsb + Tbb) + sig * gauss()).toFixed(3) })));
+  // Step 2: one straight-line fit per angle
+  const per = ANG.map(th => { const r = rows.filter(v => v.th === th), fit = lsq(r.map(v => [v.n, 1]), r.map(v => v.IL)); return { th, L: fit.x[0], C: fit.x[1] }; });
+  // Step 3: L_SB vs 2θ/90
+  const s3 = lsq(per.map(p => [2 * p.th / 90, 1]), per.map(p => p.L));
+  // One shot: all 12 patterns, unknowns [C, α_b, T_sb]
+  const A = rows.map(r => [1, r.n * 2 * r.th / 90, 4 * r.n]), b = rows.map(r => r.IL);
+  const fit = lsq(A, b);
+  const q = P[7] = { ab, Tsb, Tbb, C, sig, rows, A, b, fit, per, s3 };
+  $("ex7t").innerHTML = `<p class="note">${noise[7] ? L("Measurement error present", "측정 오차 있음") : L("No measurement error", "측정 오차 없음")} · ${L("each S-bend = 2 arcs of θ", "S-bend 하나 = 각도 θ인 arc 2개")}</p>` +
+    dataTable(["Pattern", L("θ per arc", "arc당 θ"), "n_S", "IL (dB)"], rows.map((r, i) => [`P${i + 1}`, r.th + "°", r.n, r.IL.toFixed(3)]));
+  $("ex7q").innerHTML = `<h3 style="margin-top:14px">${L("Step 2 — loss per S-bend for each angle", "Step 2 — 각도별 S-bend 하나당 loss")}</h3>` +
+    qRow("e7a", "(a) L<sub>SB</sub>(10°)", "dB/S-bend") + qRow("e7b", "(b) L<sub>SB</sub>(20°)", "dB/S-bend") + qRow("e7c", "(c) L<sub>SB</sub>(30°)", "dB/S-bend") +
+    `<h3 style="margin-top:14px">${L("Step 3 — the components", "Step 3 — loss 성분")}</h3>` +
+    qRow("e7d", "(d) Bending loss α<sub>b</sub>", "dB/90°") + qRow("e7e", "(e) Straight-bend transition loss T<sub>sb</sub>", "dB/trans.") + qRow("e7f", "(f) Bend-bend transition loss T<sub>bb</sub>", "dB/trans.");
+  draw7(false);
+  const [ab2, c4] = s3.x, [c0, a1, t1] = fit.x;
+  $("ex7s").innerHTML = `<p><b>Step 2.</b> ${L("For each angle, fit IL = C + n_S·L_SB (straight line in n_S, same formulas as Exercises 4 and 6):", "각도마다 IL = C + n_S·L_SB를 fit합니다 (n_S에 대한 직선, Exercise 4·6과 같은 공식):")}</p>
+<div class="mono">${per.map(p => `θ = ${p.th}°:  L_SB(${p.th}°) = slope = ${f(p.L, 4)} dB     C = ${f(p.C, 3)} dB`).join("\n")}</div>
+<p><b>Step 3.</b> ${L("Fit L_SB against x = 2θ/90° (three points):", "L_SB를 x = 2θ/90°에 대해 fit합니다 (점 3개):")}</p>
+<div class="mono">${per.map(p => `x = ${f(2 * p.th / 90, 4)}   L_SB = ${f(p.L, 4)}`).join("\n")}
+
+α_b    = slope     = ${f(ab2, 4)} dB/90°
+4·T_sb = intercept = ${f(c4, 4)} dB   ⇒  T_sb = ${f(c4 / 4, 4)} dB,  T_bb = 2·T_sb = ${f(c4 / 2, 4)} dB</div>
+<div id="ex7p2"></div>
+<p><b>${L("Alternative — one shot.", "다른 방법 — 한 번에 풀기.")}</b> ${L("Put all 12 patterns into A x = b with x = [C, α_b, T_sb]ᵀ and columns [1, n_S·2θ/90°, 4·n_S]:", "12개 pattern을 모두 A x = b에 넣습니다. x = [C, α_b, T_sb]ᵀ, 열은 [1, n_S·2θ/90°, 4·n_S]:")}</p>
+<div class="mono">AᵀA = ${matStr(fit.AtA, 3).split("\n").join("\n       ")}
+
+Aᵀb = ${matStr(fit.Atb.map(v => [v]), 3).split("\n").join("\n       ")}
+
+C = ${f(c0, 4)} dB,  α_b = ${f(a1, 4)} dB/90°,  T_sb = ${f(t1, 4)} dB,  T_bb = ${f(2 * t1, 4)} dB    (R² = ${f(fit.r2, 5)})</div>
+<p class="note">${noise[7] ? L("The two approaches differ slightly because the one-shot fit forces one common C, while Step 2 gives each angle its own intercept. Both are accepted. ", "한 번에 푸는 fit은 공통 C 하나를 쓰고 Step 2는 각도마다 intercept를 따로 두기 때문에 두 결과가 조금 다릅니다. 둘 다 정답으로 인정합니다. ") : ""}${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, C = ${C} dB${noise[7] ? `, noise σ = ${sig} dB` : ""}. ${L("With a single angle, column 2 would be a multiple of column 3 and AᵀA would be singular; that is why three angles are needed.", "한 각도만 쓰면 2열이 3열의 배수가 되어 AᵀA가 singular가 됩니다. 그래서 세 각도가 필요합니다.")}</p>`;
+  resetResult(7);
+  plot($("ex7p2"), { xLabel: "total bend angle / 90°  (= 2θ/90°)", yLabel: "loss per S-bend L_SB (dB)", xmin: 0, xmax: 0.8, aria: "Loss per S-bend versus bend angle",
+    series: [{ type: "line", color: "--teal", pts: [[0, c4], [0.8, ab2 * 0.8 + c4]] }, { type: "points", color: "--acc", pts: per.map(p => [2 * p.th / 90, p.L]) }] });
+}
+function draw7(withFit) {
+  const q = P[7], series = [];
+  ANG.forEach((th, k) => {
+    const p = q.per[k];
+    if (withFit) series.push({ type: "line", color: ACOL[k], pts: [[0, p.C], [9, p.C + 9 * p.L]] });
+    series.push({ type: "points", color: ACOL[k], pts: q.rows.filter(r => r.th === th).map(r => [r.n, r.IL]) });
+  });
+  plot($("ex7p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends for three angles", series });
+  $("ex7leg").innerHTML = ANG.map((th, k) => `<span><i class="dot" style="background:var(${ACOL[k]})"></i>θ = ${th}°</span>`).join("") + (withFit ? `<span><i style="background:var(--muted)"></i>${L("lines: Step 2 fits", "직선: Step 2 fit")}</span>` : "");
+}
+function check7() {
+  const q = P[7], nz = noise[7], [ab2, c4] = q.s3.x, [, a1, t1] = q.fit.x;
+  const trueL = th => q.ab * 2 * th / 90 + 4 * q.Tsb;
+  const r = [
+    ...q.per.map((p, k) => grade("e7" + "abc"[k], nz ? p.L : trueL(p.th), nz ? 0.02 : 0.005, 0, 3)),
+    gradeAny("e7d", nz ? [ab2, a1] : [q.ab], nz ? 0.02 : 0.005, nz ? 0.1 : 0, 3),
+    gradeAny("e7e", nz ? [c4 / 4, t1] : [q.Tsb], nz ? 0.01 : 0.003, nz ? 0.05 : 0, 3),
+    gradeAny("e7f", nz ? [c4 / 2, 2 * t1] : [q.Tbb], nz ? 0.02 : 0.006, nz ? 0.05 : 0, 3),
+  ];
+  if (r.every(Boolean)) draw7(true);
+  showResult(7, r.every(Boolean), L(`True values: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`, `참값: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`));
+}
+
+registerExercise(1, { part: 2, newProblem: new1, check: check1 });
+registerExercise(2, { part: 4, newProblem: new2, check: check2 });
+registerExercise(3, { part: 5, newProblem: new3, check: check3, csv: () => "L_cm,IL_dB\n" + P[3].Ls.map((L, i) => `${L},${P[3].IL[i]}`).join("\n") });
+registerExercise(4, { part: 6, newProblem: new4, check: check4, csv: () => "L_cm,IL_dB\n" + P[4].Ls.map((L, i) => `${L},${P[4].IL[i]}`).join("\n") });
+registerExercise(6, { part: 8, noisy: false, newProblem() { noise[6] = this.noisy === true; new6(); }, check: check6, csv: () => "n_S,IL_dB\n" + P[6].nS.map((n, i) => `${n},${P[6].IL[i]}`).join("\n") });
+registerExercise(7, { part: 9, noisy: false, newProblem() { noise[7] = this.noisy === true; new7(); }, check: check7, csv: () => "theta_deg,n_S,IL_dB\n" + P[7].rows.map(r => `${r.th},${r.n},${r.IL}`).join("\n") });
+// Exercise 5 (least squares playground) is not graded, so it is not registered.
+
+function courseInit() {
+  // ---------- Part 4 widgets ----------
+  const cMw = $("convMw"), cDbm = $("convDbm");
+  cMw.addEventListener("input", () => { const v = parseFloat(cMw.value); cDbm.value = v > 0 ? (10 * Math.log10(v)).toFixed(2) : ""; });
+  cDbm.addEventListener("input", () => { const v = parseFloat(cDbm.value); cMw.value = Number.isFinite(v) ? (+Math.pow(10, v / 10).toPrecision(4)).toString() : ""; });
+  {
+    const Ls = Array.from({ length: 21 }, (_, i) => i * 0.25);
+    plot($("decayLin"), { xLabel: "length (cm)", yLabel: "power (mW)", xmin: 0, xmax: 5, ymin: 0, ymax: 1.05, aria: "Power in mW decays exponentially with length",
+      series: [{ type: "line", color: "--ink", pts: Ls.map(L => [L, Math.pow(10, -0.3 * L)]) }, { type: "points", color: "--ink", r: 3.5, pts: Ls.filter((_, i) => i % 2 === 0).map(L => [L, Math.pow(10, -0.3 * L)]) }] });
+    plot($("decayLog"), { xLabel: "length (cm)", yLabel: "power (dBm)", xmin: 0, xmax: 5, ymin: -16, ymax: 0.5, aria: "Power in dBm falls linearly with length",
+      series: [{ type: "line", color: "--laser", pts: Ls.map(L => [L, -3 * L]) }, { type: "points", color: "--laser", r: 3.5, pts: Ls.filter((_, i) => i % 2 === 0).map(L => [L, -3 * L]) }] });
+  }
+
+  // ---------- Part 7 widgets ----------
+  function ovDraw() {
+    const d = +$("ovShift").value, w = +$("ovW").value;
+    $("ovShiftV").textContent = d.toFixed(2); $("ovWV").textContent = w.toFixed(2);
+    const g = (x, s) => Math.exp(-(((x - s) / w) ** 2));
+    const xs = Array.from({ length: 121 }, (_, i) => -3 + i * 0.05);
+    plot($("ovPlot"), { xLabel: "lateral position x (µm)", yLabel: "field (a.u.)", xmin: -3, xmax: 3, ymin: 0, ymax: 1.1, aria: "Straight mode and shifted bend modes",
+      series: [{ type: "line", color: "--ink", pts: xs.map(x => [x, g(x, 0)]) }, { type: "line", color: "--guide", pts: xs.map(x => [x, g(x, d)]) }, { type: "line", color: "--laser", dash: "5 4", pts: xs.map(x => [x, g(x, -d)]) }] });
+    const tsb = 10 / Math.LN10 * (d * d) / (w * w), tbb = 10 / Math.LN10 * (4 * d * d) / (w * w);
+    $("ovSb").textContent = tsb.toFixed(3) + " dB"; $("ovBb").textContent = tbb.toFixed(3) + " dB"; $("ovRatio").textContent = d > 0 ? (tbb / tsb).toFixed(1) + "×" : "–";
+  }
+  ["ovShift", "ovW"].forEach(id => $(id).addEventListener("input", ovDraw));
+  function sbCalc() {
+    const a = +$("sbA").value, t = +$("sbT").value, th = +$("sbTh").value;
+    $("sbAV").textContent = a.toFixed(2); $("sbTV").textContent = t.toFixed(2); $("sbThV").textContent = th;
+    const bend = a * 2 * th / 90, trans = 4 * t;
+    $("sbBend").textContent = bend.toFixed(3) + " dB"; $("sbTrans").textContent = trans.toFixed(3) + " dB"; $("sbTotal").textContent = (bend + trans).toFixed(3) + " dB";
+  }
+  ["sbA", "sbT", "sbTh"].forEach(id => $(id).addEventListener("input", sbCalc));
+
+  // ---------- Parts 8–9: lecture data set ----------
+  const SB = [[10, 2, 2.73], [10, 4, 4.07], [10, 6, 5.39], [10, 8, 6.72], [20, 2, 2.86], [20, 4, 4.31], [20, 6, 5.80], [20, 8, 7.29], [30, 2, 2.99], [30, 4, 4.59], [30, 6, 6.21], [30, 8, 7.81]];
+  const SBANG = [10, 20, 30], SBN = [2, 4, 6, 8], SBCOL = ["--guide", "--amber", "--laser"];
+  const per = SBANG.map(th => { const r = SB.filter(v => v[0] === th); const fit = lsq(r.map(v => [v[1], 1]), r.map(v => v[2])); return { th, L: fit.x[0], C: fit.x[1] }; });
+  const st3 = lsq(per.map(p => [2 * p.th / 90, 1]), per.map(p => p.L));
+  const oneA = SB.map(([th, n]) => [1, n * 2 * th / 90, 4 * n]), one = lsq(oneA, SB.map(v => v[2]));
+  {
+    const p30 = per[2];
+    plot($("step1Plot"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, ymin: 0, ymax: 9, aria: "Step 1: insertion loss versus number of S-bends at 30 degrees",
+      series: [{ type: "line", color: "--guide", pts: [[0, p30.C], [9, p30.C + 9 * p30.L]] }, { type: "points", color: "--laser", pts: SB.filter(v => v[0] === 30).map(v => [v[1], v[2]]) }] });
+    $("step1Out").textContent = `L_SB(30°) = slope = ${f(p30.L, 3)} dB\nC = intercept = ${f(p30.C, 2)} dB`;
+    $("step1Out").style.whiteSpace = "pre";
+    $("sbTable").innerHTML = `<thead><tr><th>${L("θ per arc", "arc당 θ")}</th>${SBN.map(n => `<th>n_S = ${n}</th>`).join("")}<th>L_SB (slope)</th></tr></thead><tbody>${SBANG.map((th, k) => `<tr><td>${th}°</td>${SB.filter(v => v[0] === th).map(v => `<td>${v[2].toFixed(2)}</td>`).join("")}<td>${f(per[k].L, 3)}</td></tr>`).join("")}</tbody>`;
+    const s2 = []; per.forEach((p, k) => { s2.push({ type: "line", color: SBCOL[k], pts: [[0, p.C], [9, p.C + 9 * p.L]] }); s2.push({ type: "points", color: SBCOL[k], pts: SB.filter(v => v[0] === p.th).map(v => [v[1], v[2]]) }); });
+    plot($("step2Plot"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, ymin: 0, ymax: 9, aria: "Step 2: insertion loss versus number of S-bends for 10, 20 and 30 degrees", series: s2 });
+    const leg = document.createElement("div"); leg.className = "legend"; $("step2Plot").appendChild(leg);
+    leg.innerHTML = SBANG.map((th, k) => `<span><i class="dot" style="background:var(${SBCOL[k]})"></i>θ = ${th}°</span>`).join("");
+    const [ab, c4] = st3.x;
+    plot($("step3Plot"), { xLabel: "total bend angle / 90°", yLabel: "loss per S-bend (dB)", xmin: 0, xmax: 0.8, ymin: 0.55, ymax: 0.85, aria: "Step 3: loss per S-bend versus bend angle",
+      series: [{ type: "line", color: "--guide", pts: [[0, c4], [0.8, c4 + 0.8 * ab]] }, { type: "points", color: "--laser", pts: per.map(p => [2 * p.th / 90, p.L]) }] });
+    $("step3Out").textContent = `α_b  = slope     = ${f(ab, 3)} dB/90°\n4·T_sb = intercept = ${f(c4, 3)} dB\nT_sb = ${f(c4 / 4, 3)} dB\nT_bb = 2·T_sb = ${f(c4 / 2, 3)} dB`;
+    $("step3Out").style.whiteSpace = "pre";
+    const [c0, a1, t1] = one.x;
+    $("oneShotOut").textContent = `AᵀA = ${matStr(one.AtA, 2).split("\n").join("\n       ")}\n\nAᵀb = ${matStr(one.Atb.map(v => [v]), 2).split("\n").join("\n       ")}\n\nC    = ${f(c0, 3)} dB\nα_b  = ${f(a1, 3)} dB/90°      (two-stage: ${f(ab, 3)})\nT_sb = ${f(t1, 3)} dB          (two-stage: ${f(c4 / 4, 3)})\nT_bb = ${f(2 * t1, 3)} dB`;
+    const res = one.res;
+    plot($("residPlot"), { xLabel: "pattern index (θ = 10°: 1–4, 20°: 5–8, 30°: 9–12)", yLabel: "residual (dB)", xmin: 0, xmax: 13, ymin: -0.04, ymax: 0.04, aria: "Residuals of the 12-pattern fit",
+      resid: res.map((r, i) => [i + 1, r, 0]), series: [{ type: "line", color: "--muted", w: 1, pts: [[0, 0], [13, 0]] }, { type: "points", color: "--laser", r: 4, pts: res.map((r, i) => [i + 1, r]) }] });
+    const sig = Math.sqrt(one.ssr / (SB.length - 3));
+    $("fitStats").innerHTML = `R² = ${f(one.r2, 5)}    σ̂ = ${f(sig, 3)} dB  ${L("(data generated with σ = 0.02 dB)", "(데이터 생성 시 σ = 0.02 dB)")}`;
+  }
+
+  // Exercise 5 playground
+  ["pgN", "pgS", "pgR"].forEach(id => $(id).addEventListener("input", pgDraw));
+  $("pgNew").addEventListener("click", pgResample);
+  PG.eps = Array.from({ length: 12 }, gauss);
+  ovDraw(); sbCalc();
+  onPartShown[6] = pgDraw;
+  onPartShown[9] = () => { if (P[7]) draw7(false); };
+}
+
+
+// ===================== course shell =====================
+const PARTS = [...document.querySelectorAll("article.part")];
+const doneParts = new Set((store.get("done") || "").split(",").filter(Boolean).map(Number));
+let curPart = 1;
+const onPartShown = {}; // optional hooks: onPartShown[n] = () => redraw...
+
+function exercisesOfPart(n) { return Object.entries(EX).filter(([, s]) => s.part === n).map(([e]) => +e); }
+const partTitle = a => (LANG === "ko" && a.dataset.titleKo) || a.dataset.title;
+const partGroup = a => (LANG === "ko" && a.dataset.groupKo) || a.dataset.group || "";
+function renderNav() {
+  const nEx = Object.keys(EX).length, nPart = PARTS.length, nSolved = [...solved].filter(e => EX[e]).length;
+  $("progBar").style.width = Math.round(100 * (doneParts.size + nSolved) / (nPart + nEx || 1)) + "%";
+  $("progText").textContent = LANG === "ko"
+    ? `${t("part")} ${doneParts.size} / ${nPart}` + (nEx ? ` · exercise ${nSolved} / ${nEx}` : "")
+    : `${doneParts.size} of ${nPart} parts` + (nEx ? ` · ${nSolved} of ${nEx} exercises` : "");
+  document.querySelectorAll(".lang-seg").forEach(g => {
+    g.hidden = !HAS_KO;
+    g.querySelectorAll("button").forEach(b => { const on = b.dataset.setlang === LANG; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); });
+  });
+  $("resetBtn").textContent = resetArmed ? t("resetAgain") : t("reset");
+  renderFooters();
+  let html = "", lastGroup = "";
+  PARTS.forEach((a, i) => {
+    const n = i + 1, g = partGroup(a);
+    if (g && g !== lastGroup) { html += `<li class="group">${g}</li>`; lastGroup = g; }
+    const exs = exercisesOfPart(n);
+    const exTxt = exs.length ? ` · Ex ${exs.join(", ")}` : "";
+    const complete = doneParts.has(n) && exs.every(e => solved.has(e));
+    html += `<li><button class="part-link" type="button" data-part="${n}" aria-current="${n === curPart}"><span class="num">${String(n).padStart(2, "0")}</span><span>${partTitle(a)}<span class="num">${exTxt}</span></span><span class="tick">${complete ? "✓" : ""}</span></button></li>`;
+  });
+  $("partList").innerHTML = html;
+  $("partList").querySelectorAll("button.part-link").forEach(b => b.addEventListener("click", () => showPart(+b.dataset.part, true)));
+  $("partSelect").innerHTML = PARTS.map((a, i) => `<option value="${i + 1}" ${i + 1 === curPart ? "selected" : ""}>Part ${i + 1} · ${partTitle(a)}${doneParts.has(i + 1) ? " ✓" : ""}</option>`).join("");
+}
+function markDone(n) { if (!doneParts.has(n)) { doneParts.add(n); store.set("done", [...doneParts].join(",")); } }
+function showPart(n, userNav) {
+  n = Math.min(Math.max(1, n), PARTS.length);
+  if (userNav && n > curPart) markDone(curPart); // moving on to a later part completes the current one
+  curPart = n;
+  PARTS.forEach((a, i) => a.hidden = i + 1 !== curPart);
+  try { history.replaceState(null, "", "#part-" + curPart); } catch (e) {}
+  store.set("part", String(curPart));
+  renderNav();
+  redrawPlots(PARTS[curPart - 1]);
+  if (onPartShown[curPart]) onPartShown[curPart]();
+  if (userNav) window.scrollTo({ top: 0 });
+}
+
+// part footers (re-rendered on language change)
+let courseFinished = false;
+function renderFooters() {
+  PARTS.forEach((a, i) => {
+    const n = i + 1;
+    let foot = a.querySelector(":scope > .part-foot");
+    if (!foot) { foot = document.createElement("div"); foot.className = "part-foot"; a.appendChild(foot); }
+    foot.innerHTML = `${n > 1 ? `<button class="btn secondary" type="button" data-go="${n - 1}">← Part ${n - 1}</button>` : "<span></span>"}
+      ${n < PARTS.length ? `<button class="btn" type="button" data-go="${n + 1}">Part ${n + 1}: ${partTitle(PARTS[n])} →</button>` : `<button class="btn teal finish-btn" type="button">${courseFinished ? t("finished") : t("finish")}</button>`}`;
+  });
+}
+document.addEventListener("click", e => {
+  const go = e.target.closest("[data-go]"); if (go) showPart(+go.dataset.go, true);
+  const fin = e.target.closest(".finish-btn");
+  if (fin) { markDone(PARTS.length); courseFinished = true; renderNav(); }
+});
+$("partSelect").addEventListener("change", e => showPart(+e.target.value, true));
+
+// concept checks: a div.check with a data-quiz key; data comes from quiz.json.
+// The language of a check is the language of the block it sits in.
+document.querySelectorAll(".check[data-quiz]").forEach(box => {
+  const d = QUIZ[box.dataset.quiz]; if (!d) return;
+  const lang = box.closest("[data-l]")?.dataset.l || "en";
+  box.innerHTML = `<div class="check-head">${UI[lang].check}</div><div class="stem">${d.q}</div><div class="opts">${d.o.map((o, i) => `<button type="button" data-i="${i}">${o}</button>`).join("")}</div><div class="why" hidden></div>`;
+  box.querySelectorAll(".opts button").forEach(b => b.addEventListener("click", () => {
+    const ok = +b.dataset.i === d.a;
+    box.querySelectorAll(".opts button").forEach(x => x.classList.remove("right", "wrong"));
+    b.classList.add(ok ? "right" : "wrong");
+    const w = box.querySelector(".why"); w.hidden = false;
+    w.innerHTML = (ok ? UI[lang].right : UI[lang].wrong) + d.why;
+  }));
+});
+
+// slots: shared elements (exercises, charts, widgets) exist once in .slot-holder and are moved into
+// the matching  data-slot="key"  placeholder of the visible language.
+function placeSlots() {
+  document.querySelectorAll(".slot-holder > [data-slot-key], [data-slot] > [data-slot-key]").forEach(node => {
+    const key = node.dataset.slotKey;
+    const target = document.querySelector(`[data-l="${LANG}"] [data-slot="${CSS.escape(key)}"]`) || document.querySelector(`[data-slot="${CSS.escape(key)}"]`);
+    if (target && node.parentElement !== target) target.appendChild(node);
+  });
+}
+function setLang(lang) {
+  LANG = HAS_KO && lang === "ko" ? "ko" : "en";
+  document.documentElement.dataset.lang = LANG; document.documentElement.lang = LANG;
+  store.set("lang", LANG);
+  placeSlots(); renderNav(); redrawPlots(PARTS[curPart - 1]);
+}
+document.querySelectorAll("[data-setlang]").forEach(b => b.addEventListener("click", () => setLang(b.dataset.setlang)));
+
+// exercise wiring: buttons inside <section class="ex" id="exN"> use data-new / data-check / data-csv / data-noise
+document.querySelectorAll("[data-new]").forEach(b => b.addEventListener("click", () => EX[b.dataset.new].newProblem()));
+document.querySelectorAll("[data-check]").forEach(b => b.addEventListener("click", () => EX[b.dataset.check].check()));
+document.querySelectorAll("[data-csv]").forEach(b => b.addEventListener("click", () => copyCSV(EX[b.dataset.csv].csv(), b)));
+document.querySelectorAll("[data-noise]").forEach(seg => seg.querySelectorAll("button").forEach(b => b.addEventListener("click", () => {
+  seg.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+  const n = seg.dataset.noise; EX[n].noisy = b.dataset.v === "1"; EX[n].newProblem();
+})));
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter" || e.target.tagName !== "INPUT") return;
+  const sec = e.target.closest("section.ex"); if (sec) EX[sec.id.slice(2)]?.check();
+});
+
+// theme + reset
+function toggleTheme() {
+  const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark"; store.set("theme", r.dataset.theme);
+}
+$("themeBtn").addEventListener("click", toggleTheme); $("themeBtn2").addEventListener("click", toggleTheme);
+let resetArmed = false;
+$("resetBtn").addEventListener("click", () => {
+  const b = $("resetBtn");
+  if (!resetArmed) { resetArmed = true; b.textContent = t("resetAgain"); setTimeout(() => { resetArmed = false; b.textContent = t("reset"); }, 3000); return; }
+  doneParts.clear(); solved.clear(); store.set("done", ""); store.set("solved", ""); resetArmed = false; courseFinished = false; renderNav(); b.textContent = t("resetDone");
+});
+
+// boot
+placeSlots();
+Object.values(EX).forEach(s => s.newProblem && s.newProblem());
+if (typeof courseInit === "function") courseInit(); // optional: defined in exercises.js for static charts/widgets
+const hashPart = /^#part-(\d+)$/.exec(location.hash || "");
+showPart(hashPart ? +hashPart[1] : (+store.get("part") || 1), false);
+</script>
+</body>
+</html>
