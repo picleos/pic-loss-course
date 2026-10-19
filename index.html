@@ -299,7 +299,7 @@ window.MathJax = {
   <h1>How much light does a chip lose, and where?</h1>
   <p class="lede">This course shows how to measure the loss of a fabricated photonic integrated circuit (PIC) and how to split one measured number into its physical parts: coupling loss, propagation loss and S-bend loss. Each extraction step is paired with the linear algebra it needs.</p>
 </header>
-<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>7</strong> exercises</span><span><strong>≈ 3 h</strong> of study</span><span>prerequisites: logarithms, waveguide modes, basic matrices</span></div>
+<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>6</strong> exercises</span><span><strong>≈ 3 h</strong> of study</span><span>prerequisites: logarithms, waveguide modes, basic matrices</span></div>
 <figure><div class="plate photo"><img src="img/ref_pic_photo.jpg" alt="Packaged photonic integrated circuit on a printed circuit board, with a fiber array coupled to the chip edge and red laser light visible" width="495" height="400"></div><figcaption>A packaged PIC with an edge-coupled fiber array. The red light marks where the laser enters the chip.</figcaption></figure>
 <p>Light enters the chip from a fiber, travels through straight waveguides, bends and devices, and leaves through a second fiber. Every interface and every millimetre of waveguide consumes some optical power. Before a chip can be used in a system, we need to know how much power it loses and which part of the chip is responsible.</p>
 <h2>The loss budget</h2>
@@ -343,16 +343,11 @@ window.MathJax = {
 </tr>
 <tr>
 <td>Exercise 5</td>
-<td style="text-align: left;">Least squares playground (not graded)</td>
-<td>Part 6</td>
-</tr>
-<tr>
-<td>Exercise 6</td>
 <td style="text-align: left;">S-bend loss from one angle</td>
 <td>Part 8</td>
 </tr>
 <tr>
-<td>Exercise 7</td>
+<td>Exercise 6</td>
 <td style="text-align: left;">S-bend components from 10°/20°/30°</td>
 <td>Part 9</td>
 </tr>
@@ -366,7 +361,7 @@ window.MathJax = {
   <h1>Chip에서 빛이 얼마나, 어디서 손실되는가?</h1>
   <p class="lede">이 강의에서는 제작한 photonic integrated circuit (PIC)의 loss를 측정하는 방법과, 측정한 값 하나를 물리적 성분(coupling loss, propagation loss, S-bend loss)으로 나누는 방법을 배웁니다. 각 추출 단계에는 필요한 선형대수를 함께 다룹니다.</p>
 </header>
-<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>7</strong> exercises</span><span><strong>약 3시간</strong> 학습</span><span>선수 지식: 로그, waveguide mode, 기초 행렬</span></div>
+<div class="hero-meta"><span><strong>10</strong> parts</span><span><strong>6</strong> exercises</span><span><strong>약 3시간</strong> 학습</span><span>선수 지식: 로그, waveguide mode, 기초 행렬</span></div>
 <figure><div class="plate photo"><img src="img/ref_pic_photo.jpg" alt="Packaged photonic integrated circuit on a printed circuit board, with a fiber array coupled to the chip edge and red laser light visible" width="495" height="400"></div><figcaption>fiber array가 edge coupling된 packaged PIC. 빨간 빛이 laser가 chip으로 들어가는 위치입니다.</figcaption></figure>
 <p>빛은 fiber에서 chip으로 들어와 straight waveguide, bend, 각종 소자를 지나 두 번째 fiber로 나갑니다. 모든 interface와 waveguide 1 mm마다 optical power가 조금씩 줄어듭니다. chip을 시스템에 쓰기 전에 power가 얼마나 줄어드는지, 그리고 chip의 어느 부분이 원인인지 알아야 합니다.</p>
 <h2>Loss budget</h2>
@@ -410,16 +405,11 @@ window.MathJax = {
 </tr>
 <tr>
 <td>Exercise 5</td>
-<td style="text-align: left;">Least squares 체험 (채점 없음)</td>
-<td>Part 6</td>
-</tr>
-<tr>
-<td>Exercise 6</td>
 <td style="text-align: left;">한 각도로 S-bend loss 구하기</td>
 <td>Part 8</td>
 </tr>
 <tr>
-<td>Exercise 7</td>
+<td>Exercise 6</td>
 <td style="text-align: left;">10°/20°/30°로 S-bend loss 성분 분리</td>
 <td>Part 9</td>
 </tr>
@@ -1089,7 +1079,7 @@ window.MathJax = {
 <div class="display-eq">\[A^\mathsf{T}(b - A\hat x) = 0\]</div>
 <p>This is exactly the normal equations. The picture holds for any number of unknowns.</p></div></div>
 <div class="check" data-quiz="6"></div>
-<div data-slot="exercise:5"></div>
+<div data-slot="embed:ls-playground"></div>
 <div data-slot="exercise:4"></div>
 </div>
 <div data-l="ko" lang="ko">
@@ -1123,7 +1113,7 @@ window.MathJax = {
 <div class="display-eq">\[A^\mathsf{T}(b - A\hat x) = 0\]</div>
 <p>이것이 바로 normal equations입니다. 미지수가 몇 개든 같은 그림이 성립합니다.</p></div></div>
 <div class="check" data-quiz="ko6"></div>
-<div data-slot="exercise:5"></div>
+<div data-slot="embed:ls-playground"></div>
 <div data-slot="exercise:4"></div>
 </div>
 </article>
@@ -1276,7 +1266,7 @@ window.MathJax = {
 <div class="grid2"><div><figure><div data-slot="chart:step1Plot"></div><figcaption>θ = 30°: IL = 2.99, 4.59, 6.21, 7.81 dB for n_S = 2, 4, 6, 8.</figcaption></figure></div><div><p>A straight-line fit of IL against n<sub>S</sub> gives</p>
 <div data-slot="output:step1Out"></div>
 <p>This is the total per S-bend. α<sub>b</sub> and T<sub>sb</sub> are still mixed together.</p></div></div>
-<div data-slot="exercise:6"></div>
+<div data-slot="exercise:5"></div>
 <h2>Why one angle is not enough</h2>
 <p>\(L_\text{SB}(30^\circ) = 0.667\,\alpha_b + 4T_\text{sb}\) is one equation with two unknowns. (0.30, 0.151) fits, but so do (0, 0.201) and (0.6, 0.101). In matrix language the angle column and the transition column are proportional, so \(A^\mathsf{T}A\) is singular. More patterns of the same kind do not help; a different experiment does.</p>
 <p class="keyline"><strong>Fix:</strong> make the same pattern family with S-bends of θ = 10°, 20° and 30°. The bending term changes with angle; the transition term does not.</p>
@@ -1303,7 +1293,7 @@ window.MathJax = {
 <div class="grid2"><div><figure><div data-slot="chart:step1Plot"></div><figcaption>θ = 30°: n_S = 2, 4, 6, 8에서 IL = 2.99, 4.59, 6.21, 7.81 dB.</figcaption></figure></div><div><p>IL을 n<sub>S</sub>에 대해 직선으로 fit하면</p>
 <div data-slot="output:step1Out"></div>
 <p>이것은 S-bend 하나의 전체 loss입니다. α<sub>b</sub>와 T<sub>sb</sub>가 아직 섞여 있습니다.</p></div></div>
-<div data-slot="exercise:6"></div>
+<div data-slot="exercise:5"></div>
 <h2>한 각도로는 부족한 이유</h2>
 <p>\(L_\text{SB}(30^\circ) = 0.667\,\alpha_b + 4T_\text{sb}\)는 미지수 두 개에 식 하나입니다. (0.30, 0.151)도 맞지만 (0, 0.201)이나 (0.6, 0.101)도 맞습니다. 행렬로 보면 angle 열과 transition 열이 비례하므로 \(A^\mathsf{T}A\)가 singular입니다. 같은 종류의 pattern을 더 만들어도 소용없고, 실험 설계를 바꿔야 합니다.</p>
 <p class="keyline"><strong>해결:</strong> 같은 pattern family를 θ = 10°, 20°, 30°의 S-bend로 만듭니다. bending 항은 각도에 따라 변하고 transition 항은 변하지 않습니다.</p>
@@ -1341,7 +1331,7 @@ window.MathJax = {
 <div class="display-eq quiet">\[R^2 = 1-\frac{\sum r_i^2}{\sum (y_i-\bar y)^2},\qquad \hat\sigma = \sqrt{\frac{\sum r_i^2}{m-n}},\qquad \mathrm{Cov}(\hat x) = \hat\sigma^2 (A^\mathsf{T}A)^{-1}\]</div>
 <div data-slot="output:fitStats"></div>
 <div class="check" data-quiz="9"></div>
-<div data-slot="exercise:7"></div>
+<div data-slot="exercise:6"></div>
 </div>
 <div data-l="ko" lang="ko">
 <header class="part-head">
@@ -1365,7 +1355,7 @@ window.MathJax = {
 <div class="display-eq quiet">\[R^2 = 1-\frac{\sum r_i^2}{\sum (y_i-\bar y)^2},\qquad \hat\sigma = \sqrt{\frac{\sum r_i^2}{m-n}},\qquad \mathrm{Cov}(\hat x) = \hat\sigma^2 (A^\mathsf{T}A)^{-1}\]</div>
 <div data-slot="output:fitStats"></div>
 <div class="check" data-quiz="ko9"></div>
-<div data-slot="exercise:7"></div>
+<div data-slot="exercise:6"></div>
 </div>
 </article>
 
@@ -1613,17 +1603,17 @@ window.MathJax = {
     <details class="sol"><summary>Worked solution</summary><div class="body" id="ex3s"></div></details>
   </div>
 </section></div>
-<div data-slot-key="exercise:5"><section class="ex" id="ex5" aria-label="Exercise 5">
+<div data-slot-key="embed:ls-playground"><section class="ex" id="playground" aria-label="Least squares playground">
   <div class="card">
-    <span class="ex-tag">Exercise 5</span>
+    <span class="ex-tag" style="background:var(--muted)">Playground</span>
     <h2><span data-l="en">Least squares playground</span><span data-l="ko">Least squares 체험</span></h2>
     <p class="lead"><span data-l="en">Explore how measurement noise and the number and spread of chip lengths affect the extracted α and CL. Compare a two-point estimate (first and last point only) with the least-squares fit.</span><span data-l="ko">측정 noise, chip 길이의 개수와 범위가 추출한 α와 CL에 어떤 영향을 주는지 살펴봅니다. 두 점(처음과 마지막 점)만 쓴 추정과 least-squares fit을 비교해 보세요.</span></p>
-    <div class="slider"><label for="pgN"><span data-l="en">Number of lengths</span><span data-l="ko">길이 개수</span></label><input id="pgN" type="range" min="2" max="12" value="3"><span id="pgNv"></span></div>
-    <div class="slider"><label for="pgS"><span data-l="en">Noise σ (dB)</span><span data-l="ko">Noise σ (dB)</span></label><input id="pgS" type="range" min="0" max="0.2" step="0.005" value="0.05"><span id="pgSv"></span></div>
-    <div class="slider"><label for="pgR"><span data-l="en">Longest length (cm)</span><span data-l="ko">최대 길이 (cm)</span></label><input id="pgR" type="range" min="0.6" max="4" step="0.1" value="2"><span id="pgRv"></span></div>
+    <div class="slider"><label for="pgN"><span data-l="en">Number of lengths</span><span data-l="ko">길이 개수</span></label><input id="pgN" type="range" min="2" max="12" value="6"><span id="pgNv"></span></div>
+    <div class="slider"><label for="pgS"><span data-l="en">Noise σ (dB)</span><span data-l="ko">Noise σ (dB)</span></label><input id="pgS" type="range" min="0" max="0.2" step="0.005" value="0.025"><span id="pgSv"></span></div>
+    <div class="slider"><label for="pgR"><span data-l="en">Longest length (cm)</span><span data-l="ko">최대 길이 (cm)</span></label><input id="pgR" type="range" min="0.6" max="4" step="0.1" value="4"><span id="pgRv"></span></div>
     <div class="toolbar"><button class="btn" id="pgNew"><span data-l="en">Re-measure (new noise)</span><span data-l="ko">다시 측정 (새 noise)</span></button><span class="note"><span data-l="en">True values</span><span data-l="ko">참값</span>: α = 0.20 dB/cm, CL = 0.50 dB/facet</span></div>
     <div id="pgPlot"></div>
-    <div class="legend"><span><i class="dot" style="background:var(--ink)"></i><span data-l="en">measured</span><span data-l="ko">측정값</span></span><span><i style="background:var(--teal)"></i>least-squares fit</span><span><i style="background:var(--amber)"></i><span data-l="en">two-point estimate</span><span data-l="ko">두 점 추정</span></span><span><i style="background:var(--muted);opacity:.5"></i><span data-l="en">true line</span><span data-l="ko">참값 직선</span></span><span><i style="background:var(--acc)"></i>residuals</span></div>
+    <div class="legend"><span><i class="dot" style="background:var(--ink)"></i><span data-l="en">measured</span><span data-l="ko">측정값</span></span><span><i style="background:var(--guide)"></i>least-squares fit</span><span><i style="background:var(--amber)"></i><span data-l="en">two-point estimate</span><span data-l="ko">두 점 추정</span></span><span><i style="background:var(--muted);opacity:.5"></i><span data-l="en">true line</span><span data-l="ko">참값 직선</span></span><span><i style="background:var(--laser)"></i>residuals</span></div>
     <div class="stats" id="pgStats"></div>
     <details class="sol" open><summary><span data-l="en">Normal equations for the current data</span><span data-l="ko">현재 데이터의 normal equations</span></summary><div class="body" id="pgMat"></div></details>
   </div>
@@ -1632,7 +1622,7 @@ window.MathJax = {
   <div class="card">
     <span class="ex-tag">Exercise 4</span>
     <h2><span data-l="en">Cut-back with measurement error</span><span data-l="ko">측정 오차가 있는 cut-back</span></h2>
-    <p class="lead"><span data-l="en">Same experiment, but each insertion loss now carries a random measurement error. The three points do not lie on one line, so use <b>linear regression</b> (least squares). Your answer passes if it is close to the least-squares solution of the given data (α within ±0.01 dB/cm, CL within ±0.02 dB).</span><span data-l="ko">같은 실험이지만 각 insertion loss에 무작위 측정 오차가 들어 있습니다. 세 점이 한 직선 위에 있지 않으므로 <b>linear regression</b> (least squares)을 사용하세요. 주어진 데이터의 least-squares 해에 가까우면 정답입니다 (α ±0.01 dB/cm, CL ±0.02 dB).</span></p>
+    <p class="lead"><span data-l="en">Now each insertion loss carries a random measurement error. With noise, three points are not enough for a reliable estimate, so one chip of up to 4 cm is cut back five times, giving <b>six lengths</b>. The points do not lie on one line, so use <b>linear regression</b> (least squares). Your answer passes if it is close to the least-squares solution of the given data (α within ±0.01 dB/cm, CL within ±0.02 dB).</span><span data-l="ko">이번에는 각 insertion loss에 무작위 측정 오차가 들어 있습니다. 오차가 있으면 점 세 개로는 믿을 만한 추정이 어려우므로, 최대 4 cm인 chip 하나를 다섯 번 잘라 <b>여섯 개의 길이</b>를 얻었습니다. 점들이 한 직선 위에 있지 않으므로 <b>linear regression</b> (least squares)을 사용하세요. 주어진 데이터의 least-squares 해에 가까우면 정답입니다 (α ±0.01 dB/cm, CL ±0.02 dB).</span></p>
     <div class="eq">AᵀA x̂ = Aᵀb, &nbsp; A = [Lᵢ 1], &nbsp; x = [α 2·CL]ᵀ, &nbsp; b = [ILᵢ]</div>
     <div class="toolbar"><button class="btn" data-new="4"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="4"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="4"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button></div>
     <div class="grid2">
@@ -1669,19 +1659,19 @@ window.MathJax = {
 <div class="mono-block" id="step1Out" data-slot-key="output:step1Out"></div>
 <div id="step3Plot" data-slot-key="chart:step3Plot"></div>
 <div class="mono-block" id="step3Out" data-slot-key="output:step3Out"></div>
-<div data-slot-key="exercise:6"><section class="ex" id="ex6" aria-label="Exercise 6">
+<div data-slot-key="exercise:5"><section class="ex" id="ex5" aria-label="Exercise 5">
   <div class="card">
-    <span class="ex-tag">Exercise 6</span>
+    <span class="ex-tag">Exercise 5</span>
     <h2><span data-l="en">S-bend loss from one angle (Step 1)</span><span data-l="ko">한 각도로 S-bend loss 구하기 (Step 1)</span></h2>
     <p class="lead"><span data-l="en">Test patterns <i>input — straight — {S-bend — short straight — S-bend — short straight} × N — straight — output</i> with <b>one fixed arc angle θ</b> contain n<sub>S</sub> = 2N = 2, 4, 6, 8 S-bends. The insertion losses below are already corrected for straight-waveguide propagation, so all patterns share one constant C (coupling + straights). Find the loss per S-bend L<sub>SB</sub> and C.</span><span data-l="ko">test pattern <i>input — straight — {S-bend — short straight — S-bend — short straight} × N — straight — output</i>은 <b>하나의 arc angle θ</b>로 만들어졌고 n<sub>S</sub> = 2N = 2, 4, 6, 8개의 S-bend를 포함합니다. 아래 insertion loss는 straight waveguide의 propagation loss를 이미 보정한 값이므로, 모든 pattern이 하나의 상수 C (coupling + straight 구간)를 공유합니다. S-bend 하나당 loss L<sub>SB</sub>와 C를 구하세요.</span></p>
     <div class="eq">IL = C + n_S · L_SB, &nbsp;&nbsp; L_SB = α_b·(2θ/90°) + 2·T_sb + T_bb</div>
-    <div class="toolbar"><button class="btn" data-new="6"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="6"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="6"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
-      <span class="seg" data-noise="6"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
+    <div class="toolbar"><button class="btn" data-new="5"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="5"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="5"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
+      <span class="seg" data-noise="5"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
     <div class="grid2">
-      <div><div class="tablewrap" id="ex6t"></div><div id="ex6q"></div><div class="result" id="ex6r"></div></div>
-      <div><div id="ex6p"></div></div>
+      <div><div class="tablewrap" id="ex5t"></div><div id="ex5q"></div><div class="result" id="ex5r"></div></div>
+      <div><div id="ex5p"></div></div>
     </div>
-    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex6s"></div></details>
+    <details class="sol"><summary>Worked solution</summary><div class="body" id="ex5s"></div></details>
   </div>
 </section></div>
 <div data-slot-key="embed:sbend-table"><div class="tablewrap"><table class="data" id="sbTable"></table></div></div>
@@ -1689,9 +1679,9 @@ window.MathJax = {
 <div class="mono-block" id="oneShotOut" data-slot-key="output:oneShotOut"></div>
 <div id="residPlot" data-slot-key="chart:residPlot"></div>
 <div class="mono-block" id="fitStats" data-slot-key="output:fitStats"></div>
-<div data-slot-key="exercise:7"><section class="ex" id="ex7" aria-label="Exercise 7">
+<div data-slot-key="exercise:6"><section class="ex" id="ex6" aria-label="Exercise 6">
   <div class="card">
-    <span class="ex-tag">Exercise 7</span>
+    <span class="ex-tag">Exercise 6</span>
     <h2><span data-l="en">Separating bending and transition losses (Steps 2–3)</span><span data-l="ko">bending loss와 transition loss 분리하기 (Steps 2–3)</span></h2>
     <p class="lead"><span data-l="en">The same pattern family was made with S-bends of three arc angles, <b>θ = 10°, 20° and 30°</b> (each S-bend = two arcs of θ, total angle 2θ), each with n<sub>S</sub> = 2, 4, 6, 8 S-bends: 12 patterns. Assume T<sub>bb</sub> = 2·T<sub>sb</sub>; the insertion losses are corrected for straight-waveguide propagation.<br>
     <b>Step 2:</b> fit IL vs. n<sub>S</sub> separately for each angle → L<sub>SB</sub>(10°), L<sub>SB</sub>(20°), L<sub>SB</sub>(30°).<br>
@@ -1701,14 +1691,14 @@ window.MathJax = {
     <b>Step 3:</b> L<sub>SB</sub> vs. 2θ/90°를 fit → slope = α<sub>b</sub>, intercept = 2·T<sub>sb</sub> + T<sub>bb</sub> = 4·T<sub>sb</sub>.<br>
     (12개 pattern을 미지수 3개의 least squares로 한 번에 풀어도 됩니다. 두 방법 모두 정답으로 인정합니다.)</span></p>
     <div class="eq">Step 2: IL = C + n_S · L_SB(θ) &nbsp;&nbsp;|&nbsp;&nbsp; Step 3: L_SB(θ) = α_b · (2θ/90°) + 4·T_sb</div>
-    <div class="toolbar"><button class="btn" data-new="7"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="7"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="7"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
-      <span class="seg" data-noise="7"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
+    <div class="toolbar"><button class="btn" data-new="6"><span data-l="en">New problem</span><span data-l="ko">새 문제</span></button><button class="btn teal" data-check="6"><span data-l="en">Check answers</span><span data-l="ko">채점하기</span></button><button class="btn secondary" data-csv="6"><span data-l="en">Copy data (CSV)</span><span data-l="ko">데이터 복사 (CSV)</span></button>
+      <span class="seg" data-noise="6"><button data-v="0" class="on"><span data-l="en">No error</span><span data-l="ko">오차 없음</span></button><button data-v="1"><span data-l="en">With error</span><span data-l="ko">오차 있음</span></button></span></div>
     <div class="grid2">
-      <div><div class="tablewrap" id="ex7t"></div></div>
-      <div><div id="ex7p"></div><div class="legend" id="ex7leg"></div></div>
+      <div><div class="tablewrap" id="ex6t"></div></div>
+      <div><div id="ex6p"></div><div class="legend" id="ex6leg"></div></div>
     </div>
-    <div id="ex7q"></div><div class="result" id="ex7r"></div>
-    <details class="sol"><summary><span data-l="en">Worked solution (Steps 2–3 and the one-shot 3 × 3 least squares)</span><span data-l="ko">Worked solution (Steps 2–3 및 한 번에 푸는 3 × 3 least squares)</span></summary><div class="body" id="ex7s"></div></details>
+    <div id="ex6q"></div><div class="result" id="ex6r"></div>
+    <details class="sol"><summary><span data-l="en">Worked solution (Steps 2–3 and the one-shot 3 × 3 least squares)</span><span data-l="ko">Worked solution (Steps 2–3 및 한 번에 푸는 3 × 3 least squares)</span></summary><div class="body" id="ex6s"></div></details>
   </div>
 </section></div>
 </div>
@@ -1876,7 +1866,7 @@ function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typ
 // Loaded into template.html by md2html.py. Utilities (lsq, plot, grade, ...) come from the template.
 const dbm = mw => 10 * Math.log10(mw);
 const mw = d => Math.pow(10, d / 10);
-const noise = { 6: false, 7: false };
+const noise = { 5: false, 6: false };
 
 // ===== Exercise 1 =====
 function new1() {
@@ -1938,8 +1928,18 @@ function makeCutback(noisy) {
   const fit = lsq(Ls.map(L => [L, 1]), IL);
   return { alpha, CL, Ls, IL, sigma, fit };
 }
+function makeCutback6() {
+  const alpha = rnd2(0.1, 0.3), CL = rnd2(0.2, 1.0);
+  const Ls = [rnd2(3.5, 4.0)];
+  for (let k = 1; k < 6; k++) Ls.push(+(Ls[k - 1] - rnd2(0.4, 0.6)).toFixed(2)); // five successive cleaves
+  const sigma = rnd2(0.03, 0.06, 3);
+  const IL = Ls.map(L => +(alpha * L + 2 * CL + sigma * gauss()).toFixed(3));
+  const fit = lsq(Ls.map(L => [L, 1]), IL);
+  return { alpha, CL, Ls, IL, sigma, fit };
+}
 function cutbackView(n, q) {
-  const names = [L("original chip", "원래 chip"), L("piece 1", "조각 1"), L("piece 2", "조각 2")];
+  const names = q.Ls.length === 3 ? [L("original chip", "원래 chip"), L("piece 1", "조각 1"), L("piece 2", "조각 2")]
+    : q.Ls.map((_, i) => i ? L(`after cleave ${i}`, `${i}번째 cleave 후`) : L("original chip", "원래 chip"));
   $(`ex${n}t`).innerHTML = dataTable([L("Sample", "시료"), L("Length L (cm)", "길이 L (cm)"), "IL (dB)"], q.Ls.map((L, i) => [names[i], L.toFixed(2), q.IL[i].toFixed(3)]));
   $(`ex${n}q`).innerHTML = qRow(`e${n}a`, "Propagation loss α", "dB/cm") + qRow(`e${n}b`, "Coupling loss CL", "dB/facet");
   plot($(`ex${n}p`), { xLabel: "chip length L (cm)", yLabel: "insertion loss (dB)", xmin: 0, ymin: 0, aria: "Insertion loss versus chip length",
@@ -1949,7 +1949,7 @@ function cutbackPlotWithFit(n, q) {
   const xmax = Math.max(...q.Ls) * 1.08, [a, c] = q.fit.x;
   plot($(`ex${n}p`), { xLabel: "chip length L (cm)", yLabel: "insertion loss (dB)", xmin: 0, ymin: 0, aria: "Insertion loss versus chip length with fit",
     resid: q.Ls.map((L, i) => [L, q.IL[i], a * L + c]),
-    series: [{ type: "line", color: "--teal", pts: [[0, c], [xmax, a * xmax + c]] }, { type: "points", color: "--ink", pts: q.Ls.map((L, i) => [L, q.IL[i]]) }] });
+    series: [{ type: "line", color: "--guide", pts: [[0, c], [xmax, a * xmax + c]] }, { type: "points", color: "--ink", pts: q.Ls.map((L, i) => [L, q.IL[i]]) }] });
 }
 function new3() {
   const q = P[3] = makeCutback(false);
@@ -1984,7 +1984,7 @@ intercept = (Σy − slope·Σx)/n = ${f(c, 4)}
 <p><b>4. Residuals</b> r = b − A x̂: ${q.fit.res.map(v => f(v, 4)).join(", ")} dB &nbsp; (R² = ${f(q.fit.r2, 5)})</p>`;
 }
 function new4() {
-  const q = P[4] = makeCutback(true);
+  const q = P[4] = makeCutback6();
   cutbackView(4, q);
   const [a, c] = q.fit.x;
   $("ex4s").innerHTML = regressionSolution(q, "L", ["α", `2·CL = ${f(c, 4)} ⇒ CL = ${f(c / 2, 4)} dB/facet`]) +
@@ -1998,7 +1998,7 @@ function check4() {
   showResult(4, r.every(Boolean), L(`True values: α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet.`, `참값: α = ${q.alpha.toFixed(2)} dB/cm, CL = ${q.CL.toFixed(2)} dB/facet.`));
 }
 
-// ===== Exercise 5: playground =====
+// ===== Least squares playground (not graded) =====
 const PG = { alpha: 0.2, CL: 0.5, eps: [] };
 function pgResample() { PG.eps = Array.from({ length: 12 }, gauss); pgDraw(); }
 function pgDraw() {
@@ -2015,7 +2015,7 @@ function pgDraw() {
     series: [
       { type: "line", color: "--muted", op: 0.5, dash: "5 5", pts: [[0, 2 * PG.CL], [xm, PG.alpha * xm + 2 * PG.CL]] },
       { type: "line", color: "--amber", w: 2, pts: [[0, c2], [xm, a2 * xm + c2]] },
-      { type: "line", color: "--teal", pts: [[0, c], [xm, a * xm + c]] },
+      { type: "line", color: "--guide", pts: [[0, c], [xm, a * xm + c]] },
       { type: "points", color: "--ink", pts: Ls.map((L, i) => [L, IL[i]]) }] });
   const err = (v, t) => `${v >= t ? "+" : ""}${f(100 * (v - t) / t, 1)} %`;
   $("pgStats").innerHTML = [
@@ -2032,43 +2032,43 @@ x̂ = (AᵀA)⁻¹Aᵀb = [ α  2·CL ]ᵀ = [ ${f(a, 4)}  ${f(c, 4)} ]ᵀ</div>
 <p class="note">${L("Try: σ = 0.1 dB with only 2 lengths, then 12 lengths. Then shrink the longest length: a short lever arm makes α much less certain, even with many points.", "해 보기: σ = 0.1 dB에서 길이 2개, 그다음 12개로 바꿔 보세요. 이어서 최대 길이를 줄여 보세요. 길이 범위가 좁으면 점이 많아도 α가 훨씬 불확실해집니다.")}</p>`;
 }
 
-// ===== Exercise 6: S-bend Set A =====
-function new6() {
+// ===== Exercise 5: S-bend, one angle =====
+function new5() {
   const ab = rnd2(0.01, 0.5, 3), Tsb = rnd2(0.05, 1.0, 3), Tbb = +(2 * Tsb).toFixed(3);
   const th = pick([10, 20, 30]), C = rnd2(1.0, 3.5);
   const LSB = ab * (2 * th / 90) + 2 * Tsb + Tbb;
-  const nS = [2, 4, 6, 8], sig = noise[6] ? rnd2(0.03, 0.08, 3) : 0;
+  const nS = [2, 4, 6, 8], sig = noise[5] ? rnd2(0.03, 0.08, 3) : 0;
   const IL = nS.map(n => +(C + n * LSB + sig * gauss()).toFixed(3));
   const fit = lsq(nS.map(n => [n, 1]), IL);
-  const q = P[6] = { ab, Tsb, Tbb, th, C, LSB, nS, IL, sig, fit, Ls: nS };
-  $("ex6t").innerHTML = `<p class="note">Arc angle θ = ${th}° (${L("total", "S-bend당 전체")} ${2 * th}°${L(" per S-bend", "")})${noise[6] ? L(" · measurement error present", " · 측정 오차 있음") : L(" · no measurement error", " · 측정 오차 없음")}</p>` +
+  const q = P[5] = { ab, Tsb, Tbb, th, C, LSB, nS, IL, sig, fit, Ls: nS };
+  $("ex5t").innerHTML = `<p class="note">Arc angle θ = ${th}° (${L("total", "S-bend당 전체")} ${2 * th}°${L(" per S-bend", "")})${noise[5] ? L(" · measurement error present", " · 측정 오차 있음") : L(" · no measurement error", " · 측정 오차 없음")}</p>` +
     dataTable(["Pattern", L("N (units)", "N (unit 수)"), L("n_S (S-bends)", "n_S (S-bend 수)"), "IL (dB)"], nS.map((n, i) => [`P${i + 1}`, n / 2, n, IL[i].toFixed(3)]));
-  $("ex6q").innerHTML = qRow("e6a", L("Loss per S-bend L<sub>SB</sub>", "S-bend 하나당 loss L<sub>SB</sub>"), "dB/S-bend") + qRow("e6b", L("Common constant C", "공통 상수 C"), "dB");
-  plot($("ex6p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends",
+  $("ex5q").innerHTML = qRow("e5a", L("Loss per S-bend L<sub>SB</sub>", "S-bend 하나당 loss L<sub>SB</sub>"), "dB/S-bend") + qRow("e5b", L("Common constant C", "공통 상수 C"), "dB");
+  plot($("ex5p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends",
     series: [{ type: "points", color: "--ink", pts: nS.map((n, i) => [n, IL[i]]) }] });
   const [m, c] = fit.x;
-  $("ex6s").innerHTML = (noise[6]
+  $("ex5s").innerHTML = (noise[5]
     ? regressionSolution(q, "n_S", ["L_SB", `C = ${f(c, 4)} dB`])
     : `<p>${L("Without measurement error the points lie exactly on a line; any two points give the slope:", "측정 오차가 없으면 점들이 정확히 한 직선 위에 있으므로 아무 두 점으로 slope를 구할 수 있습니다:")}</p><div class="mono">L_SB = (IL(n_S=8) − IL(n_S=2)) / (8 − 2) = (${IL[3].toFixed(3)} − ${IL[0].toFixed(3)}) / 6 = ${f((IL[3] - IL[0]) / 6, 4)} dB
 C    = IL(n_S=2) − 2·L_SB = ${f(IL[0] - 2 * (IL[3] - IL[0]) / 6, 4)} dB</div>`) +
-    `<p class="note">${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, θ = ${th}°: L_SB = ${ab}·${(2 * th / 90).toFixed(3)} + 2·${Tsb} + ${Tbb} = ${f(LSB, 4)} dB. ${L("Note that with a single angle you <b>cannot</b> separate α_b from T_sb; see Exercise 7.", "한 각도만으로는 α_b와 T_sb를 <b>분리할 수 없습니다</b>. Exercise 7을 보세요.")}</p>`;
+    `<p class="note">${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, θ = ${th}°: L_SB = ${ab}·${(2 * th / 90).toFixed(3)} + 2·${Tsb} + ${Tbb} = ${f(LSB, 4)} dB. ${L("Note that with a single angle you <b>cannot</b> separate α_b from T_sb; see Exercise 6.", "한 각도만으로는 α_b와 T_sb를 <b>분리할 수 없습니다</b>. Exercise 6을 보세요.")}</p>`;
   resetResult(6);
 }
-function check6() {
-  const q = P[6], [m, c] = q.fit.x;
-  const tA = noise[6] ? 0.02 : 0.01, tC = noise[6] ? 0.05 : 0.01;
-  const r = [grade("e6a", noise[6] ? m : q.LSB, tA, 0, 3), grade("e6b", noise[6] ? c : q.C, tC, 0, 3)];
-  if (r.every(Boolean)) plot($("ex6p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends with fit",
+function check5() {
+  const q = P[5], [m, c] = q.fit.x;
+  const tA = noise[5] ? 0.02 : 0.01, tC = noise[5] ? 0.05 : 0.01;
+  const r = [grade("e5a", noise[5] ? m : q.LSB, tA, 0, 3), grade("e5b", noise[5] ? c : q.C, tC, 0, 3)];
+  if (r.every(Boolean)) plot($("ex5p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends with fit",
     resid: q.nS.map((n, i) => [n, q.IL[i], m * n + c]),
-    series: [{ type: "line", color: "--teal", pts: [[0, c], [9, m * 9 + c]] }, { type: "points", color: "--ink", pts: q.nS.map((n, i) => [n, q.IL[i]]) }] });
-  showResult(6, r.every(Boolean), L(`True L_SB = ${f(q.LSB, 3)} dB.`, `참값 L_SB = ${f(q.LSB, 3)} dB.`));
+    series: [{ type: "line", color: "--guide", pts: [[0, c], [9, m * 9 + c]] }, { type: "points", color: "--ink", pts: q.nS.map((n, i) => [n, q.IL[i]]) }] });
+  showResult(5, r.every(Boolean), L(`True L_SB = ${f(q.LSB, 3)} dB.`, `참값 L_SB = ${f(q.LSB, 3)} dB.`));
 }
 
-// ===== Exercise 7: S-bend, three angles =====
-const ANG = [10, 20, 30], NS = [2, 4, 6, 8], ACOL = ["--teal", "--amber", "--acc"];
-function new7() {
+// ===== Exercise 6: S-bend, three angles =====
+const ANG = [10, 20, 30], NS = [2, 4, 6, 8], ACOL = ["--guide", "--amber", "--laser"];
+function new6() {
   const ab = rnd2(0.01, 0.5, 3), Tsb = rnd2(0.05, 1.0, 3), Tbb = +(2 * Tsb).toFixed(3), C = rnd2(1.0, 3.5);
-  const sig = noise[7] ? rnd2(0.015, 0.04, 3) : 0;
+  const sig = noise[6] ? rnd2(0.015, 0.04, 3) : 0;
   const rows = [];
   ANG.forEach(th => NS.forEach(n => rows.push({ th, n, IL: +(C + ab * n * 2 * th / 90 + n * (2 * Tsb + Tbb) + sig * gauss()).toFixed(3) })));
   // Step 2: one straight-line fit per angle
@@ -2078,64 +2078,64 @@ function new7() {
   // One shot: all 12 patterns, unknowns [C, α_b, T_sb]
   const A = rows.map(r => [1, r.n * 2 * r.th / 90, 4 * r.n]), b = rows.map(r => r.IL);
   const fit = lsq(A, b);
-  const q = P[7] = { ab, Tsb, Tbb, C, sig, rows, A, b, fit, per, s3 };
-  $("ex7t").innerHTML = `<p class="note">${noise[7] ? L("Measurement error present", "측정 오차 있음") : L("No measurement error", "측정 오차 없음")} · ${L("each S-bend = 2 arcs of θ", "S-bend 하나 = 각도 θ인 arc 2개")}</p>` +
+  const q = P[6] = { ab, Tsb, Tbb, C, sig, rows, A, b, fit, per, s3 };
+  $("ex6t").innerHTML = `<p class="note">${noise[6] ? L("Measurement error present", "측정 오차 있음") : L("No measurement error", "측정 오차 없음")} · ${L("each S-bend = 2 arcs of θ", "S-bend 하나 = 각도 θ인 arc 2개")}</p>` +
     dataTable(["Pattern", L("θ per arc", "arc당 θ"), "n_S", "IL (dB)"], rows.map((r, i) => [`P${i + 1}`, r.th + "°", r.n, r.IL.toFixed(3)]));
-  $("ex7q").innerHTML = `<h3 style="margin-top:14px">${L("Step 2 — loss per S-bend for each angle", "Step 2 — 각도별 S-bend 하나당 loss")}</h3>` +
-    qRow("e7a", "(a) L<sub>SB</sub>(10°)", "dB/S-bend") + qRow("e7b", "(b) L<sub>SB</sub>(20°)", "dB/S-bend") + qRow("e7c", "(c) L<sub>SB</sub>(30°)", "dB/S-bend") +
+  $("ex6q").innerHTML = `<h3 style="margin-top:14px">${L("Step 2 — loss per S-bend for each angle", "Step 2 — 각도별 S-bend 하나당 loss")}</h3>` +
+    qRow("e6a", "(a) L<sub>SB</sub>(10°)", "dB/S-bend") + qRow("e6b", "(b) L<sub>SB</sub>(20°)", "dB/S-bend") + qRow("e6c", "(c) L<sub>SB</sub>(30°)", "dB/S-bend") +
     `<h3 style="margin-top:14px">${L("Step 3 — the components", "Step 3 — loss 성분")}</h3>` +
-    qRow("e7d", "(d) Bending loss α<sub>b</sub>", "dB/90°") + qRow("e7e", "(e) Straight-bend transition loss T<sub>sb</sub>", "dB/trans.") + qRow("e7f", "(f) Bend-bend transition loss T<sub>bb</sub>", "dB/trans.");
-  draw7(false);
+    qRow("e6d", "(d) Bending loss α<sub>b</sub>", "dB/90°") + qRow("e6e", "(e) Straight-bend transition loss T<sub>sb</sub>", "dB/trans.") + qRow("e6f", "(f) Bend-bend transition loss T<sub>bb</sub>", "dB/trans.");
+  draw6(false);
   const [ab2, c4] = s3.x, [c0, a1, t1] = fit.x;
-  $("ex7s").innerHTML = `<p><b>Step 2.</b> ${L("For each angle, fit IL = C + n_S·L_SB (straight line in n_S, same formulas as Exercises 4 and 6):", "각도마다 IL = C + n_S·L_SB를 fit합니다 (n_S에 대한 직선, Exercise 4·6과 같은 공식):")}</p>
+  $("ex6s").innerHTML = `<p><b>Step 2.</b> ${L("For each angle, fit IL = C + n_S·L_SB (straight line in n_S, same formulas as Exercises 4 and 5):", "각도마다 IL = C + n_S·L_SB를 fit합니다 (n_S에 대한 직선, Exercise 4·5와 같은 공식):")}</p>
 <div class="mono">${per.map(p => `θ = ${p.th}°:  L_SB(${p.th}°) = slope = ${f(p.L, 4)} dB     C = ${f(p.C, 3)} dB`).join("\n")}</div>
 <p><b>Step 3.</b> ${L("Fit L_SB against x = 2θ/90° (three points):", "L_SB를 x = 2θ/90°에 대해 fit합니다 (점 3개):")}</p>
 <div class="mono">${per.map(p => `x = ${f(2 * p.th / 90, 4)}   L_SB = ${f(p.L, 4)}`).join("\n")}
 
 α_b    = slope     = ${f(ab2, 4)} dB/90°
 4·T_sb = intercept = ${f(c4, 4)} dB   ⇒  T_sb = ${f(c4 / 4, 4)} dB,  T_bb = 2·T_sb = ${f(c4 / 2, 4)} dB</div>
-<div id="ex7p2"></div>
+<div id="ex6p2"></div>
 <p><b>${L("Alternative — one shot.", "다른 방법 — 한 번에 풀기.")}</b> ${L("Put all 12 patterns into A x = b with x = [C, α_b, T_sb]ᵀ and columns [1, n_S·2θ/90°, 4·n_S]:", "12개 pattern을 모두 A x = b에 넣습니다. x = [C, α_b, T_sb]ᵀ, 열은 [1, n_S·2θ/90°, 4·n_S]:")}</p>
 <div class="mono">AᵀA = ${matStr(fit.AtA, 3).split("\n").join("\n       ")}
 
 Aᵀb = ${matStr(fit.Atb.map(v => [v]), 3).split("\n").join("\n       ")}
 
 C = ${f(c0, 4)} dB,  α_b = ${f(a1, 4)} dB/90°,  T_sb = ${f(t1, 4)} dB,  T_bb = ${f(2 * t1, 4)} dB    (R² = ${f(fit.r2, 5)})</div>
-<p class="note">${noise[7] ? L("The two approaches differ slightly because the one-shot fit forces one common C, while Step 2 gives each angle its own intercept. Both are accepted. ", "한 번에 푸는 fit은 공통 C 하나를 쓰고 Step 2는 각도마다 intercept를 따로 두기 때문에 두 결과가 조금 다릅니다. 둘 다 정답으로 인정합니다. ") : ""}${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, C = ${C} dB${noise[7] ? `, noise σ = ${sig} dB` : ""}. ${L("With a single angle, column 2 would be a multiple of column 3 and AᵀA would be singular; that is why three angles are needed.", "한 각도만 쓰면 2열이 3열의 배수가 되어 AᵀA가 singular가 됩니다. 그래서 세 각도가 필요합니다.")}</p>`;
+<p class="note">${noise[6] ? L("The two approaches differ slightly because the one-shot fit forces one common C, while Step 2 gives each angle its own intercept. Both are accepted. ", "한 번에 푸는 fit은 공통 C 하나를 쓰고 Step 2는 각도마다 intercept를 따로 두기 때문에 두 결과가 조금 다릅니다. 둘 다 정답으로 인정합니다. ") : ""}${L("Generated with", "생성에 사용한 값:")} α_b = ${ab} dB/90°, T_sb = ${Tsb} dB, T_bb = ${Tbb} dB, C = ${C} dB${noise[6] ? `, noise σ = ${sig} dB` : ""}. ${L("With a single angle, column 2 would be a multiple of column 3 and AᵀA would be singular; that is why three angles are needed.", "한 각도만 쓰면 2열이 3열의 배수가 되어 AᵀA가 singular가 됩니다. 그래서 세 각도가 필요합니다.")}</p>`;
   resetResult(7);
-  plot($("ex7p2"), { xLabel: "total bend angle / 90°  (= 2θ/90°)", yLabel: "loss per S-bend L_SB (dB)", xmin: 0, xmax: 0.8, aria: "Loss per S-bend versus bend angle",
-    series: [{ type: "line", color: "--teal", pts: [[0, c4], [0.8, ab2 * 0.8 + c4]] }, { type: "points", color: "--acc", pts: per.map(p => [2 * p.th / 90, p.L]) }] });
+  plot($("ex6p2"), { xLabel: "total bend angle / 90°  (= 2θ/90°)", yLabel: "loss per S-bend L_SB (dB)", xmin: 0, xmax: 0.8, aria: "Loss per S-bend versus bend angle",
+    series: [{ type: "line", color: "--guide", pts: [[0, c4], [0.8, ab2 * 0.8 + c4]] }, { type: "points", color: "--laser", pts: per.map(p => [2 * p.th / 90, p.L]) }] });
 }
-function draw7(withFit) {
-  const q = P[7], series = [];
+function draw6(withFit) {
+  const q = P[6], series = [];
   ANG.forEach((th, k) => {
     const p = q.per[k];
     if (withFit) series.push({ type: "line", color: ACOL[k], pts: [[0, p.C], [9, p.C + 9 * p.L]] });
     series.push({ type: "points", color: ACOL[k], pts: q.rows.filter(r => r.th === th).map(r => [r.n, r.IL]) });
   });
-  plot($("ex7p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends for three angles", series });
-  $("ex7leg").innerHTML = ANG.map((th, k) => `<span><i class="dot" style="background:var(${ACOL[k]})"></i>θ = ${th}°</span>`).join("") + (withFit ? `<span><i style="background:var(--muted)"></i>${L("lines: Step 2 fits", "직선: Step 2 fit")}</span>` : "");
+  plot($("ex6p"), { xLabel: "number of S-bends n_S", yLabel: "insertion loss (dB)", xmin: 0, xmax: 9, aria: "Insertion loss versus number of S-bends for three angles", series });
+  $("ex6leg").innerHTML = ANG.map((th, k) => `<span><i class="dot" style="background:var(${ACOL[k]})"></i>θ = ${th}°</span>`).join("") + (withFit ? `<span><i style="background:var(--muted)"></i>${L("lines: Step 2 fits", "직선: Step 2 fit")}</span>` : "");
 }
-function check7() {
-  const q = P[7], nz = noise[7], [ab2, c4] = q.s3.x, [, a1, t1] = q.fit.x;
+function check6() {
+  const q = P[6], nz = noise[6], [ab2, c4] = q.s3.x, [, a1, t1] = q.fit.x;
   const trueL = th => q.ab * 2 * th / 90 + 4 * q.Tsb;
   const r = [
-    ...q.per.map((p, k) => grade("e7" + "abc"[k], nz ? p.L : trueL(p.th), nz ? 0.02 : 0.005, 0, 3)),
-    gradeAny("e7d", nz ? [ab2, a1] : [q.ab], nz ? 0.02 : 0.005, nz ? 0.1 : 0, 3),
-    gradeAny("e7e", nz ? [c4 / 4, t1] : [q.Tsb], nz ? 0.01 : 0.003, nz ? 0.05 : 0, 3),
-    gradeAny("e7f", nz ? [c4 / 2, 2 * t1] : [q.Tbb], nz ? 0.02 : 0.006, nz ? 0.05 : 0, 3),
+    ...q.per.map((p, k) => grade("e6" + "abc"[k], nz ? p.L : trueL(p.th), nz ? 0.02 : 0.005, 0, 3)),
+    gradeAny("e6d", nz ? [ab2, a1] : [q.ab], nz ? 0.02 : 0.005, nz ? 0.1 : 0, 3),
+    gradeAny("e6e", nz ? [c4 / 4, t1] : [q.Tsb], nz ? 0.01 : 0.003, nz ? 0.05 : 0, 3),
+    gradeAny("e6f", nz ? [c4 / 2, 2 * t1] : [q.Tbb], nz ? 0.02 : 0.006, nz ? 0.05 : 0, 3),
   ];
-  if (r.every(Boolean)) draw7(true);
-  showResult(7, r.every(Boolean), L(`True values: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`, `참값: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`));
+  if (r.every(Boolean)) draw6(true);
+  showResult(6, r.every(Boolean), L(`True values: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`, `참값: α_b = ${q.ab} dB/90°, T_sb = ${q.Tsb} dB, T_bb = ${q.Tbb} dB.`));
 }
 
 registerExercise(1, { part: 2, newProblem: new1, check: check1 });
 registerExercise(2, { part: 4, newProblem: new2, check: check2 });
 registerExercise(3, { part: 5, newProblem: new3, check: check3, csv: () => "L_cm,IL_dB\n" + P[3].Ls.map((L, i) => `${L},${P[3].IL[i]}`).join("\n") });
 registerExercise(4, { part: 6, newProblem: new4, check: check4, csv: () => "L_cm,IL_dB\n" + P[4].Ls.map((L, i) => `${L},${P[4].IL[i]}`).join("\n") });
-registerExercise(6, { part: 8, noisy: false, newProblem() { noise[6] = this.noisy === true; new6(); }, check: check6, csv: () => "n_S,IL_dB\n" + P[6].nS.map((n, i) => `${n},${P[6].IL[i]}`).join("\n") });
-registerExercise(7, { part: 9, noisy: false, newProblem() { noise[7] = this.noisy === true; new7(); }, check: check7, csv: () => "theta_deg,n_S,IL_dB\n" + P[7].rows.map(r => `${r.th},${r.n},${r.IL}`).join("\n") });
-// Exercise 5 (least squares playground) is not graded, so it is not registered.
+registerExercise(5, { part: 8, noisy: false, newProblem() { noise[5] = this.noisy === true; new5(); }, check: check5, csv: () => "n_S,IL_dB\n" + P[5].nS.map((n, i) => `${n},${P[5].IL[i]}`).join("\n") });
+registerExercise(6, { part: 9, noisy: false, newProblem() { noise[6] = this.noisy === true; new6(); }, check: check6, csv: () => "theta_deg,n_S,IL_dB\n" + P[6].rows.map(r => `${r.th},${r.n},${r.IL}`).join("\n") });
+// The least squares playground is not graded, so it is not registered.
 
 function courseInit() {
   // ---------- Part 4 widgets ----------
@@ -2201,13 +2201,13 @@ function courseInit() {
     $("fitStats").innerHTML = `R² = ${f(one.r2, 5)}    σ̂ = ${f(sig, 3)} dB  ${L("(data generated with σ = 0.02 dB)", "(데이터 생성 시 σ = 0.02 dB)")}`;
   }
 
-  // Exercise 5 playground
+  // Least squares playground
   ["pgN", "pgS", "pgR"].forEach(id => $(id).addEventListener("input", pgDraw));
   $("pgNew").addEventListener("click", pgResample);
   PG.eps = Array.from({ length: 12 }, gauss);
   ovDraw(); sbCalc();
   onPartShown[6] = pgDraw;
-  onPartShown[9] = () => { if (P[7]) draw7(false); };
+  onPartShown[9] = () => { if (P[6]) draw6(false); };
 }
 
 

@@ -22,7 +22,7 @@ An online course on evaluating the loss of photonic integrated circuit (PIC) dev
 ## Features
 
 - English and Korean, switchable on every page
-- Concept checks and 7 exercises with randomly generated problems, automatic grading and worked solutions
+- Concept checks and 6 exercises with randomly generated problems, automatic grading and worked solutions
 - Interactive widgets (dB converter, mode overlap, S-bend loss calculator, least squares playground)
 - Progress is saved in the visitor's browser; no account and no server needed
 
